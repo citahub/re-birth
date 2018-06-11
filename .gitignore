@@ -26,3 +26,7 @@
 /config/master.key
 
 .ruby-gemset
+
+# ignore env local configs
+.env.local
+.env.*.local
