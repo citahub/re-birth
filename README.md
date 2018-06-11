@@ -1,24 +1,27 @@
-# README
+# Cita Scan
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A blockchain explorer to cita.
 
-Things you may want to cover:
+## packages
 
-* Ruby version
+  - postgresql 9.4 and above
+    
+## Initial Project
 
-* System dependencies
+```shell
+rails db:create db:migrate
 
-* Configuration
+or just
 
-* Database creation
+rails db:setup
+```
 
-* Database initialization
+## Running test
+```shell
+rails test
+```
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Run Project
+```shell
+rails s
+```
