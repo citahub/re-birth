@@ -22,7 +22,7 @@ module CitaSync
       )
 
       METHOD_NAMES.each do |name|
-        define_method name.underscore do |params = []|
+        define_method name.underscore do |*params|
           resp = CitaSync::Basic.post(name, params)
           Oj.load(resp.body)
         end
