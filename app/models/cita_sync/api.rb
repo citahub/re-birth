@@ -2,23 +2,28 @@ module CitaSync
   class Api
     class << self
 
+      # New methods without prefix in CITA v0.16
       METHOD_NAMES = %w(
-        net_peerCount
-        cita_blockNumber
-        cita_sendRawTransaction
-        cita_getBlockByHash
-        cita_getBlockByNumber
-        cita_getTransaction
-        eth_getTransactionReceipt
-        eth_getLogs
-        eth_call
-        eth_getTransactionCount
-        eth_getCode
-        eth_getAbi
-        eth_getBalance
-        eth_newBlockFilter
-        eth_getFilterChanges
-        eth_getFilterLogs
+        peerCount
+        blockNumber
+        sendRawTransaction
+        getBlockByHash
+        getBlockByNumber
+        getTransaction
+        getTransactionReceipt
+        getLogs
+        call
+        getTransactionCount
+        getCode
+        getAbi
+        getBalance
+        newFilter
+        newBlockFilter
+        uninstallFilter
+        getFilterChanges
+        getFilterLogs
+        getTransactionProof
+        getMetaData
       )
 
       METHOD_NAMES.each do |name|
