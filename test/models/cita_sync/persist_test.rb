@@ -99,12 +99,23 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
   end
 
+  def mock_get_balance
+    result = "0x0"
+
+    stub_request(:post, "www.cita.com").
+                                         with(body: hash_including({ method: "getBalance", params: ["0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0"] }), headers: {
+        "Content-Type": "application/json"
+      }).
+          to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+  end
+
   setup do
     mock_block_number
     mock_get_block_by_number_zero
     mock_get_block_by_number_one
     mock_get_transaction
     mock_get_meta_data
+    mock_get_balance
   end
 
   test "save_block" do
@@ -138,10 +149,17 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
   end
 
   test "save meta data" do
+    CitaSync::Persist.save_block("0x0")
     meta_data = CitaSync::Persist.save_meta_data("0x0")
     ap "----------------------- meta data --------------------"
     ap meta_data
-    assert_not meta_data.errors.full_messages.empty?
+    assert meta_data.errors.full_messages.empty?
+  end
+
+  test "save balance" do
+    balance = CitaSync::Persist.save_balance("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
+    ap balance
+    assert balance.errors.full_messages.empty?
   end
 
   test "save block with transactions" do

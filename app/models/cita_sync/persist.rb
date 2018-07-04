@@ -58,6 +58,20 @@ module CitaSync
         )
       end
 
+      # save balance
+      # height is hex number string
+      def save_balance(addr, height)
+        return unless height.start_with?("0x")
+        # height number in decimal system
+        data = CitaSync::Api.get_balance(addr, height)
+        value = data["result"]
+        Balance.create(
+          address: addr,
+          height: CitaSync::Basic.hex_str_to_number(height),
+          value: value
+        )
+      end
+
       # save one block with it's transaction
       def save_block_with_transactions(block_number_hex_str)
         block = save_block(block_number_hex_str)
