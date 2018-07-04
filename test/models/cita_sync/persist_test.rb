@@ -2,9 +2,7 @@ require 'test_helper'
 
 class CitaSync::ApiTest < ActiveSupport::TestCase
   def mock_block_number
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "blockNumber" }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: "0x1" }.to_json)
+    stub_request_wrapper("blockNumber", nil, "0x1")
   end
 
   def mock_get_block_by_number_zero
@@ -27,9 +25,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       }
     }
 
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "getBlockByNumber", params: ["0x0", true] }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+    stub_request_wrapper("getBlockByNumber", ["0x0", true], result)
   end
 
   def mock_get_block_by_number_one
@@ -56,9 +52,8 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
         ]
       }
     }
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+
+    stub_request_wrapper("getBlockByNumber", ["0x1", true], result)
   end
 
   def mock_get_transaction
@@ -70,9 +65,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       "index": "0x0"
     }
 
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "getTransaction", params: ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"] }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+    stub_request_wrapper("getTransaction", ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"], result)
   end
 
   def mock_get_meta_data
@@ -94,19 +87,13 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       "website": "https://www.example.com"
     }
 
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "getMetaData", params: ["0x0"] }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+    stub_request_wrapper("getMetaData", ["0x0"], result)
   end
 
   def mock_get_balance
     result = "0x0"
 
-    stub_request(:post, "www.cita.com").
-                                         with(body: hash_including({ method: "getBalance", params: ["0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0"] }), headers: {
-        "Content-Type": "application/json"
-      }).
-          to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+    stub_request_wrapper("getBalance", ["0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0"], result)
   end
 
   setup do

@@ -2,10 +2,7 @@ require 'test_helper'
 
 class CitaSync::ApiTest < ActiveSupport::TestCase
   setup do
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "blockNumber" }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: "0x7781" }.to_json)
-
+    stub_request_wrapper("blockNumber", nil, "0x7781")
 
     result = {
       "version" => 0,
@@ -25,10 +22,8 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
         "transactions" => []
       }
     }
-    stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
-      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
 
+    stub_request_wrapper("getBlockByNumber", ["0x1", true], result)
   end
 
   test "cita_blockNumber" do
