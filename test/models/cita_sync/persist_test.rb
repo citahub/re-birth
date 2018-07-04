@@ -75,11 +75,36 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
   end
 
+  def mock_get_meta_data
+    result = {
+      "blockInterval": 3000,
+      "chainId": 1,
+      "chainName": "test-chain",
+      "genesisTimestamp": 1530164125967,
+      "operator": "test-operator",
+      "tokenAvatar": "https://avatars1.githubusercontent.com/u/35361817",
+      "tokenName": "Nervos",
+      "tokenSymbol": "NOS",
+      "validators": [
+        "0x365d339609728590ec0803a73b95c24fde718846",
+        "0xf1551b918a4f43c1b72d322b8f91d4caebc249de",
+        "0x6e66c49ed7cf07754cd5794a43d41704b7c1e217",
+        "0xb4061fa8e18654a7d51fef3866d45bb1dc688717"
+      ],
+      "website": "https://www.example.com"
+    }
+
+    stub_request(:post, "www.cita.com").
+      with(body: hash_including({ method: "getMetaData", params: ["0x0"] }), headers: { "Content-Type": "application/json" }).
+      to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
+  end
+
   setup do
     mock_block_number
     mock_get_block_by_number_zero
     mock_get_block_by_number_one
     mock_get_transaction
+    mock_get_meta_data
   end
 
   test "save_block" do
@@ -110,6 +135,13 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
   test "save transaction without block will be fail" do
     transaction = CitaSync::Persist.save_transaction(hash)
     assert_not transaction.errors.full_messages.empty?
+  end
+
+  test "save meta data" do
+    meta_data = CitaSync::Persist.save_meta_data("0x0")
+    ap "----------------------- meta data --------------------"
+    ap meta_data
+    assert_not meta_data.errors.full_messages.empty?
   end
 
   test "save block with transactions" do

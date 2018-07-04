@@ -35,6 +35,29 @@ module CitaSync
         )
       end
 
+      # save a meta data
+      def save_meta_data(block_number, block = nil)
+        data = CitaSync::Api.get_meta_data(block_number)
+        result = data["result"]
+        return if result.nil?
+        # block number in decimal system
+        block_number_decimal = CitaSync::Basic.hex_str_to_number(block_number)
+        block ||= Block.find_by_block_number(block_number_decimal)
+        MetaData.create(
+          chain_id: result["chainId"],
+          chain_name: result["chainName"],
+          operator: result["operator"],
+          genesis_timestamp: result["genesisTimestamp"],
+          validators: result["validators"],
+          block_interval: result["blockInterval"],
+          token_symbol: result["tokenSymbol"],
+          token_avatar: result["tokenAvatar"],
+          website: result["website"],
+          block_number: block_number_decimal,
+          block: block
+        )
+      end
+
       # save one block with it's transaction
       def save_block_with_transactions(block_number_hex_str)
         block = save_block(block_number_hex_str)
