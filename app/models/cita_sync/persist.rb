@@ -4,7 +4,7 @@ module CitaSync
     class << self
       # save a block
       def save_block(hex_num_str, transaction = true)
-        data = CitaSync::Api.cita_get_block_by_number(hex_num_str, transaction)
+        data = CitaSync::Api.get_block_by_number(hex_num_str, transaction)
         result = data["result"]
         return if result.nil?
         block_number_hex_str = result.dig("header", "number")
@@ -21,7 +21,7 @@ module CitaSync
       # save a transaction
       # block persisted first
       def save_transaction(hash, block = nil)
-        data = CitaSync::Api.cita_get_transaction(hash)
+        data = CitaSync::Api.get_transaction(hash)
         result = data["result"]
         return if result.nil?
         block ||= Block.find_by_block_number(CitaSync::Basic.hex_str_to_number(result["blockNumber"]))
@@ -46,7 +46,7 @@ module CitaSync
 
       # save blocks and transactions, from next db block to last block in chain
       def save_blocks_with_transactions
-        block_number_hex_str = CitaSync::Api.cita_block_number["result"]
+        block_number_hex_str = CitaSync::Api.block_number["result"]
         block_number = CitaSync::Basic.hex_str_to_number(block_number_hex_str)
 
         # current biggest block number in database

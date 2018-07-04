@@ -3,7 +3,7 @@ require 'test_helper'
 class CitaSync::ApiTest < ActiveSupport::TestCase
   setup do
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_blockNumber" }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "blockNumber" }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: "0x7781" }.to_json)
 
 
@@ -26,13 +26,13 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       }
     }
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
 
   end
 
   test "cita_blockNumber" do
-    resp = CitaSync::Api.cita_block_number
+    resp = CitaSync::Api.block_number
 
     assert resp["jsonrpc"], "2.0"
     assert resp["id"], 83
@@ -40,7 +40,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
   end
 
   test "cita_getBlockByNumber" do
-    resp = CitaSync::Api.cita_get_block_by_number("0x1", true)
+    resp = CitaSync::Api.get_block_by_number("0x1", true)
 
     assert resp.dig("result", "hash"), "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b"
   end

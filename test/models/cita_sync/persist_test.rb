@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class CitaSync::ApiTest < ActiveSupport::TestCase
-  def mock_cita_block_number
+  def mock_block_number
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_blockNumber" }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "blockNumber" }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: "0x1" }.to_json)
   end
 
-  def mock_cita_get_block_by_number_zero
+  def mock_get_block_by_number_zero
     result = {
       "version": 0,
       "hash": "0x542ff7aeccbd2b269c36e134e3c0a1be103b389dc9ed90a55c1d506e00b77b81",
@@ -28,11 +28,11 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     }
 
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_getBlockByNumber", params: ["0x0", true] }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "getBlockByNumber", params: ["0x0", true] }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
   end
 
-  def mock_cita_get_block_by_number_one
+  def mock_get_block_by_number_one
     result = {
       "version" => 0,
       "hash" => "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b",
@@ -57,11 +57,11 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
       }
     }
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "getBlockByNumber", params: ["0x1", true] }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
   end
 
-  def mock_cita_get_transaction
+  def mock_get_transaction
     result = {
       "hash": "0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4",
       "content": "0x0a1d186420e7192a14627306090abab3a6e1400e9345bc60c78a8bef57380112410422a3159ad636e779ad530dfca184ed3f88183f1be05be6dda4ad820791b0798fe1382cb0396c3563cc6d41f743722ea3918beb8fd343079c2b79eb085f699401",
@@ -71,15 +71,15 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     }
 
     stub_request(:post, "www.cita.com").
-      with(body: hash_including({ method: "cita_getTransaction", params: ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"] }), headers: { "Content-Type": "application/json" }).
+      with(body: hash_including({ method: "getTransaction", params: ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"] }), headers: { "Content-Type": "application/json" }).
       to_return(status: 200, body: { jsonrpc: "2.0", id: 83, result: result }.to_json)
   end
 
   setup do
-    mock_cita_block_number
-    mock_cita_get_block_by_number_zero
-    mock_cita_get_block_by_number_one
-    mock_cita_get_transaction
+    mock_block_number
+    mock_get_block_by_number_zero
+    mock_get_block_by_number_one
+    mock_get_transaction
   end
 
   test "save_block" do
