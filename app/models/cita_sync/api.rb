@@ -33,6 +33,11 @@ module CitaSync
         end
       end
 
+      def call_rpc(method, params)
+        resp = CitaSync::Basic.post(method, params)
+        Oj.load(resp.body)
+      end
+
     end
 
   end
