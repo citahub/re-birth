@@ -96,6 +96,12 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     stub_request_wrapper("getBalance", ["0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0"], result)
   end
 
+  def mock_get_abi
+    result = "0x"
+
+    stub_request_wrapper("getAbi", ["0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0"], result)
+  end
+
   setup do
     mock_block_number
     mock_get_block_by_number_zero
@@ -103,6 +109,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     mock_get_transaction
     mock_get_meta_data
     mock_get_balance
+    mock_get_abi
   end
 
   test "save_block" do
@@ -147,6 +154,12 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     balance = CitaSync::Persist.save_balance("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
     ap balance
     assert balance.errors.full_messages.empty?
+  end
+
+  test "save abi" do
+    abi = CitaSync::Persist.save_abi("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
+    ap abi
+    assert abi.errors.full_messages.empty?
   end
 
   test "save block with transactions" do

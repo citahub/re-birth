@@ -72,6 +72,20 @@ module CitaSync
         )
       end
 
+      # save abi
+      # block_number is hex number string
+      def save_abi(addr, block_number)
+        return unless block_number.start_with?("0x")
+        # block_number in decimal system
+        data = CitaSync::Api.get_abi(addr, block_number)
+        value = data["result"]
+        Abi.create(
+          address: addr,
+          block_number: CitaSync::Basic.hex_str_to_number(block_number),
+          value: value
+        )
+      end
+
       # save one block with it's transaction
       def save_block_with_transactions(block_number_hex_str)
         block = save_block(block_number_hex_str)
