@@ -28,13 +28,12 @@ module CitaSync
 
       METHOD_NAMES.each do |name|
         define_method name.underscore do |*params|
-          resp = CitaSync::Basic.post(name, params)
-          Oj.load(resp.body)
+          call_rpc(name, params: params)
         end
       end
 
-      def call_rpc(method, params)
-        resp = CitaSync::Basic.post(method, params)
+      def call_rpc(method, params: params, jsonrpc: jsonrpc, id: id)
+        resp = CitaSync::Basic.post(method, params: params, jsonrpc: jsonrpc, id: id)
         Oj.load(resp.body)
       end
 

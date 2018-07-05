@@ -6,7 +6,7 @@ module RpcApi
       # support id, jsonrpc
       # error handle
       def index
-        resp = CitaSync::Api.call_rpc(params[:method], params[:params])
+        resp = CitaSync::Api.call_rpc(params[:method], params: params[:params], jsonrpc: params[:jsonrpc], id: params[:id])
         render json: resp
       end
     end

@@ -10,14 +10,14 @@ module CitaSync
         str.to_i(16)
       end
 
-      def post(method, params = [])
-        conn.post("/", params(method, params))
+      def post(method, jsonrpc: "2.0", params: [], id: 83)
+        conn.post("/", params(method, jsonrpc: jsonrpc, params: params, id: id))
       end
 
-      def params(method, params = [])
+      def params(method, jsonrpc: "2.0", params: [], id: 83)
         {
-          jsonrpc: "2.0",
-          id: 83,
+          jsonrpc: jsonrpc,
+          id: id,
           method: method,
           params: params
         }.to_json
