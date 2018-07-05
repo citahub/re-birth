@@ -1,0 +1,41 @@
+language: ruby
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "9.4"
+
+rvm:
+  - 2.4.4
+  - 2.5.1
+
+before_script:
+  - psql -c 'create database "cita-scan_test";' -U postgres
+  - cp .env.test.local.travis .env.test.local
+
+branches:
+  only:
+  - master
+  - develop
+
+env:
+  global:
+    - RAILS_ENV=test
+
+cache:
+  bundler: true
+  directories:
+    - node_modules
+  yarn: true
+
+install:
+  - bundle install
+  - nvm install 8.11.2
+  - node -v
+  - npm i -g yarn
+  - yarn
+
+script:
+  - bundle exec rails db:migrate
+  - bundle exec rails test
