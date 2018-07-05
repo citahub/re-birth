@@ -36,6 +36,7 @@ module CitaSync
       end
 
       # save a meta data
+      # block_number is a hex string
       def save_meta_data(block_number, block = nil)
         data = CitaSync::Api.get_meta_data(block_number)
         result = data["result"]
@@ -86,17 +87,18 @@ module CitaSync
         )
       end
 
-      # save one block with it's transaction
-      def save_block_with_transactions(block_number_hex_str)
+      # save one block with it's transactions and meta data
+      def save_block_with_infos(block_number_hex_str)
         block = save_block(block_number_hex_str)
+        _meta_data = save_meta_data(block_number_hex_str, block)
         hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
         hashes.each do |hash|
           save_transaction(hash, block)
         end
       end
 
-      # save blocks and transactions, from next db block to last block in chain
-      def save_blocks_with_transactions
+      # save blocks and there's transactions and meta data, from next db block to last block in chain
+      def save_blocks_with_infos
         block_number_hex_str = CitaSync::Api.block_number["result"]
         block_number = CitaSync::Basic.hex_str_to_number(block_number_hex_str)
 
@@ -105,7 +107,7 @@ module CitaSync
         last_block_number = last_block&.block_number || -1
         ((last_block_number + 1)..block_number).each do |num|
           hex_str = CitaSync::Basic.number_to_hex_str(num)
-          save_block_with_transactions(hex_str)
+          save_block_with_infos(hex_str)
         end
       end
 

@@ -88,6 +88,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     }
 
     stub_request_wrapper("getMetaData", ["0x0"], result)
+    stub_request_wrapper("getMetaData", ["0x1"], result)
   end
 
   def mock_get_balance
@@ -162,25 +163,28 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     assert abi.errors.full_messages.empty?
   end
 
-  test "save block with transactions" do
-    CitaSync::Persist.save_block_with_transactions("0x1")
+  test "save block with infos" do
+    CitaSync::Persist.save_block_with_infos("0x1")
     block = Block.first
     transaction = Transaction.first
+    meta_data = MetaData.first
     assert Block.count, 1
     assert Transaction.count, 1
     assert transaction.block_number, block.header["number"]
     assert transaction.block, block
+    assert meta_data.block, block
   end
 
   test "save blocks with transactions with empty db" do
-    CitaSync::Persist.save_blocks_with_transactions
+    CitaSync::Persist.save_blocks_with_infos
     assert Block.count, 2
     assert Transaction.count, 1
+    assert MetaData.count, Block.count
   end
 
   test "save blocks with transactions with exist block" do
     CitaSync::Persist.save_block("0x0")
-    CitaSync::Persist.save_blocks_with_transactions
+    CitaSync::Persist.save_blocks_with_infos
     assert Block.count, 2
     assert Transaction.count, 1
   end
