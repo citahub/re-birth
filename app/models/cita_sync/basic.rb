@@ -35,6 +35,18 @@ module CitaSync
       def cita_url
         ENV.fetch("CITA_URL")
       end
+
+      # make params key chainId => chain_id
+      # not deep transfer keys, only transfer first level keys
+      def transfer_params(params)
+        params.map { |k, v| { k.to_s.underscore => v } }.reduce(:merge)
+      end
+
+      # select params
+      def select_params(params, keys = [])
+        underscore_params = transfer_params(params)
+        underscore_params.select { |k, _v| keys.include?(k) }
+      end
     end
 
   end
