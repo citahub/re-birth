@@ -152,13 +152,13 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
   end
 
   test "save balance" do
-    balance = CitaSync::Persist.save_balance("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
+    balance, = CitaSync::Persist.save_balance("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
     ap balance
     assert balance.errors.full_messages.empty?
   end
 
   test "save abi" do
-    abi = CitaSync::Persist.save_abi("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
+    abi, = CitaSync::Persist.save_abi("0x0dcf740686de1fe9e9faa4b519767a872e1cf69e", "0x0")
     ap abi
     assert abi.errors.full_messages.empty?
   end

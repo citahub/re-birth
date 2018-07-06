@@ -50,6 +50,9 @@ gem 'faraday', '~> 0.15.2'
 # faster json
 gem 'oj', '~> 3.6', '>= 3.6.2'
 
+# json serializer for api
+gem 'active_model_serializers', '~> 0.10.7'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

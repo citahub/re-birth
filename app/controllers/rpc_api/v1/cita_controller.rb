@@ -1,14 +1,12 @@
 module RpcApi
   module V1
     class CitaController < ApplicationController
-      # "jsonrpc", "method", "params", "id"
-      # check jsonrpc
-      # support id, jsonrpc
-      # error handle
+      # POST /rpc_api/v1/cita
       def index
-        resp = CitaSync::Api.call_rpc(params[:method], params: params[:params], jsonrpc: params[:jsonrpc], id: params[:id])
+        resp = SplitRequestsController.find(params)
         render json: resp
       end
+
     end
   end
 end
