@@ -27,7 +27,7 @@ module CitaSync
         Faraday.new(url: cita_url) do |faraday|
           faraday.headers['Content-Type'] = 'application/json'
           faraday.request  :url_encoded             # form-encode POST params
-          faraday.response :logger                  # log requests to $stdout
+          # faraday.response :logger                  # log requests to $stdout
           faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
         end
       end

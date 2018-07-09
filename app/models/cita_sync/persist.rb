@@ -113,6 +113,15 @@ module CitaSync
         end
       end
 
+      def realtime_sync
+        loop do
+          begin
+            save_blocks_with_infos
+          rescue
+          end
+        end
+      end
+
     end
 
   end

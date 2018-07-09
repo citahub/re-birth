@@ -7,4 +7,9 @@ class Block < ApplicationRecord
 
   validates :cita_hash, presence: true, uniqueness: true
   validates :block_number, presence: true, uniqueness: true
+
+  # current block number
+  def self.current_block_number
+    Block.order(block_number: :desc).first.block_number
+  end
 end

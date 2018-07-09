@@ -84,6 +84,7 @@ GEM
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
+    daemons (1.2.6)
     dotenv (2.5.0)
     dotenv-rails (2.5.0)
       dotenv (= 2.5.0)
@@ -230,6 +231,7 @@ DEPENDENCIES
   capybara (>= 2.15, < 4.0)
   chromedriver-helper
   coffee-rails (~> 4.2)
+  daemons (~> 1.2, >= 1.2.6)
   dotenv-rails
   faraday (~> 0.15.2)
   jbuilder (~> 2.5)
