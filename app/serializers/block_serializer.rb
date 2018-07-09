@@ -1,4 +1,4 @@
-class RpcApi::V1::BlockSerializer < ActiveModel::Serializer
+class BlockSerializer < ActiveModel::Serializer
   attributes :version
   attribute :cita_hash, key: :hash
   attributes :header, :body
