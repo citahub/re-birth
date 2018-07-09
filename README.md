@@ -2,6 +2,11 @@
 
 A blockchain explorer to cita.
 
+## build status
+
+  - develop branch 
+    [![Build Status](https://travis-ci.org/classicalliu/cita-scan.svg?branch=develop)](https://travis-ci.org/classicalliu/cita-scan)
+
 ## packages
 
   - postgresql 9.4 and above
