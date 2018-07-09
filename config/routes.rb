@@ -3,4 +3,8 @@ Rails.application.routes.draw do
 
   # resources :cita, only: [:index]
   post "/", to: "cita#index"
+
+  namespace :api do
+    resources :blocks, only: [:index]
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_06_063551) do
+ActiveRecord::Schema.define(version: 2018_07_09_091027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2018_07_06_063551) do
     t.integer "block_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "transaction_count"
     t.index ["block_number"], name: "index_blocks_on_block_number", unique: true
     t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
   end

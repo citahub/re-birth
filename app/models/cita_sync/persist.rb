@@ -14,7 +14,8 @@ module CitaSync
           cita_hash: result["hash"],
           header: result["header"],
           body: result["body"],
-          block_number: block_number
+          block_number: block_number,
+          transaction_count: result.dig("body", "transactions").count
         )
       end
 
