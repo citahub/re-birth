@@ -30,3 +30,5 @@
 # ignore env local configs
 .env.local
 .env.*.local
+
+cita_sync.log
