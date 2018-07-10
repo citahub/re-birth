@@ -29,15 +29,17 @@ class LocalInfosController
 
     def get_balance(params)
       address, block_number_hex = params
+      address_downcase = address.downcase
       block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
-      balance = Balance.find_by(address: address, block_number: block_number)
+      balance = Balance.find_by(address: address_downcase, block_number: block_number)
       balance&.value
     end
 
     def get_abi(params)
       address, block_number_hex = params
+      address_downcase = address.downcase
       block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
-      abi = Abi.find_by(address: address, block_number: block_number)
+      abi = Abi.find_by(address: address_downcase, block_number: block_number)
       abi&.value
     end
 

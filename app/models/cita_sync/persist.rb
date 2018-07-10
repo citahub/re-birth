@@ -64,11 +64,12 @@ module CitaSync
       # block_number is hex number string
       def save_balance(addr, block_number)
         return unless block_number.start_with?("0x")
+        addr_downcase = addr.downcase
         # height number in decimal system
-        data = CitaSync::Api.get_balance(addr, block_number)
+        data = CitaSync::Api.get_balance(addr_downcase, block_number)
         value = data["result"]
         balance = Balance.create(
-          address: addr,
+          address: addr_downcase,
           block_number: CitaSync::Basic.hex_str_to_number(block_number),
           value: value
         )
@@ -79,11 +80,12 @@ module CitaSync
       # block_number is hex number string
       def save_abi(addr, block_number)
         return unless block_number.start_with?("0x")
+        addr_downcase = addr.downcase
         # block_number in decimal system
-        data = CitaSync::Api.get_abi(addr, block_number)
+        data = CitaSync::Api.get_abi(addr_downcase, block_number)
         value = data["result"]
         abi = Abi.create(
-          address: addr,
+          address: addr_downcase,
           block_number: CitaSync::Basic.hex_str_to_number(block_number),
           value: value
         )
