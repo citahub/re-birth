@@ -57,13 +57,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
   add_message "BlockBody" do
     repeated :transactions, :message, 1, "SignedTransaction"
   end
-  add_message "Block" do
+  add_message "ProtoBlock" do
     optional :version, :uint32, 1
     optional :header, :message, 2, "BlockHeader"
     optional :body, :message, 3, "BlockBody"
   end
   add_message "BlockWithProof" do
-    optional :blk, :message, 1, "Block"
+    optional :blk, :message, 1, "ProtoBlock"
     optional :proof, :message, 2, "Proof"
   end
   add_message "BlockTxs" do
@@ -94,7 +94,7 @@ ProtoTransaction = Google::Protobuf::DescriptorPool.generated_pool.lookup("Proto
 UnverifiedTransaction = Google::Protobuf::DescriptorPool.generated_pool.lookup("UnverifiedTransaction").msgclass
 SignedTransaction = Google::Protobuf::DescriptorPool.generated_pool.lookup("SignedTransaction").msgclass
 BlockBody = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlockBody").msgclass
-Block = Google::Protobuf::DescriptorPool.generated_pool.lookup("Block").msgclass
+ProtoBlock = Google::Protobuf::DescriptorPool.generated_pool.lookup("ProtoBlock").msgclass
 BlockWithProof = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlockWithProof").msgclass
 BlockTxs = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlockTxs").msgclass
 BlackList = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlackList").msgclass

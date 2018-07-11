@@ -77,14 +77,14 @@ message BlockBody {
     repeated SignedTransaction transactions = 1;
 }
 
-message Block {
+message ProtoBlock {
     uint32 version = 1;
     BlockHeader header = 2;
     BlockBody body = 3;
 }
 
 message BlockWithProof {
-    Block blk = 1;
+    ProtoBlock blk = 1;
     Proof proof = 2;
 }
 

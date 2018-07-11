@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_09_091027) do
+ActiveRecord::Schema.define(version: 2018_07_11_075733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,12 @@ ActiveRecord::Schema.define(version: 2018_07_09_091027) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "block_id"
+    t.string "from"
+    t.string "to"
+    t.text "data"
+    t.string "value"
+    t.string "contract_address"
+    t.string "gas_used"
     t.index ["block_id"], name: "index_transactions_on_block_id"
     t.index ["cita_hash"], name: "index_transactions_on_cita_hash", unique: true
   end

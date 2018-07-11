@@ -26,14 +26,28 @@ module CitaSync
         result = data["result"]
         return if result.nil?
         block ||= Block.find_by_block_number(CitaSync::Basic.hex_str_to_number(result["blockNumber"]))
-        Transaction.create(
+        content = result["content"]
+        message = Message.new(content)
+        transaction = Transaction.new(
           cita_hash: result["hash"],
-          content: result["content"],
+          content: content,
           block_number: result["blockNumber"],
           block_hash: result["blockHash"],
           index: result["index"],
-          block: block
+          block: block,
+          from: message.from,
+          to: message.to,
+          data: message.data,
+          value: message.value
         )
+        receipt_data = CitaSync::Api.get_transaction_receipt(hash)
+        receipt_result = receipt_data["result"]
+        unless receipt_result.nil?
+          transaction.contract_address = receipt_result["contractAddress"]
+          transaction.gas_used = receipt_result["gasUsed"]
+        end
+        transaction.save
+        transaction
       end
 
       # save a meta data
@@ -94,11 +108,14 @@ module CitaSync
 
       # save one block with it's transactions and meta data
       def save_block_with_infos(block_number_hex_str)
-        block = save_block(block_number_hex_str)
-        _meta_data = save_meta_data(block_number_hex_str, block)
-        hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
-        hashes.each do |hash|
-          save_transaction(hash, block)
+        # merge to one commit, can be faster
+        ApplicationRecord.transaction do
+          block = save_block(block_number_hex_str)
+          _meta_data = save_meta_data(block_number_hex_str, block)
+          hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
+          hashes.each do |hash|
+            save_transaction(hash, block)
+          end
         end
       end
 

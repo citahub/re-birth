@@ -68,6 +68,15 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     stub_request_wrapper("getTransaction", ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"], result)
   end
 
+  def mock_get_transaction_receipt
+    result = {
+      "contractAddress": "0x89be88054e2ee94911549be521ab1241c7700a1b",
+      "gasUsed": "0x2d483"
+    }
+
+    stub_request_wrapper("getTransactionReceipt", ["0xee969624a87a51fc4acc958a3bb83ca32539ee54ebb4215668fe1029eeab59d4"], result)
+  end
+
   def mock_get_meta_data
     result = {
       "blockInterval": 3000,
@@ -108,6 +117,7 @@ class CitaSync::ApiTest < ActiveSupport::TestCase
     mock_get_block_by_number_zero
     mock_get_block_by_number_one
     mock_get_transaction
+    mock_get_transaction_receipt
     mock_get_meta_data
     mock_get_balance
     mock_get_abi
