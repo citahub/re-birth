@@ -7,6 +7,10 @@ class Api::BlocksController < ApplicationController
   #   "transactionTo": "max transaction count", // integer
   #   "page": "1", // default 1
   #   "perPage": "10", // default 10
+  #
+  #   # offset and limit has lower priority than page and perPage
+  #   "offset": "1", // database offset for pagination
+  #   "limit": "10", //database limit for pagination
   # }
   # GET /api/blocks
   def index
@@ -17,10 +21,20 @@ class Api::BlocksController < ApplicationController
       transaction_count_lteq: parse_hex(params[:transactionTo])
     }
 
-    blocks = Block.ransack(options).result.order(block_number: :desc).page(params[:page]).per(params[:perPage])
+    blocks = Block.ransack(options).result.order(block_number: :desc)
+
+    if params[:page].nil? && !params[:offset].nil?
+      # use offset and limit
+      total_count = blocks.count
+      blocks = blocks.offset(params[:offset]).limit(params[:limit])
+    else
+      # use page and perPage
+      blocks = blocks.page(params[:page]).per(params[:perPage])
+      total_count = blocks.total_count
+    end
 
     render json: {
-      count: blocks.total_count,
+      count: total_count,
       blocks: ActiveModelSerializers::SerializableResource.new(blocks, each_serializer: ::Api::BlockSerializer)
     }
   end
