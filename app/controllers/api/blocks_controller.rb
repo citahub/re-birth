@@ -34,8 +34,10 @@ class Api::BlocksController < ApplicationController
     end
 
     render json: {
-      count: total_count,
-      blocks: ActiveModelSerializers::SerializableResource.new(blocks, each_serializer: ::Api::BlockSerializer)
+      result: {
+        count: total_count,
+        blocks: ActiveModelSerializers::SerializableResource.new(blocks, each_serializer: ::Api::BlockSerializer)
+      }
     }
   end
 
