@@ -10,6 +10,13 @@ class LocalInfosController
       ActiveModelSerializers::SerializableResource.new(block, serializer: ::BlockSerializer, flag: flag)
     end
 
+    def get_block_by_hash(params)
+      hash, flag = params
+      block = Block.find_by(cita_hash: hash)
+      return nil if block.nil?
+      ActiveModelSerializers::SerializableResource.new(block, serializer: ::BlockSerializer, flag: flag)
+    end
+
     def get_transaction(params)
       hash, = params
       transaction = Transaction.find_by(cita_hash: hash)

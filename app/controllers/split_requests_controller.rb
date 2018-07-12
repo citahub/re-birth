@@ -3,6 +3,7 @@ class SplitRequestsController
 
     SYNC_METHODS = %w(
       getBlockByNumber
+      getBlockByHash
       getTransaction
       getMetaData
     )
