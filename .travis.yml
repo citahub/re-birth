@@ -29,12 +29,12 @@ cache:
   yarn: true
 
 install:
+  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure && make && sudo make install
   - bundle install
   - nvm install 8.11.2
   - node -v
   - npm i -g yarn
   - yarn
-  - git clone https://github.com/bitcoin-core/secp256k1.git & cd secp256k1 & ./autogen.sh & ./configure & make & sudo make install
 
 script:
   - bundle exec rails db:migrate
