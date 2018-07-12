@@ -29,7 +29,7 @@ cache:
   yarn: true
 
 install:
-  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure && make && sudo make install
+  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure && make && sudo make install && cd ..
   - bundle install
   - nvm install 8.11.2
   - node -v
