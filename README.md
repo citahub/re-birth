@@ -6,6 +6,9 @@ A blockchain explorer to cita.
 
   - develop branch 
     [![Build Status](https://travis-ci.org/classicalliu/cita-scan.svg?branch=develop)](https://travis-ci.org/classicalliu/cita-scan)
+    
+## Code Coverage
+  [![codecov](https://codecov.io/gh/classicalliu/cita-scan/branch/develop/graph/badge.svg)](https://codecov.io/gh/classicalliu/cita-scan)
 
 ## packages
 
