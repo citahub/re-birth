@@ -12,6 +12,6 @@ class Block < ApplicationRecord
 
   # current block number
   def self.current_block_number
-    Block.order(block_number: :desc).first.block_number
+    Block.order(block_number: :desc).first&.block_number
   end
 end

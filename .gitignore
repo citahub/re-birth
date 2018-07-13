@@ -32,3 +32,5 @@
 .env.*.local
 
 cita_sync.log
+
+/coverage
