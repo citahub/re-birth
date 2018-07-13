@@ -32,6 +32,13 @@ module CitaSync
         end
       end
 
+      # post params to cita and get response, decode response body and get hash
+      #
+      # @param method [String, Symbol] rpc method name
+      # @param params [Hash] rpc params
+      # @param jsonrpc [String] jsonrpc version, default with "2.0"
+      # @param id [Integer] id number
+      # @return [Hash, String, Array] json decode to hash
       def call_rpc(method, params: params, jsonrpc: jsonrpc, id: id)
         resp = CitaSync::Basic.post(method, params: params, jsonrpc: jsonrpc, id: id)
         Oj.load(resp.body)
