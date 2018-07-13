@@ -39,3 +39,10 @@ rails daemons:sync:start
 # run `rails daemons:sync:restart` to restart it
 # run `rails daemons:sync:status` to see status
 ```
+
+## Build Doc
+
+```shell
+bundle exec yard doc
+bundle exec yard server
+```

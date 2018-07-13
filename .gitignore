@@ -34,3 +34,5 @@
 cita_sync.log
 
 /coverage
+.yardoc
+doc

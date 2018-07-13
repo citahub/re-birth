@@ -10,7 +10,9 @@ class Block < ApplicationRecord
 
   store_accessor :header, :timestamp
 
-  # current block number
+  # get current last block number in database
+  #
+  # @return [Integer, nil] the current last block number or nil if no block found in db.
   def self.current_block_number
     Block.order(block_number: :desc).first&.block_number
   end
