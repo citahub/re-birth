@@ -96,6 +96,7 @@ group :test do
 
   # mock http request
   gem 'webmock', '~> 3.4', '>= 3.4.2'
+  gem 'codecov', :require => false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
