@@ -3,8 +3,8 @@ module CitaSync
 
     class << self
       # save a block
-      def save_block(hex_num_str, transaction = true)
-        data = CitaSync::Api.get_block_by_number(hex_num_str, transaction)
+      def save_block(hex_num_str)
+        data = CitaSync::Api.get_block_by_number(hex_num_str, true)
         result = data["result"]
         return if result.nil?
         block_number_hex_str = result.dig("header", "number")
