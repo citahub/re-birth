@@ -66,7 +66,7 @@ gem 'kaminari'
 
 gem 'google-protobuf', '~> 3.6'
 
-gem 'ciri', '~> 0.0.2'
+gem 'ciri-crypto', '0.1.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

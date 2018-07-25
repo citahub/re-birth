@@ -3,7 +3,7 @@ require "ciri/utils"
 require "ciri/crypto"
 
 class Message
-  attr_reader :original_data, :original_signature
+  attr_reader :original_data, :original_signature, :unverified_transaction
   attr_reader :data, :signature, :value, :to, :from
 
   # initialize the object and values...
@@ -37,10 +37,11 @@ class Message
   # get from value from UnverifiedTransaction
   # @return [String] an address of hex number string with prefix "0x"
   def get_from
-    digest_data = Ciri::Utils.sha3(@original_data)
-    pubkey = Ciri::Crypto.ecdsa_recover(digest_data, @original_signature)
-    # address = Ciri::Utils.sha3(pubkey[1..-1]).unpack("H*").first.downcase[-40..-1]
-    address = Ciri::Utils.sha3(pubkey[1..-1])[-20..-1]
+    transaction = unverified_transaction["transaction"]
+    msg = ProtoTransaction.encode(transaction)
+    tx_msg = Ciri::Utils.keccak(msg)
+    pubkey = Ciri::Crypto.ecdsa_recover(tx_msg, @original_signature)
+    address = Ciri::Utils.keccak(pubkey[1..-1])[-20..-1]
     Ciri::Utils.to_hex(address)
   end
 
