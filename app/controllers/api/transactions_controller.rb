@@ -11,6 +11,7 @@ class Api::TransactionsController < ApplicationController
   #   "offset":  "1", // default to 0
   #   "limit":  "10", // default to 10
   # }
+  #
   # GET /api/transactions
   def index
     options = {

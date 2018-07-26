@@ -19,6 +19,7 @@ module CitaSync
       end
 
       # post params to cita and get response
+      #
       # @param method [String, Symbol]
       # @param jsonrpc [String] jsonrpc version, default with "2.0" and only can be "2.0"
       # @param id [Integer] rpc id, default with 83

@@ -2,7 +2,10 @@ module CitaSync
   class Persist
 
     class << self
-      # save a block
+      # save a block with set transaction true
+      #
+      # @param hex_num_str [String] block number in hex_num_str
+      # @return [Block, nil]
       def save_block(hex_num_str)
         data = CitaSync::Api.get_block_by_number(hex_num_str, true)
         result = data["result"]
@@ -21,6 +24,10 @@ module CitaSync
 
       # save a transaction
       # block persisted first
+      #
+      # @param hash [String] hash of transaction
+      # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
+      # @return [Transaction, nil] return saved transaction object
       def save_transaction(hash, block = nil)
         data = CitaSync::Api.get_transaction(hash)
         result = data["result"]
@@ -52,6 +59,10 @@ module CitaSync
 
       # save a meta data
       # block_number is a hex string
+      #
+      # @param block_number [String] hex string
+      # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
+      # @return [MetaData, nil]
       def save_meta_data(block_number, block = nil)
         data = CitaSync::Api.get_meta_data(block_number)
         result = data["result"]
@@ -74,8 +85,11 @@ module CitaSync
         )
       end
 
-      # save balance
-      # block_number is hex number string
+      # save balance, get balance and http response body
+      #
+      # @param addr [String] addr hex string
+      # @param block_number [String] hex string with "0x" prefix
+      # @return [[Balance, Hash], [nil, Hash]]
       def save_balance(addr, block_number)
         addr_downcase = addr.downcase
         # height number in decimal system
@@ -91,7 +105,10 @@ module CitaSync
       end
 
       # save abi
-      # block_number is hex number string
+      #
+      # @param addr [String] addr hex string
+      # @param block_number [String] hex string with "0x" prefix
+      # @return [[Abi, Hash], [nil, Hash]]
       def save_abi(addr, block_number)
         addr_downcase = addr.downcase
         # block_number in decimal system
@@ -107,6 +124,9 @@ module CitaSync
       end
 
       # save one block with it's transactions and meta data
+      #
+      # @param block_number_hex_str [String] hex string with "0x" prefix
+      # @return [void]
       def save_block_with_infos(block_number_hex_str)
         # merge to one commit, can be faster
         ApplicationRecord.transaction do
@@ -120,6 +140,8 @@ module CitaSync
       end
 
       # save blocks and there's transactions and meta data, from next db block to last block in chain
+      #
+      # @return [void]
       def save_blocks_with_infos
         block_number_hex_str = CitaSync::Api.block_number["result"]
         block_number = CitaSync::Basic.hex_str_to_number(block_number_hex_str)
@@ -133,6 +155,9 @@ module CitaSync
         end
       end
 
+      # start a loop to poll chain, for realtime sync block infos
+      #
+      # @return [void]
       def realtime_sync
         loop do
           begin

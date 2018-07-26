@@ -5,6 +5,7 @@ class Api::StatisticsController < ApplicationController
   # {
   #   type: "proposals" or "brief"
   # }
+  #
   # GET /api/statistics
   def index
     case params[:type]
@@ -19,6 +20,15 @@ class Api::StatisticsController < ApplicationController
 
   private
 
+  # calculate proposal, for statistic of count of every proposer.
+  # return a rendered json like this.
+  #
+  # [
+  #   {
+  #     "validator": proposer of block header,
+  #     "count": count of this proposer
+  #   }
+  # ]
   def proposals
     blocks = Block.select("header->>'proposer' as proposer")
     proposers = blocks.distinct("proposers").map(&:proposer)
@@ -36,6 +46,14 @@ class Api::StatisticsController < ApplicationController
     }
   end
 
+  # calculate brief, for statistic of tps, tpb, and ipb
+  # return a rendered json
+  #
+  # {
+  #   tps: float number, // transaction count per second
+  #   tpb: float number, // transaction count per block
+  #   ipb: float number, // average block interval
+  # }
   def brief
     blocks = Block.order(block_number: :desc).limit(BLOCK_COUNT)
     end_timestamp = blocks.first.timestamp

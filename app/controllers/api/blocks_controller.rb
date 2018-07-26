@@ -1,5 +1,7 @@
 class Api::BlocksController < ApplicationController
-  # params:
+  # get blocks info list and paginate it.
+  #
+  # params
   # {
   #   "numberFrom": "10" or "0xa", //  number or integer
   #   "numberTo": "20", // number or integer
@@ -12,6 +14,7 @@ class Api::BlocksController < ApplicationController
   #   "offset": "1", // database offset for pagination
   #   "limit": "10", //database limit for pagination
   # }
+  #
   # GET /api/blocks
   def index
     options = {
@@ -43,6 +46,10 @@ class Api::BlocksController < ApplicationController
 
   private
 
+  # convert hex string which has "0x" prefix to decimal number
+  #
+  # @param number [String] hex number string
+  # @return [Integer]
   def parse_hex(number)
     return number.to_i(16) if number.to_s.downcase.start_with?("0x")
     number
