@@ -38,5 +38,4 @@ install:
 
 script:
   - bundle exec rails db:migrate
-  - bundle exec rails test
   - bundle exec rails spec
