@@ -2,7 +2,7 @@ module CitaSync
   class Api
     class << self
 
-      # New methods without prefix in CITA v0.16
+      # New methods without prefix since CITA v0.16
       METHOD_NAMES = %w(
         peerCount
         blockNumber
