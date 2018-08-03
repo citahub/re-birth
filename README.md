@@ -26,7 +26,7 @@ rails db:setup
 
 ## Running test
 ```shell
-rails test
+rails spec
 ```
 
 ## Run Project
