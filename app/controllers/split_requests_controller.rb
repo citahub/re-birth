@@ -1,21 +1,20 @@
 # decide rpc methods should find in db or call chain.
 class SplitRequestsController
+  # real time sync methods
+  SYNC_METHODS = %w(
+    getBlockByNumber
+    getBlockByHash
+    getTransaction
+    getMetaData
+  )
+
+  # methods that save to db when user called
+  PERSIST_METHODS = %w(
+    getBalance
+    getAbi
+  )
+
   class << self
-
-    # real time sync methods
-    SYNC_METHODS = %w(
-      getBlockByNumber
-      getBlockByHash
-      getTransaction
-      getMetaData
-    )
-
-    # methods that save to db when user called
-    PERSIST_METHODS = %w(
-      getBalance
-      getAbi
-    )
-
     # method of `SYNC_METHODS` should find in db first, if not found, call rpc for result.
     #
     # @param params [Hash] same with rpc params in chains
@@ -56,7 +55,7 @@ class SplitRequestsController
         id: params[:id],
         result: obj_json
       } unless obj_json.nil?
-      _obj, data = CitaSync::Persist.send(method_name.gsub("get", "save"))
+      _obj, data = CitaSync::Persist.send(method_name.gsub("get", "save"), *params[:params])
       data
     end
 
