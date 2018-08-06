@@ -1,4 +1,4 @@
-# Cita Scan
+# ReBirth
 
 A blockchain explorer to cita.
 

@@ -10,7 +10,7 @@ rvm:
   - 2.5.1
 
 before_script:
-  - psql -c 'create database "cita-scan_test";' -U postgres
+  - psql -c 'create database "re-birth_test";' -U postgres
   - cp .env.test.local.travis .env.test.local
 
 branches:
