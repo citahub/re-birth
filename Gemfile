@@ -68,6 +68,11 @@ gem 'google-protobuf', '~> 3.6'
 
 gem 'ciri-crypto', '0.1.1'
 
+# Deployment
+gem 'mina', require: false
+gem 'mina-puma', require: false
+gem 'mina-multistage', require: false
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
