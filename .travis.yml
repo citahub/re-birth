@@ -39,3 +39,6 @@ install:
 script:
   - bundle exec rails db:migrate
   - bundle exec rails spec
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
