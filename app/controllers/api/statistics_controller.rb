@@ -56,13 +56,16 @@ class Api::StatisticsController < ApplicationController
   # }
   def brief
     blocks = Block.order(block_number: :desc).limit(BLOCK_COUNT)
+
+    block_count = [blocks.count, BLOCK_COUNT].min
+
     end_timestamp = blocks.first.timestamp
     start_timestamp = blocks.last.timestamp
     seconds = (end_timestamp - start_timestamp) / 1000
     transaction_count = blocks.map(&:transaction_count).reduce(:+)
     tps = transaction_count.to_f / seconds
-    tpb = transaction_count.to_f / BLOCK_COUNT
-    ipb = seconds.to_f / BLOCK_COUNT
+    tpb = transaction_count.to_f / block_count
+    ipb = seconds.to_f / block_count
 
     render json: {
       result: {
