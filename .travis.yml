@@ -7,7 +7,7 @@ addons:
   postgresql: "9.4"
 
 rvm:
-  - 2.4.4
+  - 2.5.1
 
 before_script:
   - psql -c 'create database "cita-scan_test";' -U postgres
