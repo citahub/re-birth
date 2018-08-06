@@ -8,7 +8,7 @@ A blockchain explorer to cita.
     [![Build Status](https://travis-ci.org/cryptape/ReBirth.svg?branch=develop)](https://travis-ci.org/cryptape/ReBirth)
     
 ## Code Coverage
-  [![codecov](https://codecov.io/gh/classicalliu/cita-scan/branch/develop/graph/badge.svg)](https://codecov.io/gh/classicalliu/cita-scan)
+  [![codecov](https://codecov.io/gh/cryptape/ReBirth/branch/develop/graph/badge.svg)](https://codecov.io/gh/cryptape/ReBirth)
 
 ## packages
 
