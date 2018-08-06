@@ -316,7 +316,6 @@ DEPENDENCIES
   puma (~> 3.11)
   rack-cors
   rails (~> 5.2.0)
-  rake (~> 12.3, >= 12.3.1)
   ransack (~> 1.8, >= 1.8.8)
   rspec-rails (~> 3.7)
   sass-rails (~> 5.0)
@@ -332,7 +331,7 @@ DEPENDENCIES
   yard (~> 0.9.14)
 
 RUBY VERSION
-   ruby 2.4.4p296
+   ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.2
+   1.16.3
