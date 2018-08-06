@@ -8,5 +8,6 @@ Rails.application.routes.draw do
     resources :blocks, only: [:index]
     resources :transactions, only: [:index]
     resources :statistics, only: [:index]
+    resources :status, only: [:index]
   end
 end
