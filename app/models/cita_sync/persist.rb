@@ -5,7 +5,7 @@ module CitaSync
       # save a block with set transaction true
       #
       # @param hex_num_str [String] block number in hex_num_str
-      # @return [Block, nil]
+      # @return [Block, SyncError] return SyncError if rpc return an error
       def save_block(hex_num_str)
         data = CitaSync::Api.get_block_by_number(hex_num_str, true)
         result = data["result"]
@@ -30,7 +30,7 @@ module CitaSync
       #
       # @param hash [String] hash of transaction
       # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
-      # @return [Transaction, nil] return saved transaction object
+      # @return [Transaction, SyncError] return SyncError if rpc return an error
       def save_transaction(hash, block = nil)
         data = CitaSync::Api.get_transaction(hash)
         result = data["result"]
@@ -68,7 +68,7 @@ module CitaSync
       #
       # @param block_number [String] hex string
       # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
-      # @return [MetaData, nil]
+      # @return [MetaData, SyncError] return SyncError if rpc return an error
       def save_meta_data(block_number, block = nil)
         data = CitaSync::Api.get_meta_data(block_number)
         result = data["result"]
@@ -98,7 +98,7 @@ module CitaSync
       #
       # @param addr [String] addr hex string
       # @param block_number [String] hex string with "0x" prefix
-      # @return [[Balance, Hash], [nil, Hash]]
+      # @return [[Balance, Hash], [SyncError, Hash]] return SyncError if rpc return an error
       def save_balance(addr, block_number)
         addr_downcase = addr.downcase
         # height number in decimal system
@@ -121,7 +121,7 @@ module CitaSync
       #
       # @param addr [String] addr hex string
       # @param block_number [String] hex string with "0x" prefix
-      # @return [[Abi, Hash], [nil, Hash]]
+      # @return [[Abi, Hash], [SyncError, Hash]] return SyncError if rpc return an error
       def save_abi(addr, block_number)
         addr_downcase = addr.downcase
         # block_number in decimal system
