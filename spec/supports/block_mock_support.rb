@@ -19,6 +19,24 @@ module BlockMockSupport
         )
     end
 
+    def stub_request_error_wrapper(method, params, error, status: 200, json_rpc: "2.0", id: 83)
+      include_hash = if params.nil?
+                       { method: method }
+                     else
+                       { method: method, params: params }
+                     end
+
+      stub_request(:post, ENV["CITA_URL"])
+        .with(
+          body: hash_including(include_hash),
+          headers: { "Content-Type": "application/json" }
+        )
+        .to_return(
+          status: status,
+          body: { jsonrpc: json_rpc, id: id, error: error }.to_json
+        )
+    end
+
     let(:block_number_result) { "0x1" }
     let(:mock_block_number) do
       stub_request_wrapper("blockNumber", nil, block_number_result)
@@ -47,6 +65,18 @@ module BlockMockSupport
     end
     let(:mock_get_block_by_number_zero) do
       stub_request_wrapper("getBlockByNumber", ["0x0", true], block_zero_result)
+    end
+
+    let(:block_zero_params_error_code) { -32700 }
+    let(:block_zero_params_error_message) { "data did not match any variant of untagged enum BlockNumber" }
+    let(:block_zero_params_error) do
+      {
+        code: block_zero_params_error_code,
+        message: block_zero_params_error_message,
+      }
+    end
+    let(:mock_get_block_by_number_zero_params_error) do
+      stub_request_error_wrapper("getBlockByNumber", ["a", true], block_zero_params_error)
     end
 
     let(:block_one_hash) { "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b" }
@@ -93,6 +123,18 @@ module BlockMockSupport
       stub_request_wrapper("getTransaction", [transaction_hash], transaction_result)
     end
 
+    let(:transaction_params_error_code) { -32700 }
+    let(:transaction_params_error_message) { "invalid format: [0x0]" }
+    let(:transaction_params_error) do
+      {
+        code: transaction_params_error_code,
+        message: transaction_params_error_message
+      }
+    end
+    let(:mock_get_transaction_params_error) do
+      stub_request_error_wrapper("getTransaction", ["0x0"], transaction_params_error)
+    end
+
     let(:transaction_receipt_result) do
       {
         "contractAddress": "0x89be88054e2ee94911549be521ab1241c7700a1b",
@@ -127,12 +169,36 @@ module BlockMockSupport
       stub_request_wrapper("getMetaData", ["0x1"], meta_data_result)
     end
 
+    let(:meta_data_params_error_code) { -32700 }
+    let(:meta_data_params_error_message) { "data did not match any variant of untagged enum BlockNumber" }
+    let(:meta_data_params_error) do
+      {
+        code: meta_data_params_error_code,
+        message: meta_data_params_error_message
+      }
+    end
+    let(:mock_get_meta_data_params_error) do
+      stub_request_error_wrapper("getMetaData", ["a"], meta_data_params_error)
+    end
+
     let(:account_address) { "0x0dcf740686de1fe9e9faa4b519767a872e1cf69e" }
     let(:balance_result) do
       "0x0"
     end
     let(:mock_get_balance) do
       stub_request_wrapper("getBalance", [account_address, "0x0"], balance_result)
+    end
+
+    let(:balance_params_error_code) { -32700 }
+    let(:balance_params_error_message) { "invalid format: [0x0]" }
+    let(:balance_params_error) do
+      {
+        code: balance_params_error_code,
+        message: balance_params_error_message
+      }
+    end
+    let(:mock_get_balance_params_error) do
+      stub_request_error_wrapper("getBalance", ["0x0", "0x0"], balance_params_error)
     end
 
     let(:abi_result) do
@@ -142,16 +208,32 @@ module BlockMockSupport
       stub_request_wrapper("getAbi", [account_address, "0x0"], abi_result)
     end
 
+    let(:abi_params_error_code) { -32700 }
+    let(:abi_params_error_message) { "invalid format: [0x0]" }
+    let(:abi_params_error) do
+      {
+        code: abi_params_error_code,
+        message: abi_params_error_message
+      }
+    end
+    let(:mock_get_abi_params_error) do
+      stub_request_error_wrapper("getAbi", ["0x0", "0x0"], abi_params_error)
+    end
+
     let(:mock_all) do
       mock_block_number
       mock_get_block_by_number_zero
+      mock_get_block_by_number_zero_params_error
       mock_get_block_by_number_one
       mock_get_transaction
-      mock_get_transaction
+      mock_get_transaction_params_error
       mock_get_transaction_receipt
       mock_get_meta_data
+      mock_get_meta_data_params_error
       mock_get_balance
+      mock_get_balance_params_error
       mock_get_abi
+      mock_get_abi_params_error
     end
   end
 end

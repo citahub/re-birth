@@ -1,0 +1,2 @@
+class SyncError < ApplicationRecord
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_11_075733) do
+ActiveRecord::Schema.define(version: 2018_08_07_030924) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,6 +60,15 @@ ActiveRecord::Schema.define(version: 2018_07_11_075733) do
     t.bigint "block_id"
     t.string "token_name"
     t.index ["block_id"], name: "index_meta_data_on_block_id"
+  end
+
+  create_table "sync_errors", force: :cascade do |t|
+    t.string "method"
+    t.json "params"
+    t.integer "code"
+    t.string "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "transactions", force: :cascade do |t|
