@@ -83,7 +83,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "with error params" do
       params = ["0x0", "0x0"]
-      sync_error = CitaSync::Persist.save_balance(*params)
+      sync_error, = CitaSync::Persist.save_balance(*params)
       expect(sync_error.method).to eq "getBalance"
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq balance_params_error_code
@@ -100,7 +100,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "with error params" do
       params = ["0x0", "0x0"]
-      sync_error = CitaSync::Persist.save_abi(*params)
+      sync_error, = CitaSync::Persist.save_abi(*params)
       expect(sync_error.method).to eq "getAbi"
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq abi_params_error_code

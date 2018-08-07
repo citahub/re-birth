@@ -105,7 +105,7 @@ module CitaSync
         data = CitaSync::Api.get_balance(addr_downcase, block_number)
 
         # handle error
-        return handle_error("getBalance", [addr_downcase, block_number], data) unless data["error"].nil?
+        return [handle_error("getBalance", [addr_downcase, block_number], data), data] unless data["error"].nil?
 
         return [nil, data] unless block_number.start_with?("0x")
         value = data["result"]
@@ -128,7 +128,7 @@ module CitaSync
         data = CitaSync::Api.get_abi(addr_downcase, block_number)
 
         # handle error
-        return handle_error("getAbi", [addr_downcase, block_number], data) unless data["error"].nil?
+        return [handle_error("getAbi", [addr_downcase, block_number], data), data] unless data["error"].nil?
 
         return [nil, data] unless block_number.start_with?("0x")
         value = data["result"]
