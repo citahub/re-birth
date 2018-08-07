@@ -4,5 +4,6 @@ FactoryBot.define do
     code -32700
     params ["0x0"]
     message "invalid format: [0x0]"
+    data nil
   end
 end

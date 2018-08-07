@@ -19,6 +19,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq ["a", true]
       expect(sync_error.code).to eq block_zero_params_error_code
       expect(sync_error.message).to eq block_zero_params_error_message
+      expect(sync_error.data).to be nil
     end
   end
 
@@ -52,6 +53,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq transaction_params_error_code
       expect(sync_error.message).to eq transaction_params_error_message
+      expect(sync_error.data).to be nil
     end
   end
 
@@ -69,6 +71,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq meta_data_params_error_code
       expect(sync_error.message).to eq meta_data_params_error_message
+      expect(sync_error.data).to be nil
     end
   end
 
@@ -85,6 +88,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq balance_params_error_code
       expect(sync_error.message).to eq balance_params_error_message
+      expect(sync_error.data).to be nil
     end
   end
 
@@ -101,6 +105,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq abi_params_error_code
       expect(sync_error.message).to eq abi_params_error_message
+      expect(sync_error.data).to be nil
     end
   end
 
@@ -153,6 +158,7 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to match_array(params)
       expect(sync_error.code).to eq code
       expect(sync_error.message).to eq message
+      expect(sync_error.data).to be nil
     end
 
     it "with no error info" do

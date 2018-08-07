@@ -17,10 +17,11 @@ RSpec.describe Api::SyncErrorsController, type: :controller do
       expect(result["syncErrors"]).to be_a(Array)
       sync_error = SyncError.last
       sync_error_resp = result["syncErrors"].first
-      expect(sync_error_resp["params"]).to eq sync_error.params
-      expect(sync_error_resp["method"]).to eq sync_error.method
-      expect(sync_error_resp["code"]).to eq sync_error.code
-      expect(sync_error_resp["message"]).to eq sync_error.message
+
+      %w(method params code message data).each do |attr|
+        expect(sync_error_resp).to have_key(attr)
+        expect(sync_error_resp[attr]).to eq sync_error.public_send(attr)
+      end
     end
 
     it "with page and perPage" do
