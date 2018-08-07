@@ -7,7 +7,7 @@ class LocalInfosController
     # @return [ActiveModelSerializers::SerializableResource, nil] BlockSerializer, return nil if not found.
     def get_block_by_number(params)
       block_number_hex, flag = params
-      block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
+      block_number = HexUtils.to_decimal(block_number_hex)
       block = Block.find_by(block_number: block_number)
       return nil if block.nil?
       # BlockSerializer.new(block).as_json
@@ -43,7 +43,7 @@ class LocalInfosController
     # @return [ActiveModelSerializers::SerializableResource, nil] MetaDataSerializer, return nil if not found.
     def get_meta_data(params)
       block_number_hex, = params
-      block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
+      block_number = HexUtils.to_decimal(block_number_hex)
       meta_data = MetaData.find_by(block_number: block_number)
       return nil if meta_data.nil?
       # MetaDataSerializer.new(meta_data, key_transform: :camel_lower).as_json
@@ -57,7 +57,7 @@ class LocalInfosController
     def get_balance(params)
       address, block_number_hex = params
       address_downcase = address.downcase
-      block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
+      block_number = HexUtils.to_decimal(block_number_hex)
       balance = Balance.find_by(address: address_downcase, block_number: block_number)
       balance&.value
     end
@@ -69,7 +69,7 @@ class LocalInfosController
     def get_abi(params)
       address, block_number_hex = params
       address_downcase = address.downcase
-      block_number = CitaSync::Basic.hex_str_to_number(block_number_hex)
+      block_number = HexUtils.to_decimal(block_number_hex)
       abi = Abi.find_by(address: address_downcase, block_number: block_number)
       abi&.value
     end

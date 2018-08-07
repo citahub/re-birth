@@ -11,7 +11,7 @@ module CitaSync
         result = data["result"]
         return if result.nil?
         block_number_hex_str = result.dig("header", "number")
-        block_number = Basic.hex_str_to_number(block_number_hex_str)
+        block_number = HexUtils.to_decimal(block_number_hex_str)
         Block.create(
           version: result["version"],
           cita_hash: result["hash"],
@@ -32,7 +32,7 @@ module CitaSync
         data = CitaSync::Api.get_transaction(hash)
         result = data["result"]
         return if result.nil?
-        block ||= Block.find_by_block_number(CitaSync::Basic.hex_str_to_number(result["blockNumber"]))
+        block ||= Block.find_by_block_number(HexUtils.to_decimal(result["blockNumber"]))
         content = result["content"]
         message = Message.new(content)
         transaction = Transaction.new(
@@ -68,7 +68,7 @@ module CitaSync
         result = data["result"]
         return if result.nil?
         # block number in decimal system
-        block_number_decimal = CitaSync::Basic.hex_str_to_number(block_number)
+        block_number_decimal = HexUtils.to_decimal(block_number)
         block ||= Block.find_by_block_number(block_number_decimal)
         MetaData.create(
           chain_id: result["chainId"],
@@ -98,7 +98,7 @@ module CitaSync
         value = data["result"]
         balance = Balance.create(
           address: addr_downcase,
-          block_number: CitaSync::Basic.hex_str_to_number(block_number),
+          block_number: HexUtils.to_decimal(block_number),
           value: value
         )
         [balance, data]
@@ -117,7 +117,7 @@ module CitaSync
         value = data["result"]
         abi = Abi.create(
           address: addr_downcase,
-          block_number: CitaSync::Basic.hex_str_to_number(block_number),
+          block_number: HexUtils.to_decimal(block_number),
           value: value
         )
         [abi, data]
@@ -144,13 +144,13 @@ module CitaSync
       # @return [void]
       def save_blocks_with_infos
         block_number_hex_str = CitaSync::Api.block_number["result"]
-        block_number = CitaSync::Basic.hex_str_to_number(block_number_hex_str)
+        block_number = HexUtils.to_decimal(block_number_hex_str)
 
         # current biggest block number in database
         last_block = ::Block.order(block_number: :desc).first
         last_block_number = last_block&.block_number || -1
         ((last_block_number + 1)..block_number).each do |num|
-          hex_str = CitaSync::Basic.number_to_hex_str(num)
+          hex_str = HexUtils.to_hex(num)
           save_block_with_infos(hex_str)
         end
       end

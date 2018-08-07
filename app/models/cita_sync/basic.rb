@@ -1,23 +1,6 @@
 module CitaSync
   module Basic
     class << self
-
-      # convert decimal number to hex string with "0x" prefix
-      #
-      # @param number [Integer]
-      # @return [String]
-      def number_to_hex_str(number)
-        "0x" + number.to_s(16)
-      end
-
-      # convert hex string to decimal number
-      #
-      # @param str [String] hex string
-      # @return [Integer] decimal number
-      def hex_str_to_number(str)
-        str.to_i(16)
-      end
-
       # post params to cita and get response
       #
       # @param method [String, Symbol]

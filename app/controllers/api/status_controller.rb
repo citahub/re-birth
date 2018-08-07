@@ -5,7 +5,7 @@ class Api::StatusController < ApplicationController
     render json: {
       result: {
         status: process ? "running" : "not running",
-        currentBlockNumber: CitaSync::Basic.number_to_hex_str(Block.current_block_number || 0),
+        currentBlockNumber: HexUtils.to_hex(Block.current_block_number || 0),
         currentChainBlockNumber: CitaSync::Api.block_number["result"]
       }
     }
