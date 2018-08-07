@@ -1,6 +1,7 @@
-class LocalInfosController
-  class << self
+module LocalInfosConcern
+  extend ActiveSupport::Concern
 
+  included do
     # find a block in db with rpc params, getBlockByNumber method.
     #
     # @param params [[String, Boolean]] rpc interface params, hex number string and with transaction or not.
@@ -73,7 +74,5 @@ class LocalInfosController
       abi = Abi.find_by(address: address_downcase, block_number: block_number)
       abi&.value
     end
-
   end
-
 end

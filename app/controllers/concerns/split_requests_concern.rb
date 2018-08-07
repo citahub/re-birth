@@ -1,5 +1,7 @@
-# decide rpc methods should find in db or call chain.
-class SplitRequestsController
+module SplitRequestsConcern
+  extend ActiveSupport::Concern
+  include LocalInfosConcern
+
   # real time sync methods
   SYNC_METHODS = %w(
     getBlockByNumber
@@ -14,7 +16,7 @@ class SplitRequestsController
     getAbi
   )
 
-  class << self
+  included do
     # method of `SYNC_METHODS` should find in db first, if not found, call rpc for result.
     #
     # @param params [Hash] same with rpc params in chains
@@ -30,7 +32,7 @@ class SplitRequestsController
       method = params[:method]
       return unless SYNC_METHODS.include?(method)
       method_name = method.underscore
-      obj_json = ::LocalInfosController.send(method_name, params[:params])
+      obj_json = send(method_name, params[:params])
       return {
         jsonrpc: params[:jsonrpc],
         id: params[:id],
@@ -49,7 +51,7 @@ class SplitRequestsController
       method = params[:method]
       return unless PERSIST_METHODS.include?(method)
       method_name = method.underscore
-      obj_json = ::LocalInfosController.send(method_name, params[:params])
+      obj_json = send(method_name, params[:params])
       return {
         jsonrpc: params[:jsonrpc],
         id: params[:id],
@@ -59,6 +61,7 @@ class SplitRequestsController
       data
     end
 
+    # choose find in local or remote.
     # choose call `call_sync_methods` or `call_persist_methods` by params[:method]
     #
     # @param params [Hash] same with rpc params in chain.
@@ -74,5 +77,4 @@ class SplitRequestsController
       end
     end
   end
-
 end

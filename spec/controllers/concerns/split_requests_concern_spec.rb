@@ -1,6 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe SplitRequestsController, type: :request do
+RSpec.describe SplitRequestsConcern do
+  class SplitRequests
+    include SplitRequestsConcern
+  end
+
+  let(:split_requests) { SplitRequests.new }
+
   let(:sync_methods) do
     %w(getBlockByNumber getBlockByHash getMetaData getTransaction)
   end
@@ -24,14 +30,14 @@ RSpec.describe SplitRequestsController, type: :request do
       create :block_zero
 
       expect {
-        SplitRequestsController.find(params)
+        split_requests.find(params)
       }.not_to raise_error
     end
 
     context "find remote if not exist" do
       it "not found in remote" do
         expect {
-          SplitRequestsController.find(params)
+          split_requests.find(params)
         }.to raise_error(WebMock::NetConnectNotAllowedError)
       end
 
@@ -39,7 +45,7 @@ RSpec.describe SplitRequestsController, type: :request do
         mock_get_block_by_number_zero
 
         expect {
-          SplitRequestsController.find(params)
+          split_requests.find(params)
         }.not_to raise_error
       end
     end
@@ -60,14 +66,14 @@ RSpec.describe SplitRequestsController, type: :request do
       create :balance
 
       expect do
-        SplitRequestsController.find(params)
+        split_requests.find(params)
       end.not_to raise_error
     end
 
     context "find remote if not exist" do
       it "not find in remote" do
         expect do
-          SplitRequestsController.find(params)
+          split_requests.find(params)
         end.to raise_error(WebMock::NetConnectNotAllowedError)
       end
 
@@ -75,7 +81,7 @@ RSpec.describe SplitRequestsController, type: :request do
         mock_get_balance
 
         expect {
-          SplitRequestsController.find(params)
+          split_requests.find(params)
         }.to change { Balance.count }.by(1)
 
         balance = Balance.last
@@ -88,19 +94,19 @@ RSpec.describe SplitRequestsController, type: :request do
 
   context "test constants" do
     it "sync methods should be right" do
-      expect(SplitRequestsController::SYNC_METHODS).to match_array(sync_methods)
+      expect(SplitRequests::SYNC_METHODS).to match_array(sync_methods)
     end
 
     it "persist methods should be right" do
-      expect(SplitRequestsController::PERSIST_METHODS).to match_array(persist_methods)
+      expect(SplitRequests::PERSIST_METHODS).to match_array(persist_methods)
     end
   end
 
 
   context "find choose right method" do
     before do
-      allow(SplitRequestsController).to receive(:call_sync_methods) { "call_sync_methods" }
-      allow(SplitRequestsController).to receive(:call_persist_methods) { "call_persist_methods" }
+      allow(split_requests).to receive(:call_sync_methods) { "call_sync_methods" }
+      allow(split_requests).to receive(:call_persist_methods) { "call_persist_methods" }
       allow(CitaSync::Api).to receive(:call_rpc) { "call_rpc" }
     end
 
@@ -112,7 +118,7 @@ RSpec.describe SplitRequestsController, type: :request do
           method: method,
           params: []
         }
-        expect(SplitRequestsController.find(params)).to eq "call_sync_methods"
+        expect(split_requests.find(params)).to eq "call_sync_methods"
       end
     end
 
@@ -125,7 +131,7 @@ RSpec.describe SplitRequestsController, type: :request do
           params: []
         }
 
-        expect(SplitRequestsController.find(params)).to eq "call_persist_methods"
+        expect(split_requests.find(params)).to eq "call_persist_methods"
       end
     end
 
@@ -137,7 +143,7 @@ RSpec.describe SplitRequestsController, type: :request do
         params: []
       }
 
-      expect(SplitRequestsController.find(params)).to eq "call_rpc"
+      expect(split_requests.find(params)).to eq "call_rpc"
     end
   end
 end
