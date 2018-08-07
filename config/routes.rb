@@ -9,5 +9,6 @@ Rails.application.routes.draw do
     resources :transactions, only: [:index]
     resources :statistics, only: [:index]
     resources :status, only: [:index]
+    resources :sync_errors, only: [:index]
   end
 end
