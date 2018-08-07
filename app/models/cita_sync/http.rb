@@ -1,5 +1,5 @@
 module CitaSync
-  module Basic
+  module Http
     class << self
       # post params to cita and get response
       #
@@ -43,25 +43,6 @@ module CitaSync
       # @return [String] cita chain url (with port if need) like http://www.example.com
       def cita_url
         ENV.fetch("CITA_URL")
-      end
-
-      # make params key chainId => chain_id
-      # not deep transfer keys, only transfer first level keys
-      #
-      # @param params [Hash]
-      # @return [Hash]
-      def transfer_params(params)
-        params.map { |k, v| { k.to_s.underscore => v } }.reduce(:merge)
-      end
-
-      # select params that key in keys
-      #
-      # @param params [Hash]
-      # @param keys [Array<String, Symbol>]
-      # @return [Hash] selected params
-      def select_params(params, keys = [])
-        underscore_params = transfer_params(params)
-        underscore_params.select { |k, _v| keys.include?(k) }
       end
     end
 
