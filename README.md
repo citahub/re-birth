@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/cryptape/ReBirth.svg?branch=master)](https://travis-ci.org/cryptape/ReBirth)
 [![codecov](https://codecov.io/gh/cryptape/ReBirth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/ReBirth)
+[![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/ReBirth/master)
 
 A blockchain explorer cache for [Appchain](https://github.com/cryptape/cita).
 
