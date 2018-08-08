@@ -295,6 +295,8 @@ GEM
     xpath (3.1.0)
       nokogiri (~> 1.8)
     yard (0.9.14)
+    yard-activesupport-concern (0.0.1)
+      yard (>= 0.8)
 
 PLATFORMS
   ruby
@@ -341,6 +343,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   webmock (~> 3.4, >= 3.4.2)
   yard (~> 0.9.14)
+  yard-activesupport-concern
 
 RUBY VERSION
    ruby 2.5.1p57
