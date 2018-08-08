@@ -1,4 +1,5 @@
 class Api::StatusController < ApplicationController
+  # GET /api/status
   def index
     process = system("ruby #{Rails.root.join('lib', 'sync_control.rb')} status")
 

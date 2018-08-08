@@ -11,4 +11,7 @@ Rails.application.routes.draw do
     resources :status, only: [:index]
     resources :sync_errors, only: [:index]
   end
+
+  # 404
+  match '*path', via: :all, to: 'application#not_found'
 end

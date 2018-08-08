@@ -82,6 +82,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'simplecov', require: false
   gem 'yard', '~> 0.9.14'
+  gem 'yard-activesupport-concern'
 end
 
 group :development do
