@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.4.4'
+ruby '2.5.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
@@ -36,9 +36,52 @@ gem 'jbuilder', '~> 2.5'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
+# config ENV by dotenv
+gem 'dotenv-rails'
+
+# pry and ap
+gem 'pry'
+gem 'pry-rails'
+gem 'awesome_print'
+
+# http client
+gem 'faraday', '~> 0.15.2'
+
+# faster json
+gem 'oj', '~> 3.6', '>= 3.6.2'
+
+# json serializer for api
+gem 'active_model_serializers', '~> 0.10.7'
+
+gem 'daemons', '~> 1.2', '>= 1.2.6'
+
+# support for Cross-Origin Resource Sharing (CORS)
+gem 'rack-cors', require: 'rack/cors'
+
+# ransack for SQL search
+gem 'ransack', '~> 1.8', '>= 1.8.8'
+
+# paginate
+gem 'kaminari'
+
+gem 'google-protobuf', '~> 3.6'
+
+gem 'ciri-crypto', '0.1.1'
+
+# Deployment
+gem 'mina', require: false
+gem 'mina-puma', require: false
+gem 'mina-multistage', require: false
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+
+  gem 'rspec-rails', '~> 3.7'
+  gem 'factory_bot_rails'
+  gem 'database_cleaner'
+  gem 'simplecov', require: false
+  gem 'yard', '~> 0.9.14'
 end
 
 group :development do
@@ -56,6 +99,10 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
+
+  # mock http request
+  gem 'webmock', '~> 3.4', '>= 3.4.2'
+  gem 'codecov', :require => false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

@@ -1,24 +1,48 @@
-# README
+# ReBirth
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A blockchain explorer to cita.
 
-Things you may want to cover:
+## build status
 
-* Ruby version
+  - develop branch 
+    [![Build Status](https://travis-ci.org/cryptape/ReBirth.svg?branch=develop)](https://travis-ci.org/cryptape/ReBirth)
+    
+## Code Coverage
+  [![codecov](https://codecov.io/gh/cryptape/ReBirth/branch/develop/graph/badge.svg)](https://codecov.io/gh/cryptape/ReBirth)
 
-* System dependencies
+## packages
 
-* Configuration
+  - postgresql 9.4 and above
+    
+## Initial Project
 
-* Database creation
+```shell
+rails db:create db:migrate
 
-* Database initialization
+or just
 
-* How to run the test suite
+rails db:setup
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Running test
+```shell
+rails spec
+```
 
-* Deployment instructions
+## Run Project
+```shell
+rails s
 
-* ...
+# start sync process
+rails daemons:sync:start 
+# run `rails daemons:sync:stop` to stop it
+# run `rails daemons:sync:restart` to restart it
+# run `rails daemons:sync:status` to see status
+```
+
+## Build Doc
+
+```shell
+bundle exec yard doc
+bundle exec yard server
+```

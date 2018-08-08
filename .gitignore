@@ -26,3 +26,13 @@
 /config/master.key
 
 .ruby-gemset
+
+# ignore env local configs
+.env.local
+.env.*.local
+
+cita_sync.log
+
+/coverage
+.yardoc
+doc
