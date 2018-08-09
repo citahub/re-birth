@@ -6,31 +6,28 @@
 
 A blockchain explorer cache for [Appchain](https://github.com/cryptape/cita).
 
-## packages
+## Packages
 
   - postgresql 9.4 and above
+  - secp256k1 (run "cd tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../.." to install or see [secp256k1](https://github.com/bitcoin-core/secp256k1.git) for more info)
     
 ## Initial Project
 
 ```shell
-rails db:create db:migrate
-
-or just
-
-rails db:setup
+$ rails db:setup (or rails db:create db:migrate db:seed)
 ```
 
 ## Running test
 ```shell
-rails spec
+$ rails spec
 ```
 
 ## Run Project
 ```shell
-rails s
+$ rails s
 
 # start sync process
-rails daemons:sync:start 
+$ rails daemons:sync:start 
 # run `rails daemons:sync:stop` to stop it
 # run `rails daemons:sync:restart` to restart it
 # run `rails daemons:sync:status` to see status
@@ -42,16 +39,16 @@ You can deploy this via [mina](https://github.com/mina-deploy/mina)
 
 ```shell
 # replace `dev` with you env
-mina dev deploy
-mina dev 'rake[daemons:sync:start]'
+$ mina dev deploy
+$ mina dev 'rake[daemons:sync:start]'
 ```
 
 
 ## Build Doc
 
 ```shell
-bundle exec yard doc
-bundle exec yard server
+$ bundle exec yard doc
+$ bundle exec yard server
 ```
 
 ## Api Doc
