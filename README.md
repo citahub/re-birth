@@ -8,26 +8,33 @@ A blockchain explorer cache for [Appchain](https://github.com/cryptape/cita).
 
 ## Packages
 
-  - postgresql 9.4 and above
-  - secp256k1 (run "cd tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../.." to install or see [secp256k1](https://github.com/bitcoin-core/secp256k1.git) for more info)
-    
+- postgresql 9.4 and above
+- install secp256k1 (see [secp256k1](https://github.com/bitcoin-core/secp256k1.git) for more info)
+
+  ```shell
+  $ cd ReBirth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../..
+  ```
+
 ## Initial Project
 
 ```shell
+$ bundle
 $ rails db:setup (or rails db:create db:migrate db:seed)
 ```
 
 ## Running test
+
 ```shell
 $ rails spec
 ```
 
 ## Run Project
+
 ```shell
 $ rails s
 
 # start sync process
-$ rails daemons:sync:start 
+$ rails daemons:sync:start
 # run `rails daemons:sync:stop` to stop it
 # run `rails daemons:sync:restart` to restart it
 # run `rails daemons:sync:status` to see status
@@ -42,7 +49,6 @@ You can deploy this via [mina](https://github.com/mina-deploy/mina)
 $ mina dev deploy
 $ mina dev 'rake[daemons:sync:start]'
 ```
-
 
 ## Build Doc
 
@@ -148,6 +154,7 @@ Get transactions list and paginate it.
 > GET /api/transactions
 
 #### params
+
 ```ruby
 {
   "account":  "the addr transactions related to (from or to)", # hash string
@@ -162,6 +169,7 @@ Get transactions list and paginate it.
 ```
 
 #### response
+
 ```ruby
 {
     "result": {
@@ -189,6 +197,7 @@ Get proposals info or brief info.
 > GET /api/statistics
 
 #### params
+
 ```ruby
 {
   type: "proposals" or "brief" # required
@@ -240,7 +249,6 @@ Get sync process running status.
 
 > GET /api/status
 
-
 #### response
 
 ```ruby
@@ -272,6 +280,7 @@ Get sync errors list, which is the errors while sync from chain.
 ```
 
 #### response
+
 ```ruby
 {
     "result": {
