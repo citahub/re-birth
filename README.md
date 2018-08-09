@@ -19,12 +19,14 @@ A blockchain explorer cache for [Appchain](https://github.com/cryptape/cita).
 
 ```shell
 $ bundle
+$ touch .env.local (overwrite `.env` config if you need in `.env.local`, such as DB_USERNAME, DB_PASSWORD and CITA_URL...)
 $ rails db:setup (or rails db:create db:migrate db:seed)
 ```
 
 ## Running test
 
 ```shell
+$ touch .env.test.local (test env will not read `.env.local` file, overwrite in `.env.test.lcoal`)
 $ rails spec
 ```
 
