@@ -60,7 +60,7 @@ environment 'production'
 workers 2
 threads 1, 6
 
-app_name = "ReBirth"
+app_name = "re-birth"
 application_path = "/home/deploy/#{app_name}"
 directory "#{application_path}/current"
 
