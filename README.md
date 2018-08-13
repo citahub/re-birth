@@ -1,18 +1,18 @@
 # ReBirth
 
-[![Build Status](https://travis-ci.org/cryptape/ReBirth.svg?branch=master)](https://travis-ci.org/cryptape/ReBirth)
-[![codecov](https://codecov.io/gh/cryptape/ReBirth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/ReBirth)
-[![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/ReBirth/master)
+[![Build Status](https://travis-ci.org/cryptape/re-birth.svg?branch=master)](https://travis-ci.org/cryptape/re-birth)
+[![codecov](https://codecov.io/gh/cryptape/re-birth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/re-birth)
+[![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/re-birth/master)
 
-A blockchain explorer cache for [Appchain](https://github.com/cryptape/cita).
+A blockchain explorer cache server for [Nervos Appchain](https://docs.nervos.org/nervos-appchain-docs/#/).
 
 ## Packages
 
-- postgresql 9.4 and above
+- [postgresql](https://www.postgresql.org/) 9.4 and above
 - install secp256k1 (see [secp256k1](https://github.com/bitcoin-core/secp256k1.git) for more info)
 
   ```shell
-  $ cd ReBirth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../..
+  $ cd re-birth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../..
   ```
 
 ## Initial Project
@@ -23,7 +23,7 @@ $ touch .env.local (overwrite `.env` config if you need in `.env.local`, such as
 $ rails db:setup (or rails db:create db:migrate db:seed)
 ```
 
-## Running test
+## Running Test
 
 ```shell
 $ touch .env.test.local (test env will not read `.env.local` file, overwrite in `.env.test.lcoal`)
@@ -59,9 +59,9 @@ $ bundle exec yard doc
 $ bundle exec yard server
 ```
 
-## Api Doc
+## API Doc
 
-### JSON-RPC interface
+### JSON-RPC Interface
 
 JSON-RPC interface, same format with [CITA JSON-RPC](https://docs.nervos.org/cita/#/rpc_guide/rpc).
 
