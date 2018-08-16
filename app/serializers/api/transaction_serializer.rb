@@ -1,5 +1,7 @@
 class Api::TransactionSerializer < ActiveModel::Serializer
-  attributes :value, :to, :gas_used, :from, :content, :block_number
+  attributes :value, :to, :from, :content
   attribute :cita_hash, key: :hash
+  attribute :gas_used, key: :gasUsed
+  attribute :block_number, key: :blockNumber
   attributes :timestamp
 end

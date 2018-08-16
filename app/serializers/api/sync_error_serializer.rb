@@ -1,6 +1,8 @@
 class Api::SyncErrorSerializer < ActiveModel::Serializer
-  attributes :params, :code, :message, :created_at, :updated_at, :data
+  attributes :params, :code, :message, :data
   attribute :method
+  attribute :created_at, key: :createdAt
+  attribute :updated_at, key: :updatedAt
 
   def method
     object.method
