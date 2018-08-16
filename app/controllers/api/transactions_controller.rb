@@ -20,7 +20,7 @@ class Api::TransactionsController < ApplicationController
       to_eq: params[:to]
     }
 
-    transactions = Transaction.includes(:block).ransack(options).result.order(block_number: :desc)
+    transactions = Transaction.includes(:block).ransack(options).result.order(block_id: :desc)
 
     if params[:page].nil? && !params[:offset].nil?
       total_count = transactions.count
