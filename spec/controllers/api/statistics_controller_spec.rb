@@ -22,6 +22,8 @@ RSpec.describe Api::StatisticsController, type: :controller do
     10.times.each do |i|
       create :block_one, header: block_one_header.merge(timestamp: block_zero_header[:timestamp] + (20 + i) * 1000), cita_hash: "0x#{SecureRandom.hex(32)}", block_number: (20 + i)
     end
+
+    create :meta_data, validators: [block_zero_proposer, block_one_proposer], block: Block.last
   end
 
 

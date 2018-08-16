@@ -30,10 +30,7 @@ class Api::StatisticsController < ApplicationController
   #   }
   # ]
   def proposals
-    blocks = Block.select("header->>'proposer' as proposer")
-    proposers = blocks.distinct("proposers").map(&:proposer)
-
-    result = proposers.map do |proposer|
+    result = MetaData.last&.validators&.map do |proposer|
       count = Block.where("header->>'proposer' = ?", proposer).count
       {
         "validator": proposer,

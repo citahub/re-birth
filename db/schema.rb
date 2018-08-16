@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_07_073702) do
+ActiveRecord::Schema.define(version: 2018_08_16_073015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,7 +41,9 @@ ActiveRecord::Schema.define(version: 2018_08_07_073702) do
     t.datetime "updated_at", null: false
     t.integer "transaction_count"
     t.index ["block_number"], name: "index_blocks_on_block_number", unique: true
+    t.index ["body"], name: "index_blocks_on_body", using: :gin
     t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
+    t.index ["header"], name: "index_blocks_on_header", using: :gin
   end
 
   create_table "meta_data", force: :cascade do |t|
