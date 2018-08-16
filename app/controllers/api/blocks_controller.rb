@@ -26,10 +26,12 @@ class Api::BlocksController < ApplicationController
 
     blocks = Block.ransack(options).result.order(block_number: :desc)
 
-    if params[:page].nil? && !params[:offset].nil?
+    if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
+      offset = params[:offset] || 0
+      limit = params[:limit] || 10
       # use offset and limit
       total_count = blocks.count
-      blocks = blocks.offset(params[:offset]).limit(params[:limit])
+      blocks = blocks.offset(offset).limit(limit)
     else
       # use page and perPage
       blocks = blocks.page(params[:page]).per(params[:perPage])

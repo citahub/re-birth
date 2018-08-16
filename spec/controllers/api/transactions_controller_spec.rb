@@ -60,5 +60,17 @@ RSpec.describe Api::TransactionsController, type: :controller do
       expect(count).to eq 15
       expect(result[:transactions].count).to eq 5
     end
+
+    it "with offset" do
+      post :index, params: { offset: 0 }
+      expect(count).to eq 15
+      expect(result[:transactions].count).to eq 10
+    end
+
+    it "with limit" do
+      post :index, params: { limit: 5 }
+      expect(count).to eq 15
+      expect(result[:transactions].count).to eq 5
+    end
   end
 end

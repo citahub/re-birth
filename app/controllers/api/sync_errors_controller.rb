@@ -13,9 +13,11 @@ class Api::SyncErrorsController < ApplicationController
   def index
     sync_errors = SyncError.order(created_at: :desc)
 
-    if params[:page].nil? && !params[:offset].nil?
+    if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
+      offset = params[:offset] || 0
+      limit = params[:limit] || 10
       total_count = sync_errors.count
-      sync_errors = sync_errors.offset(params[:offset]).limit(params[:limit])
+      sync_errors = sync_errors.offset(offset).limit(limit)
     else
       sync_errors = sync_errors.page(params[:page]).per(params[:perPage])
       total_count = sync_errors.total_count
