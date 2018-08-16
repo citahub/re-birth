@@ -22,9 +22,11 @@ class Api::TransactionsController < ApplicationController
 
     transactions = Transaction.includes(:block).ransack(options).result.order(block_id: :desc)
 
-    if params[:page].nil? && !params[:offset].nil?
+    if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
+      offset = params[:offset] || 0
+      limit = params[:limit] || 10
       total_count = transactions.count
-      transactions = transactions.offset(params[:offset]).limit(params[:limit])
+      transactions = transactions.offset(offset).limit(limit)
     else
       transactions = transactions.page(params[:page]).per(params[:perPage])
       total_count = transactions.total_count
