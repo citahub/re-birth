@@ -30,13 +30,10 @@ class Api::StatisticsController < ApplicationController
   #   }
   # ]
   def proposals
-    result = MetaData.last&.validators&.map do |proposer|
-      count = Block.where("header->>'proposer' = ?", proposer).count
-      {
-        "validator": proposer,
-        count: count
-      }
-    end
+    validators = MetaData.last&.validators
+    result = Block.group("header ->> 'proposer'").count
+               .map { |k, v| { validator: k, count: v } }
+               .select { |b| validators.include?(b[:validator]) }
 
     render json: {
       result: result
