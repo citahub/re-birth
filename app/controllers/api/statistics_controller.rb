@@ -53,6 +53,10 @@ class Api::StatisticsController < ApplicationController
 
     block_count = [blocks.count, BLOCK_COUNT].min
 
+    return render json: {
+      result: {}
+    } if blocks.empty?
+
     end_timestamp = blocks.first.timestamp
     start_timestamp = blocks.last.timestamp
     seconds = (end_timestamp - start_timestamp) / 1000
