@@ -23,7 +23,7 @@ RSpec.describe Api::StatisticsController, type: :controller do
       create :block_one, header: block_one_header.merge(timestamp: block_zero_header[:timestamp] + (20 + i) * 1000), cita_hash: "0x#{SecureRandom.hex(32)}", block_number: (20 + i)
     end
 
-    create :meta_data, validators: [block_zero_proposer, block_one_proposer], block: Block.last
+    # create :meta_data, validators: [block_zero_proposer, block_one_proposer], block: Block.last
   end
 
 
@@ -34,7 +34,7 @@ RSpec.describe Api::StatisticsController, type: :controller do
       expected_result = [
         {
           validator: block_zero_proposer,
-          count: 20,
+          count: 19, # exclude the first block
         },
         {
           validator: block_one_proposer,

@@ -81,42 +81,6 @@ module CitaSync
         transaction
       end
 
-      # save a meta data
-      # block_number is a hex string
-      #
-      # @param block_number [String] hex string
-      # @return [MetaData, SyncError] return SyncError if rpc return an error
-      def save_meta_data(block_number)
-        data = CitaSync::Api.get_meta_data(block_number)
-        result = data["result"]
-        error = data["error"]
-
-        # handle error
-        return handle_error("getMetaData", [block_number], error) unless error.nil?
-        return nil if result.nil?
-
-        # block number in decimal system
-        block_number_decimal = HexUtils.to_decimal(block_number)
-        block = if save_blocks?
-                  Block.find_by(block_number: block_number_decimal)
-                else
-                  nil
-                end
-        MetaData.create(
-          chain_id: result["chainId"],
-          chain_name: result["chainName"],
-          operator: result["operator"],
-          genesis_timestamp: result["genesisTimestamp"],
-          validators: result["validators"],
-          block_interval: result["blockInterval"],
-          token_symbol: result["tokenSymbol"],
-          token_avatar: result["tokenAvatar"],
-          website: result["website"],
-          block_number: block_number_decimal,
-          block: block
-        )
-      end
-
       # save balance, get balance and http response body
       #
       # @param addr [String] addr hex string
@@ -187,7 +151,6 @@ module CitaSync
         ApplicationRecord.transaction do
           block = save_block(block_number_hex_str)
           return if block.nil?
-          _meta_data = save_meta_data(block_number_hex_str)
           hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
           hashes.each do |hash|
             save_transaction(hash)

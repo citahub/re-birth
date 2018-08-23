@@ -38,19 +38,6 @@ module LocalInfosConcern
       ActiveModelSerializers::SerializableResource.new(transaction, serializer: ::TransactionSerializer)
     end
 
-    # find a transaction in db with rpc params, getMetaData method.
-    #
-    # @param params [[String]] rpc interface params, block number of hex string.
-    # @return [ActiveModelSerializers::SerializableResource, nil] MetaDataSerializer, return nil if not found.
-    def get_meta_data(params)
-      block_number_hex, = params
-      block_number = HexUtils.to_decimal(block_number_hex)
-      meta_data = MetaData.find_by(block_number: block_number)
-      return nil if meta_data.nil?
-      # MetaDataSerializer.new(meta_data, key_transform: :camel_lower).as_json
-      ActiveModelSerializers::SerializableResource.new(meta_data, serializer: ::MetaDataSerializer)
-    end
-
     # find a balance in db with rpc params, getBalance method.
     #
     # @param params [[String, String]] rpc interface params, address and block number of hex string.

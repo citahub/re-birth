@@ -8,7 +8,7 @@ RSpec.describe SplitRequestsConcern do
   let(:split_requests) { SplitRequests.new }
 
   let(:sync_methods) do
-    %w(getBlockByNumber getBlockByHash getMetaData getTransaction)
+    %w(getBlockByNumber getBlockByHash getTransaction)
   end
 
   let(:persist_methods) do
@@ -140,6 +140,17 @@ RSpec.describe SplitRequestsConcern do
         jsonrpc: "2.0",
         id: 83,
         method: "getLogs",
+        params: []
+      }
+
+      expect(split_requests.find(params)).to eq "call_rpc"
+    end
+
+    it "getMetaData should return by chain" do
+      params = {
+        jsonrpc: "2.0",
+        id: 83,
+        method: "getMetaData",
         params: []
       }
 

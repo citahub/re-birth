@@ -94,31 +94,6 @@ RSpec.describe CitaSync::Api, type: :model do
     end
   end
 
-  context "save meta data" do
-    it "save success" do
-      block = CitaSync::Persist.save_block("0x0")
-      meta_data = CitaSync::Persist.save_meta_data("0x0")
-      expect(meta_data.errors.full_messages).to be_empty
-      expect(meta_data.block).to eq block
-    end
-
-    it "save meta data with SAVE_BLOCKS set false" do
-      set_false
-      meta_data = CitaSync::Persist.save_meta_data("0x0")
-      expect(meta_data.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["a"]
-      sync_error = CitaSync::Persist.save_meta_data(*params)
-      expect(sync_error.method).to eq "getMetaData"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq meta_data_params_error_code
-      expect(sync_error.message).to eq meta_data_params_error_message
-      expect(sync_error.data).to be nil
-    end
-  end
-
   context "save balance" do
     it "save success" do
       balance, = CitaSync::Persist.save_balance(account_address, "0x0")
@@ -158,12 +133,10 @@ RSpec.describe CitaSync::Api, type: :model do
       CitaSync::Persist.save_block_with_infos("0x1")
       block = Block.first
       transaction = Transaction.first
-      meta_data = MetaData.first
       expect(Block.count).to eq 1
       expect(Transaction.count).to eq 1
       expect(transaction.block_number).to eq block.header["number"]
       expect(transaction.block).to eq block
-      expect(meta_data.block).to eq block
     end
   end
 
@@ -172,7 +145,6 @@ RSpec.describe CitaSync::Api, type: :model do
       CitaSync::Persist.save_blocks_with_infos
       expect(Block.count).to eq 2
       expect(Transaction.count).to eq 1
-      expect(MetaData.count).to eq Block.count
     end
 
     it "save blocks with transactions with exist block" do

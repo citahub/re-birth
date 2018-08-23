@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_17_090233) do
+ActiveRecord::Schema.define(version: 2018_08_23_023239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,24 +44,6 @@ ActiveRecord::Schema.define(version: 2018_08_17_090233) do
     t.index ["body"], name: "index_blocks_on_body", using: :gin
     t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
     t.index ["header"], name: "index_blocks_on_header", using: :gin
-  end
-
-  create_table "meta_data", force: :cascade do |t|
-    t.integer "chain_id"
-    t.string "chain_name"
-    t.string "operator"
-    t.bigint "genesis_timestamp"
-    t.string "validators", array: true
-    t.integer "block_interval"
-    t.string "token_symbol"
-    t.string "token_avatar"
-    t.string "website"
-    t.integer "block_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "block_id"
-    t.string "token_name"
-    t.index ["block_id"], name: "index_meta_data_on_block_id"
   end
 
   create_table "sync_errors", force: :cascade do |t|
