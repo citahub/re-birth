@@ -12,6 +12,8 @@ If you just want to run this, just use [docker 🐳](https://docs.docker.com/ins
 
 Remember to run `rails secret` to generate secret key and write in .env.local (read .env for more info)
 
+⚠️ IMPORTANT: your database data will save at docker/data
+
 App will run at http://localhost:8888
 
 ```shell
