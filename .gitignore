@@ -36,3 +36,6 @@ cita_sync.log
 /coverage
 .yardoc
 doc
+
+# docker database
+docker/data

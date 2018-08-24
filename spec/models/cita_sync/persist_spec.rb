@@ -4,6 +4,28 @@ RSpec.describe CitaSync::Api, type: :model do
 
   before do
     mock_all
+    ENV["SAVE_BLOCKS"] = "true"
+  end
+
+  def set_false
+    ENV["SAVE_BLOCKS"] = "false"
+  end
+
+  context "save_blocks?" do
+    it "'true' should be true" do
+      ENV["SAVE_BLOCKS"] = "true"
+      expect(CitaSync::Persist.save_blocks?).to be true
+    end
+
+    it "'false' should be false" do
+      ENV["SAVE_BLOCKS"] = "false"
+      expect(CitaSync::Persist.save_blocks?).to be false
+    end
+
+    it "anything other than 'false' should be true" do
+      ENV["SAVE_BLOCKS"] = "123"
+      expect(CitaSync::Persist.save_blocks?).to be true
+    end
   end
 
   context "save block" do
@@ -21,6 +43,13 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.message).to eq block_zero_params_error_message
       expect(sync_error.data).to be nil
     end
+
+    it "with SAVE_BLOCKS set false" do
+      set_false
+      expect {
+        CitaSync::Persist.save_block("0x0")
+      }.to change { ::Block.count }.by(0)
+    end
   end
 
   context "save transaction" do
@@ -32,17 +61,25 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(transaction.block).to eq block
     end
 
-    it "save transaction with block param" do
-      block = CitaSync::Persist.save_block("0x1")
-      transaction = CitaSync::Persist.save_transaction(transaction_hash, block)
+    it "save transaction with SAVE_BLOCKS set false" do
+      set_false
+      transaction = CitaSync::Persist.save_transaction(transaction_hash)
       expect(transaction.cita_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
-      expect(transaction.block).to eq block
+      expect(transaction.block).to be nil
     end
 
-    it "save transaction without block will be fail" do
+    # it "save transaction with block param" do
+    #   block = CitaSync::Persist.save_block("0x1")
+    #   transaction = CitaSync::Persist.save_transaction(transaction_hash, block)
+    #   expect(transaction.cita_hash).to eq transaction_hash
+    #   expect(transaction.errors.full_messages).to be_empty
+    #   expect(transaction.block).to eq block
+    # end
+
+    it "save transaction without block will be success" do
       transaction = CitaSync::Persist.save_transaction(transaction_hash)
-      expect(transaction.errors.full_messages).not_to be_empty
+      expect(transaction.errors.full_messages).to be_empty
     end
 
     it "with error params" do
@@ -53,24 +90,6 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(sync_error.params).to eq params
       expect(sync_error.code).to eq transaction_params_error_code
       expect(sync_error.message).to eq transaction_params_error_message
-      expect(sync_error.data).to be nil
-    end
-  end
-
-  context "save meta data" do
-    it "save success" do
-      CitaSync::Persist.save_block("0x0")
-      meta_data = CitaSync::Persist.save_meta_data("0x0")
-      expect(meta_data.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["a"]
-      sync_error = CitaSync::Persist.save_meta_data(*params)
-      expect(sync_error.method).to eq "getMetaData"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq meta_data_params_error_code
-      expect(sync_error.message).to eq meta_data_params_error_message
       expect(sync_error.data).to be nil
     end
   end
@@ -114,12 +133,10 @@ RSpec.describe CitaSync::Api, type: :model do
       CitaSync::Persist.save_block_with_infos("0x1")
       block = Block.first
       transaction = Transaction.first
-      meta_data = MetaData.first
       expect(Block.count).to eq 1
       expect(Transaction.count).to eq 1
       expect(transaction.block_number).to eq block.header["number"]
       expect(transaction.block).to eq block
-      expect(meta_data.block).to eq block
     end
   end
 
@@ -128,7 +145,6 @@ RSpec.describe CitaSync::Api, type: :model do
       CitaSync::Persist.save_blocks_with_infos
       expect(Block.count).to eq 2
       expect(Transaction.count).to eq 1
-      expect(MetaData.count).to eq Block.count
     end
 
     it "save blocks with transactions with exist block" do
@@ -153,7 +169,7 @@ RSpec.describe CitaSync::Api, type: :model do
       }
     end
     it "save an error" do
-      sync_error = CitaSync::Persist.send(:handle_error, method, params, data)
+      sync_error = CitaSync::Persist.send(:handle_error, method, params, data["error"])
       expect(sync_error.method).to eq method
       expect(sync_error.params).to match_array(params)
       expect(sync_error.code).to eq code

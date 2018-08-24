@@ -51,21 +51,6 @@ RSpec.describe LocalInfosConcern do
     end
   end
 
-  context "get_meta_data" do
-    let(:block_number) { "0x0" }
-
-    it "return nil if meta_data not exist" do
-      meta_data = local_infos.get_meta_data([block_number])
-      expect(meta_data).to be nil
-    end
-
-    it "return serializer if meta_data exist" do
-      create :meta_data
-      meta_data = local_infos.get_meta_data([block_number])
-      expect(meta_data).to be_a(ActiveModelSerializers::SerializableResource)
-    end
-  end
-
   context "get_balance" do
     let(:block_number) { "0x0"}
     let(:balance_attr) { attributes_for(:balance) }

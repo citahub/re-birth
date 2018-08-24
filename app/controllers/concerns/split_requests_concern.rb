@@ -7,7 +7,6 @@ module SplitRequestsConcern
     getBlockByNumber
     getBlockByHash
     getTransaction
-    getMetaData
   )
 
   # methods that save to db when user called

@@ -2,6 +2,13 @@ module CitaSync
   class Persist
 
     class << self
+      # get save blocks or not config
+      #
+      # @return [true, false] return save blocks or not from config.
+      def save_blocks?
+        ENV["SAVE_BLOCKS"] != "false"
+      end
+
       # save a block with set transaction true
       #
       # @param hex_num_str [String] block number in hex_num_str
@@ -9,13 +16,17 @@ module CitaSync
       def save_block(hex_num_str)
         data = CitaSync::Api.get_block_by_number(hex_num_str, true)
         result = data["result"]
+        error = data["error"]
 
         # handle error
-        return handle_error("getBlockByNumber", [hex_num_str, true], data) if result.nil?
+        return handle_error("getBlockByNumber", [hex_num_str, true], error) unless error.nil?
+
+        # handle for result.nil
+        return nil if result.nil?
 
         block_number_hex_str = result.dig("header", "number")
         block_number = HexUtils.to_decimal(block_number_hex_str)
-        Block.create(
+        block = Block.new(
           version: result["version"],
           cita_hash: result["hash"],
           header: result["header"],
@@ -23,22 +34,29 @@ module CitaSync
           block_number: block_number,
           transaction_count: result.dig("body", "transactions").count
         )
+        block.save if save_blocks?
+        block
       end
 
       # save a transaction
       # block persisted first
       #
       # @param hash [String] hash of transaction
-      # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(hash, block = nil)
+      def save_transaction(hash)
         data = CitaSync::Api.get_transaction(hash)
         result = data["result"]
+        error = data["error"]
 
         # handle error
-        return handle_error("getTransaction", [hash], data) if result.nil?
+        return handle_error("getTransaction", [hash], error) unless error.nil?
+        return nil if result.nil?
 
-        block ||= Block.find_by_block_number(HexUtils.to_decimal(result["blockNumber"]))
+        block = if save_blocks?
+                  Block.find_by_block_number(HexUtils.to_decimal(result["blockNumber"]))
+                else
+                  nil
+                end
         content = result["content"]
         message = Message.new(content)
         transaction = Transaction.new(
@@ -63,37 +81,6 @@ module CitaSync
         transaction
       end
 
-      # save a meta data
-      # block_number is a hex string
-      #
-      # @param block_number [String] hex string
-      # @param block [Block, nil] the block that transaction belongs to, nil means find in db.
-      # @return [MetaData, SyncError] return SyncError if rpc return an error
-      def save_meta_data(block_number, block = nil)
-        data = CitaSync::Api.get_meta_data(block_number)
-        result = data["result"]
-
-        # handle error
-        return handle_error("getMetaData", [block_number], data) if result.nil?
-
-        # block number in decimal system
-        block_number_decimal = HexUtils.to_decimal(block_number)
-        block ||= Block.find_by_block_number(block_number_decimal)
-        MetaData.create(
-          chain_id: result["chainId"],
-          chain_name: result["chainName"],
-          operator: result["operator"],
-          genesis_timestamp: result["genesisTimestamp"],
-          validators: result["validators"],
-          block_interval: result["blockInterval"],
-          token_symbol: result["tokenSymbol"],
-          token_avatar: result["tokenAvatar"],
-          website: result["website"],
-          block_number: block_number_decimal,
-          block: block
-        )
-      end
-
       # save balance, get balance and http response body
       #
       # @param addr [String] addr hex string
@@ -103,9 +90,10 @@ module CitaSync
         addr_downcase = addr.downcase
         # height number in decimal system
         data = CitaSync::Api.get_balance(addr_downcase, block_number)
+        error = data["error"]
 
         # handle error
-        return [handle_error("getBalance", [addr_downcase, block_number], data), data] unless data["error"].nil?
+        return [handle_error("getBalance", [addr_downcase, block_number], error), data] unless error.nil?
 
         return [nil, data] unless block_number.start_with?("0x")
         value = data["result"]
@@ -126,9 +114,10 @@ module CitaSync
         addr_downcase = addr.downcase
         # block_number in decimal system
         data = CitaSync::Api.get_abi(addr_downcase, block_number)
+        error = data["error"]
 
         # handle error
-        return [handle_error("getAbi", [addr_downcase, block_number], data), data] unless data["error"].nil?
+        return [handle_error("getAbi", [addr_downcase, block_number], error), data] unless error.nil?
 
         return [nil, data] unless block_number.start_with?("0x")
         value = data["result"]
@@ -140,9 +129,8 @@ module CitaSync
         [abi, data]
       end
 
-      private def handle_error(method, params, data)
-        error = data["error"]
-        return if error.nil?
+      private def handle_error(method, params, error)
+        return if error.nil? || error.empty?
         code = error["code"]
         message = error["message"]
 
@@ -162,10 +150,10 @@ module CitaSync
         # merge to one commit, can be faster
         ApplicationRecord.transaction do
           block = save_block(block_number_hex_str)
-          _meta_data = save_meta_data(block_number_hex_str, block)
+          return if block.nil?
           hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
           hashes.each do |hash|
-            save_transaction(hash, block)
+            save_transaction(hash)
           end
         end
       end
@@ -178,11 +166,13 @@ module CitaSync
         block_number = HexUtils.to_decimal(block_number_hex_str)
 
         # current biggest block number in database
-        last_block = ::Block.order(block_number: :desc).first
-        last_block_number = last_block&.block_number || -1
+        last_block_number = SyncInfo.current_block_number || -1
         ((last_block_number + 1)..block_number).each do |num|
           hex_str = HexUtils.to_hex(num)
-          save_block_with_infos(hex_str)
+          ApplicationRecord.transaction do
+            save_block_with_infos(hex_str)
+            SyncInfo.current_block_number = num
+          end
         end
       end
 

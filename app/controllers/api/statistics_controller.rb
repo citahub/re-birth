@@ -30,13 +30,8 @@ class Api::StatisticsController < ApplicationController
   #   }
   # ]
   def proposals
-    result = MetaData.last&.validators&.map do |proposer|
-      count = Block.where("header->>'proposer' = ?", proposer).count
-      {
-        "validator": proposer,
-        count: count
-      }
-    end
+    result = Block.where.not(block_number: 0).group("header ->> 'proposer'").count
+               .map { |k, v| { validator: k, count: v } }
 
     render json: {
       result: result
@@ -55,6 +50,10 @@ class Api::StatisticsController < ApplicationController
     blocks = Block.order(block_number: :desc).limit(BLOCK_COUNT)
 
     block_count = [blocks.count, BLOCK_COUNT].min
+
+    return render json: {
+      result: {}
+    } if blocks.empty?
 
     end_timestamp = blocks.first.timestamp
     start_timestamp = blocks.last.timestamp

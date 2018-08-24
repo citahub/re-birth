@@ -1,5 +1,4 @@
 class Block < ApplicationRecord
-  has_one :meta_data
   has_many :transactions
 
   # store_accessor :header, :number
