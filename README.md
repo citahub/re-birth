@@ -10,6 +10,8 @@ A blockchain explorer cache server for [Nervos Appchain](https://docs.nervos.org
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
 
+Remember to run `rails secret` to generate secret key and write in .env.local (read .env for more info)
+
 App will run at http://localhost:8888
 
 ```shell
