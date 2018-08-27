@@ -6,6 +6,8 @@
 
 A blockchain explorer cache server for [Nervos AppChain](https://docs.nervos.org/nervos-appchain-docs/#/).
 
+Now upgrade to work with CITA v0.18
+
 ## Docker
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
