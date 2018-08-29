@@ -49,6 +49,26 @@ RSpec.describe Api::TransactionsController, type: :controller do
       expect(count).to eq 1
     end
 
+    context "ignore case" do
+      let(:swapcase_from) { from.swapcase }
+      let(:swapcase_to) { to.swapcase }
+
+      it "with swapcase from" do
+        post :index, params: { from: swapcase_from }
+        expect(count).to eq 1
+      end
+
+      it "with swapcase to" do
+        post :index, params: { to: swapcase_to }
+        expect(count).to eq 1
+      end
+
+      it "with swapcase account" do
+        post :index, params: { account: swapcase_from }
+        expect(count).to eq 1
+      end
+    end
+
     it "with page and perPage" do
       post :index, params: { page: 2, perPage: 10 }
       expect(count).to eq 15

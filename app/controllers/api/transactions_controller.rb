@@ -14,10 +14,11 @@ class Api::TransactionsController < ApplicationController
   #
   # GET /api/transactions
   def index
+    # use ILIKE to ignore case
     options = {
-      from_or_to_eq: params[:account],
-      from_eq: params[:from],
-      to_eq: params[:to]
+      from_or_to_matches: params[:account],
+      from_matches: params[:from],
+      to_matches: params[:to]
     }
 
     transactions = Transaction.includes(:block).ransack(options).result.order(block_id: :desc)
