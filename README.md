@@ -141,7 +141,7 @@ Get blocks info list and paginate it.
                 "version": 0,
                 "header": {
                     "proof": {
-                        "tendermint": {
+                        "Bft": {
                             "round": 0,
                             "height": 111198,
                             "commits": {
