@@ -139,7 +139,7 @@ Get blocks info list and paginate it.
                 "version": 0,
                 "header": {
                     "proof": {
-                        "tendermint": {
+                        "Tendermint": {
                             "round": 0,
                             "height": 111198,
                             "commits": {
