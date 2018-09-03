@@ -32,7 +32,7 @@ class Api::StatisticsController < ApplicationController
   def proposals
     # result = Block.where.not(block_number: 0).group("header ->> 'proposer'").count
     #            .map { |k, v| { validator: k, count: v } }
-    result = ValidatorCache.all.map { |c| { validator: c.name, count: c.counter } }
+    result = ValidatorCache.order(id: :asc).map { |c| { validator: c.name, count: c.counter } }
 
     render json: {
       result: result
