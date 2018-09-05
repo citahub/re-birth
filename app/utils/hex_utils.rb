@@ -13,7 +13,7 @@ class HexUtils
     # @param str [String] hex string
     # @return [Integer] decimal number
     def to_decimal(str)
-      str.hex
+      str&.hex
     end
   end
 end
