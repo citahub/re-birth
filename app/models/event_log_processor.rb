@@ -12,6 +12,11 @@ class EventLogProcessor
     end
   end
 
+  # tables of event logs
+  def self.tables
+    ApplicationRecord.connection.tables.select { |t| t.start_with?(TABLE_PREFIX) }
+  end
+
   # read file and initialize
   #
   # @param file [String] file name
@@ -120,8 +125,6 @@ class EventLogProcessor
       attrs = log.slice(*reference.keys).transform_keys { |k| reference[k] }.merge(get_decode_attrs(log.with_indifferent_access)).merge({ blockNumberInDecimal: block_number_in_decimal })
       ApplicationRecord.transaction do
         "EventLogProcessor::Customs::#{model_name}".constantize.create(attrs)
-        event_log = EventLog.find_by(name: file_name)
-        event_log&.update(block_number: attrs["blockNumber"])
       end
     end
   end

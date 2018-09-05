@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_30_090621) do
+ActiveRecord::Schema.define(version: 2018_08_30_054052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,11 +44,6 @@ ActiveRecord::Schema.define(version: 2018_08_30_090621) do
     t.index ["body"], name: "index_blocks_on_body", using: :gin
     t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
     t.index ["header"], name: "index_blocks_on_header", using: :gin
-  end
-
-  create_table "event_logs", force: :cascade do |t|
-    t.string "name"
-    t.string "block_number"
   end
 
   create_table "sync_errors", force: :cascade do |t|

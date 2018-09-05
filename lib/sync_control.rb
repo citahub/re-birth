@@ -15,7 +15,7 @@ Daemons.run_proc("#{Rails.env}_sync", options) do
 end
 
 # Run a process to sync event logs
-if EventLog.exists?
+unless EventLogProcessor.tables.empty?
   Daemons.run_proc("#{Rails.env}_event_log", options) do
     Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_event_log.log"))
     EventLogProcessor.sync_all
