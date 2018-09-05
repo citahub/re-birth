@@ -1,4 +1,4 @@
-class EventLogProcess
+class EventLogProcessor
   attr_reader :config, :table_name, :model_name, :columns, :file_name, :real_table_name
 
   # all tables add prefix with "event_log_"
@@ -8,7 +8,7 @@ class EventLogProcess
   def self.sync_all
     event_tables = ApplicationRecord.connection.tables.select { |t| t.start_with?(TABLE_PREFIX) }
     event_tables.map {|n| n[10..-1]}.each do |n|
-      EventLogProcess.new(n).save_event_log
+      EventLogProcessor.new(n).save_event_log
     end
   end
 
@@ -119,7 +119,7 @@ class EventLogProcess
       block_number_in_decimal = HexUtils.to_decimal(block_number)
       attrs = log.slice(*reference.keys).transform_keys { |k| reference[k] }.merge(get_decode_attrs(log.with_indifferent_access)).merge({ blockNumberInDecimal: block_number_in_decimal })
       ApplicationRecord.transaction do
-        "EventLogProcess::Customs::#{model_name}".constantize.create(attrs)
+        "EventLogProcessor::Customs::#{model_name}".constantize.create(attrs)
         event_log = EventLog.find_by(name: file_name)
         event_log&.update(block_number: attrs["blockNumber"])
       end
@@ -129,7 +129,7 @@ class EventLogProcess
   # return the dynamic model of this table
   def get_model
     dynamic_model
-    "EventLogProcess::Customs::#{model_name}".constantize
+    "EventLogProcessor::Customs::#{model_name}".constantize
   end
 
   class CustomsBaseClass < ApplicationRecord
@@ -139,7 +139,7 @@ class EventLogProcess
   private def dynamic_model
     class_name = "#{model_name}"
 
-    return if EventLogProcess::Customs.const_defined?(class_name)
+    return if EventLogProcessor::Customs.const_defined?(class_name)
 
     rtn = real_table_name
     klass = Class.new(CustomsBaseClass) do

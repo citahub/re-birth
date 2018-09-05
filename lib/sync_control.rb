@@ -18,6 +18,6 @@ end
 if EventLog.exists?
   Daemons.run_proc("#{Rails.env}_event_log", options) do
     Rails.logger = Logger.new(Rails.root.join("log", "#{Rails.env}_event_log.log"))
-    EventLogProcess.sync_all
+    EventLogProcessor.sync_all
   end
 end
