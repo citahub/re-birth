@@ -39,3 +39,8 @@ doc
 
 # docker database
 docker/data
+
+# custom configs
+config/customs/*.yml
+db/migrate/*_create_customs_*
+app/models/customs/*
