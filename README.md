@@ -62,6 +62,12 @@ $ rails daemons:sync:start
 # run `rails daemons:sync:status` to see status
 ```
 
+## Event Log Processor
+
+Create a yaml file with `.yml` suffix in `config/customs`, see `config/customs/event_log.yml.sample` for more detail. For example, your file name is `contracts.yml`, you can run `bundle exec rake event_log:create[contracts]` to create your table and now restart sync task `bundle exec rake daemons:sync:restart` to listen your contact 😝
+
+We'll both use `address` and `topics` to select the logs by jsonrpc interface [`getLogs`](https://docs.nervos.org/cita/#/rpc_guide/rpc?id=getlogs)
+
 ## Deploy
 
 You can deploy this via [mina](https://github.com/mina-deploy/mina)
