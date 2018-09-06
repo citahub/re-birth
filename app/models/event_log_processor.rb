@@ -197,7 +197,7 @@ class EventLogProcessor
 
   # helper method, use it carefully
   private def drop_table
-    sql = %Q{ DROP TABLE #{real_table_name}; }
+    sql = %Q{ DROP TABLE IF EXISTS #{real_table_name}; }
     ApplicationRecord.connection.execute(sql)
   end
 
