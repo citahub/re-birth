@@ -52,4 +52,22 @@ RSpec.describe Block, type: :model do
       expect(Block.current_block_number).to eq block.block_number
     end
   end
+
+  context "after create" do
+    context "increase_validator_count" do
+      it "not cache if block_number.zero?" do
+        block = create :block_zero, block_number: 0
+        proposer = block.header['proposer']
+        expect(proposer.blank?).not_to be true
+        expect(ValidatorCache.exists?(name: proposer)).to be false
+      end
+
+      it "cache if block_number not eq zero" do
+        block = create :block_one, block_number: 1
+        proposer = block.header["proposer"]
+        expect(proposer.blank?).not_to be true
+        expect(ValidatorCache.find_by(name: proposer).counter).to eq 1
+      end
+    end
+  end
 end

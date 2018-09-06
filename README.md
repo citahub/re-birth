@@ -6,6 +6,10 @@
 
 A blockchain explorer cache server for [Nervos AppChain](https://docs.nervos.org/nervos-appchain-docs/#/).
 
+Now upgrade to work with CITA v0.18
+
+⚠️ NOTE: If you upgrade your chain to 0.18 from 0.17, after upgrade, you should stop sync task(`rake daemons:sync:stop`) and run `rake zero18:update` to update your old data, and start your sync task (`rake daemons:sync:start`), then restart your server 😄
+
 ## Docker
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
@@ -139,7 +143,7 @@ Get blocks info list and paginate it.
                 "version": 0,
                 "header": {
                     "proof": {
-                        "tendermint": {
+                        "Bft": {
                             "round": 0,
                             "height": 111198,
                             "commits": {

@@ -2,7 +2,7 @@ require 'daemons'
 require_relative '../config/environment'
 
 options = {
-  log_output: true,
+  log_output: false,
   log_dir: Rails.root.join("log"),
   monitor: true,
   dir: Rails.root.join("tmp", "pids").to_s
