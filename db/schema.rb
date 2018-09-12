@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_23_023239) do
+ActiveRecord::Schema.define(version: 2018_09_03_024536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,14 @@ ActiveRecord::Schema.define(version: 2018_08_23_023239) do
     t.string "gas_used"
     t.index ["block_id"], name: "index_transactions_on_block_id"
     t.index ["cita_hash"], name: "index_transactions_on_cita_hash", unique: true
+  end
+
+  create_table "validator_caches", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "counter"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_validator_caches_on_name", unique: true
   end
 
 end

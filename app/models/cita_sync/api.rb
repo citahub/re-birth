@@ -3,6 +3,7 @@ module CitaSync
     class << self
 
       # New methods without prefix since CITA v0.16
+      # now upgrade to CITA v0.18
       METHOD_NAMES = %w(
         peerCount
         blockNumber
@@ -24,6 +25,8 @@ module CitaSync
         getFilterLogs
         getTransactionProof
         getMetaData
+        getBlockHeader
+        getStateProof
       )
 
       METHOD_NAMES.each do |name|
