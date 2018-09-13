@@ -92,5 +92,27 @@ RSpec.describe Api::TransactionsController, type: :controller do
       expect(count).to eq 15
       expect(result[:transactions].count).to eq 5
     end
+
+    context "with valueFormat" do
+      let(:value_hex) { attributes_for(:transaction)[:value] }
+      let(:value_decimal) { HexUtils.to_decimal(value_hex) }
+      it "return decimal if valueFormat equals decimal" do
+        get :index, params: { valueFormat: "decimal" }
+
+        expect(result["transactions"].map {|n| n["value"]}.uniq).to match_array [value_decimal]
+      end
+
+      it "return hex if valueFormat equals hex" do
+        get :index, params: { valueFormat: 'hex' }
+
+        expect(result["transactions"].map {|n| n["value"]}.uniq).to match_array [value_hex]
+      end
+
+      it "return hex if valueFormat not set" do
+        get :index
+
+        expect(result["transactions"].map {|n| n["value"]}.uniq).to match_array [value_hex]
+      end
+    end
   end
 end
