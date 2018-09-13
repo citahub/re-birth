@@ -64,6 +64,12 @@ $ rails daemons:sync:start
 # run `rails daemons:sync:status` to see status
 ```
 
+## Event Log Processor
+
+Create a yaml file with `.yml` suffix in `config/customs`, see `config/customs/event_log.yml.sample` for more detail. For example, your file name is `contracts.yml`, you can run `bundle exec rake event_log:create[contracts]` to create your table and now restart sync task `bundle exec rake daemons:sync:restart` to listen your contact 😝
+
+We'll both use `address` and `topics` to select the logs by jsonrpc interface [`getLogs`](https://docs.nervos.org/cita/#/rpc_guide/rpc?id=getlogs)
+
 ## Deploy
 
 You can deploy this via [mina](https://github.com/mina-deploy/mina)
@@ -184,6 +190,7 @@ Get transactions list and paginate it.
   "account":  "the addr transactions related to (from or to)", # hash string
   "from":  "the addr transactions from", # hash string
   "to":  "the addr transactions to", # hash string
+  "valueFormat": "decimal", # set value to decimal number, default hex number
   "page": "1", # integer, default 1
   "perPage": "10", # integer, default 10
   # offset and limit has lower priority than page and perPage
@@ -200,7 +207,7 @@ Get transactions list and paginate it.
         "count": 75178,
         "transactions": [
             {
-                "value": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "value": "0x0000000000000000000000000000000000000000000000000000000000000000", # 0 if valueFormat=decimal
                 "to": "0xffffffffffffffffffffffffffffffffff010001",
                 "gasUsed": "0x45754",
                 "from": "0x35f8ca15fdeb958d9ad60537bec5e35444dd6d93",

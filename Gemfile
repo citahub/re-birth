@@ -68,6 +68,8 @@ gem 'google-protobuf', '~> 3.6'
 
 gem 'ciri-crypto', '0.1.1'
 
+gem 'ethereum.rb'
+
 # Deployment
 gem 'mina', require: false
 gem 'mina-puma', require: false
