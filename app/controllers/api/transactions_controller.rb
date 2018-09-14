@@ -6,6 +6,7 @@ class Api::TransactionsController < ApplicationController
   #   "to":  "the addr transactions to", // hash
   #   "page": "1", // default 1
   #   "perPage": "10", // default 10
+  #   "valueFormat": "decimal", // set value to decimal number, default hex number
   #
   #   # offset and limit has lower priority than page and perPage
   #   "offset":  "1", // default to 0
@@ -33,10 +34,12 @@ class Api::TransactionsController < ApplicationController
       total_count = transactions.total_count
     end
 
+    decimal_value = params[:valueFormat] == 'decimal' ? true : false
+
     render json: {
       result: {
         count: total_count,
-        transactions: ActiveModelSerializers::SerializableResource.new(transactions, each_serializer: ::Api::TransactionSerializer)
+        transactions: ActiveModelSerializers::SerializableResource.new(transactions, each_serializer: ::Api::TransactionSerializer, decimal_value: decimal_value)
       }
     }
   end

@@ -78,4 +78,5 @@ RSpec.configure do |config|
 
   # add supports
   config.include BlockMockSupport
+  config.include EventLogMockSupport
 end
