@@ -1,0 +1,36 @@
+# your file name is you table name, for example, this table name is "event_log"
+
+# user address and topics to select event logs(jsonrpc getLogs)
+address: "0x35bd452c37d28beca42097cfd8ba671c8dd430a1"
+topics: []
+# type, column name, data name, no data name means data name equals to column name
+# "decode#data" means decode data
+# Postgres database types
+# type can be "varchar", "integer", "bigint", "text", "json" and so on...
+# we'll save ["varchar", "transactionHash"] and ["varchar", "blockNumber"] for check unique log
+columns:
+- ["varchar", "data"] # preferred
+- ["varchar", "blockHash", "blockHash"]
+- ["varchar", "transaction_index", "transactionIndex"]
+
+# address => varchar
+# string => varchar
+# uint256 => integer, bigint, varchar
+decode:
+  abi_inputs:
+    [{
+       "indexed": false,
+       "name": "_sender",
+       "type": "address"
+     }, {
+       "indexed": false,
+       "name": "_text",
+       "type": "string"
+     }, {
+       "indexed": true,
+       "name": "_time",
+       "type": "uint256"
+     }]
+  names: ["sender", "text", "time"]
+  column_types: ["varchar", "varchar", "bigint"]
+
