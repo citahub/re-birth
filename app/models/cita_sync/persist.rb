@@ -76,9 +76,24 @@ module CitaSync
         unless receipt_result.nil?
           transaction.contract_address = receipt_result["contractAddress"]
           transaction.gas_used = receipt_result["gasUsed"]
+          save_event_logs(receipt_result["logs"])
         end
         transaction.save
         transaction
+      end
+
+      # save event logs
+      #
+      # @param logs [Array] event logs
+      # @return [[EventLog]]
+      def save_event_logs(logs)
+        return if logs.blank?
+
+        attrs = logs.map do |log|
+          log.transform_keys { |key| key.to_s.underscore }
+        end
+
+        EventLog.create(attrs)
       end
 
       # save balance, get balance and http response body
