@@ -12,5 +12,7 @@ FactoryBot.define do
     transaction_hash "0x2c12c54a55428b56fd35b5882d5087d6cf2e20a410dc3a1b6515c2ecc3f53f22"
     transaction_index "0x0"
     transaction_log_index "0x0"
+
+    association :tx, factory: :transaction
   end
 end

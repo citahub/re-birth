@@ -1,4 +1,7 @@
 class EventLog < ApplicationRecord
+  belongs_to :block, optional: true
+  belongs_to :tx, class_name: 'Transaction', foreign_key: 'transaction_id'
+
   validates :address, presence: true
 
   # same transaction_hash & log_index means same event log

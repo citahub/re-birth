@@ -1,5 +1,6 @@
 class Transaction < ApplicationRecord
   belongs_to :block, optional: true
+  has_many :event_logs
 
   delegate :timestamp, to: :block, allow_nil: true
 

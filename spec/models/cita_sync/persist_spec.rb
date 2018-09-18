@@ -109,19 +109,36 @@ RSpec.describe CitaSync::Api, type: :model do
         "transactionHash": "0x2c12c54a55428b56fd35b5882d5087d6cf2e20a410dc3a1b6515c2ecc3f53f22",
         "transactionIndex": "0x0",
         "transactionLogIndex": "0x0"
-      }
+      }.with_indifferent_access
     end
+    let!(:tx) { create :transaction, cita_hash: event_log_attrs[:transactionHash] }
+    let(:bk) { create :block, cita_hash: event_log_attrs[:blockHash] }
 
     it "save success" do
+      bk
       event_logs = CitaSync::Persist.save_event_logs([event_log_attrs])
 
       expect(event_logs.size).to eq 1
       el = event_logs.first
 
+      expect(el.block).to eq bk
+      expect(el.tx).to eq tx
       event_log_attrs.transform_keys { |key| key.to_s.underscore }.each do |key, value|
         expect(el.public_send key).to eq value
       end
     end
+
+    it "without block" do
+      set_false
+
+      event_logs = CitaSync::Persist.save_event_logs([event_log_attrs])
+      expect(event_logs.size).to eq 1
+      el = event_logs.first
+
+      expect(el.block).to be nil
+      expect(el.tx).to eq tx
+    end
+
   end
 
   context "save balance" do

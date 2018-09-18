@@ -76,9 +76,9 @@ module CitaSync
         unless receipt_result.nil?
           transaction.contract_address = receipt_result["contractAddress"]
           transaction.gas_used = receipt_result["gasUsed"]
-          save_event_logs(receipt_result["logs"])
         end
         transaction.save
+        save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
         transaction
       end
 
@@ -90,7 +90,9 @@ module CitaSync
         return if logs.blank?
 
         attrs = logs.map do |log|
-          log.transform_keys { |key| key.to_s.underscore }
+          tx = Transaction.find_by(cita_hash: log["transactionHash"])
+          block = save_blocks? ? Block.find_by(cita_hash: log["blockHash"]) : nil
+          log.transform_keys { |key| key.to_s.underscore }.merge({ tx: tx, block: block })
         end
 
         EventLog.create(attrs)
