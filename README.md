@@ -330,3 +330,46 @@ Get sync errors list, which is the errors while sync from chain.
     }
 }
 ```
+
+### ERC20 Transfer event
+
+Get erc20 contracts transfer event logs by address
+
+> GET /api/erc20/transfers?address=0x...
+
+#### params
+
+```ruby
+{
+    "account": "from or to", # hash
+    "from": "from address", # hash
+    "to": "to address", # hash
+    "page": 1, # default 1
+    "perPage": 10, # default 10
+    
+    # offset and limit has lower priority than page and perPage
+    "offset": 1, # default 0
+    "limit": 10 # default 10
+}
+```
+
+#### response
+
+```ruby
+{
+    "result": {
+        "count": 1,
+        "transfers": [
+            {
+                "address": "0x0b9a7bad10e78aefbe6d99e61c7ea2a23c3ec888",
+                "from": "0xac30bce77cf849d869aa37e39b983fa50767a2dd",
+                "to": "0x6005ed6b942c99533b896b95fe8a90c7a7ecbf6a",
+                "value": 10,
+                "blockNumber": "0x18a1ec",
+                "gasUsed": "0x64",
+                "hash": "0x14b06be4067ba65d05e41d8821e2cf7d572a65b1bf53857a6a504ec42e69fdfd"
+            }
+        ]
+    }
+}
+```

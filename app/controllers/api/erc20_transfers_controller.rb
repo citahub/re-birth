@@ -1,4 +1,17 @@
 class Api::Erc20TransfersController < ApplicationController
+  # params:
+  # {
+  #   "account": "from or to", // hash
+  #   "from": "from address", // hash
+  #   "to": "to address", // hash
+  #   "page": 1, // default 1
+  #   "perPage": 10, // default 10
+  #
+  #   # offset and limit has lower priority than page and perPage
+  #   "offset": 1, // default 0
+  #   "limit": 10 // default 10
+  # }
+
   # GET /api/erc20/transfers
   def index
     address = params[:address]
