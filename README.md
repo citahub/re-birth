@@ -10,6 +10,8 @@ Now upgrade to work with CITA v0.18
 
 ⚠️ NOTE: If you upgrade your chain to 0.18 from 0.17, after upgrade, you should stop sync task(`rake daemons:sync:stop`) and run `rake zero18:update` to update your old data, and start your sync task (`rake daemons:sync:start`), then restart your server 😄
 
+⚠️ NOTE: when update this version, you should run `bundle exec rake event_logs:fix_old` to sync event logs that it's transaction already saved.
+
 ## Docker
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
