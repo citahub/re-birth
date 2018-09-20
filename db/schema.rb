@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_17_092311) do
+ActiveRecord::Schema.define(version: 2018_09_19_033713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,28 @@ ActiveRecord::Schema.define(version: 2018_09_17_092311) do
     t.index ["body"], name: "index_blocks_on_body", using: :gin
     t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
     t.index ["header"], name: "index_blocks_on_header", using: :gin
+  end
+
+  create_table "erc20_transfers", force: :cascade do |t|
+    t.string "address"
+    t.string "from"
+    t.string "to"
+    t.decimal "value", precision: 260
+    t.string "transaction_hash"
+    t.bigint "timestamp"
+    t.string "block_number"
+    t.string "gas_used"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "event_log_id"
+    t.bigint "transaction_id"
+    t.bigint "block_id"
+    t.index ["address"], name: "index_erc20_transfers_on_address"
+    t.index ["block_id"], name: "index_erc20_transfers_on_block_id"
+    t.index ["event_log_id"], name: "index_erc20_transfers_on_event_log_id"
+    t.index ["from"], name: "index_erc20_transfers_on_from"
+    t.index ["to"], name: "index_erc20_transfers_on_to"
+    t.index ["transaction_id"], name: "index_erc20_transfers_on_transaction_id"
   end
 
   create_table "event_logs", force: :cascade do |t|

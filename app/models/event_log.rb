@@ -1,6 +1,7 @@
 class EventLog < ApplicationRecord
   belongs_to :block, optional: true
   belongs_to :tx, class_name: 'Transaction', foreign_key: 'transaction_id'
+  has_one :erc20_transfer
 
   validates :address, presence: true
 

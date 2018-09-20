@@ -95,7 +95,13 @@ module CitaSync
           log.transform_keys { |key| key.to_s.underscore }.merge({ tx: tx, block: block })
         end
 
-        EventLog.create(attrs)
+        event_logs = EventLog.create(attrs)
+        # if event log is a registered ERC20 contract address, process it
+        event_logs.each do |el|
+          if Erc20Transfer.exists?(el.address) && Erc20Transfer.transfer?(el.topics)
+            Erc20Transfer.save_from_event_log(el)
+          end
+        end
       end
 
       # save balance, get balance and http response body
