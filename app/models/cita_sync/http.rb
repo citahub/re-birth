@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CitaSync
   module Http
     class << self
@@ -31,10 +33,10 @@ module CitaSync
       # @return [Faraday]
       def conn
         Faraday.new(url: cita_url) do |faraday|
-          faraday.headers['Content-Type'] = 'application/json'
-          faraday.request  :url_encoded             # form-encode POST params
+          faraday.headers["Content-Type"] = "application/json"
+          faraday.request  :url_encoded # form-encode POST params
           # faraday.response :logger                  # log requests to $stdout
-          faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+          faraday.adapter  Faraday.default_adapter # make requests with Net::HTTP
         end
       end
 
@@ -45,6 +47,5 @@ module CitaSync
         ENV.fetch("CITA_URL")
       end
     end
-
   end
 end

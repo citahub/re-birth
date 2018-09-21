@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::TransactionSerializer < ActiveModel::Serializer
   attributes :value, :to, :from, :content
   attribute :cita_hash, key: :hash
@@ -10,6 +12,7 @@ class Api::TransactionSerializer < ActiveModel::Serializer
   def value
     decimal_value = @instance_options[:decimal_value]
     return HexUtils.to_decimal(object.value) if decimal_value
+
     object.value
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DecodeUtils
   class << self
     # def demo
@@ -34,7 +36,7 @@ class DecodeUtils
     def decode_log(o_inputs, data, topics)
       inputs = o_inputs.map(&:with_indifferent_access)
       decoder = Ethereum::Decoder.new
-      unindexed_inputs = inputs.select { |i| !i[:indexed] }
+      unindexed_inputs = inputs.reject { |i| i[:indexed] }
       function_inputs = unindexed_inputs.map { |input| Ethereum::FunctionInput.new(input) }
       decoded_data = decoder.decode_arguments(function_inputs, data)
 
@@ -47,7 +49,7 @@ class DecodeUtils
       # add 0x prefix
       inputs = inputs.each do |input|
         decoded_data = input[:decoded_data]
-        input[:decoded_data] = "0x" + decoded_data if input[:type] == 'address' && !decoded_data.start_with?("0x")
+        input[:decoded_data] = "0x" + decoded_data if input[:type] == "address" && !decoded_data.start_with?("0x")
       end
 
       (inputs.map.with_index { |input, i| { i => input[:decoded_data] } } + inputs.map { |input| { input[:name] => input[:decoded_data] } }).reduce({}, :merge).with_indifferent_access

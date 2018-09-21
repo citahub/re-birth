@@ -88,6 +88,9 @@ group :development, :test do
   gem 'simplecov', require: false
   gem 'yard', '~> 0.9.14'
   gem 'yard-activesupport-concern'
+
+  # Ruby static code analyzer and code formatter
+  gem "rubocop", require: false
 end
 
 group :development do

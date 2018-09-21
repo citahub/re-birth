@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LocalInfosConcern
   extend ActiveSupport::Concern
 
@@ -11,6 +13,7 @@ module LocalInfosConcern
       block_number = HexUtils.to_decimal(block_number_hex)
       block = Block.find_by(block_number: block_number)
       return nil if block.nil?
+
       # BlockSerializer.new(block).as_json
       ActiveModelSerializers::SerializableResource.new(block, serializer: ::BlockSerializer, flag: flag)
     end
@@ -23,6 +26,7 @@ module LocalInfosConcern
       hash, flag = params
       block = Block.find_by(cita_hash: hash)
       return nil if block.nil?
+
       ActiveModelSerializers::SerializableResource.new(block, serializer: ::BlockSerializer, flag: flag)
     end
 
@@ -34,6 +38,7 @@ module LocalInfosConcern
       hash, = params
       transaction = Transaction.find_by(cita_hash: hash)
       return nil if transaction.nil?
+
       # TransactionSerializer.new(transaction).as_json
       ActiveModelSerializers::SerializableResource.new(transaction, serializer: ::TransactionSerializer)
     end

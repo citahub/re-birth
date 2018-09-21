@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::TransactionsController < ApplicationController
   # params:
   # {
@@ -34,7 +36,7 @@ class Api::TransactionsController < ApplicationController
       total_count = transactions.total_count
     end
 
-    decimal_value = params[:valueFormat] == 'decimal' ? true : false
+    decimal_value = params[:valueFormat] == "decimal"
 
     render json: {
       result: {
@@ -64,7 +66,7 @@ class Api::TransactionsController < ApplicationController
       }
     end
 
-    decimal_value = params[:valueFormat] == 'decimal' ? true : false
+    decimal_value = params[:valueFormat] == "decimal"
 
     render json: {
       result: {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::StatusController < ApplicationController
   # GET /api/status
   def index
