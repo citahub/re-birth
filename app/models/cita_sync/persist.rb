@@ -78,7 +78,30 @@ module CitaSync
           transaction.gas_used = receipt_result["gasUsed"]
         end
         transaction.save
+        save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
         transaction
+      end
+
+      # save event logs
+      #
+      # @param logs [Array] event logs
+      # @return [[EventLog]]
+      def save_event_logs(logs)
+        return if logs.blank?
+
+        attrs = logs.map do |log|
+          tx = Transaction.find_by(cita_hash: log["transactionHash"])
+          block = save_blocks? ? Block.find_by(cita_hash: log["blockHash"]) : nil
+          log.transform_keys { |key| key.to_s.underscore }.merge({ tx: tx, block: block })
+        end
+
+        event_logs = EventLog.create(attrs)
+        # if event log is a registered ERC20 contract address, process it
+        event_logs.each do |el|
+          if Erc20Transfer.exists?(el.address) && Erc20Transfer.transfer?(el.topics)
+            Erc20Transfer.save_from_event_log(el)
+          end
+        end
       end
 
       # save balance, get balance and http response body

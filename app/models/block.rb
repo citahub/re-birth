@@ -1,5 +1,7 @@
 class Block < ApplicationRecord
   has_many :transactions
+  has_many :event_logs
+  has_many :erc20_transfers
 
   # store_accessor :header, :number
   store_accessor :body, :transactions
