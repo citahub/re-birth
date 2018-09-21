@@ -11,6 +11,17 @@ RSpec.describe Erc20Transfer, type: :model do
   let(:to) { erc20_transfer.to }
   let(:value) { erc20_transfer.value }
 
+  context "save upcase" do
+    it "saved downcase" do
+      event_log.update!(address: event_log.address.upcase)
+      address = event_log.reload.address
+      transfer = Erc20Transfer.save_from_event_log event_log
+
+      expect(transfer.address).to eq transfer.address.downcase
+      expect(address).to eq address.upcase
+    end
+  end
+
   context "check event_topic" do
     it "success" do
       event = "Transfer(address,address,uint256)"

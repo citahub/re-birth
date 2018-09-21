@@ -43,6 +43,14 @@ RSpec.describe Api::Erc20TransfersController, type: :controller do
         end
       end
 
+      context "upcase address" do
+        it "also find" do
+          get :index, params: { address: address.upcase }
+          expect(count).to eq 1
+          expect(result[:transfers].first[:address]).to eq address.upcase
+        end
+      end
+
       context "with account" do
         it "equal to from" do
           get :index, params: { address: address, account: from }

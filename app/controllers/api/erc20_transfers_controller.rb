@@ -14,7 +14,7 @@ class Api::Erc20TransfersController < ApplicationController
 
   # GET /api/erc20/transfers
   def index
-    address = params[:address]
+    address = params[:address]&.downcase
 
     if address.nil?
       return render json: {
@@ -47,7 +47,7 @@ class Api::Erc20TransfersController < ApplicationController
     render json: {
       result: {
         count: total_count,
-        transfers: ActiveModelSerializers::SerializableResource.new(transfers, each_serializer: ::Api::Erc20TransferSerializer)
+        transfers: ActiveModelSerializers::SerializableResource.new(transfers, each_serializer: ::Api::Erc20TransferSerializer, address: params[:address])
       }
     }
   end

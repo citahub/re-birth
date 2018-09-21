@@ -13,4 +13,10 @@ class Api::Erc20TransferSerializer < ActiveModel::Serializer
   def chain_name
     SyncInfo.chain_name
   end
+
+  def address
+    addr = @instance_options[:address]
+    return addr unless addr.nil?
+    object&.address
+  end
 end
