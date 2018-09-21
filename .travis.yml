@@ -9,10 +9,6 @@ addons:
 rvm:
   - 2.5.1
 
-before_script:
-  - psql -c 'create database "re-birth_test";' -U postgres
-  - cp .env.test.local.travis .env.test.local
-
 branches:
   only:
   - master
@@ -36,6 +32,15 @@ install:
   - node -v
   - npm i -g yarn
   - yarn
+
+before_script:
+  # setup db
+  - psql -c 'create database "re-birth_test";' -U postgres
+  - cp .env.test.local.travis .env.test.local
+  # run code quality audit
+  - gem install code_quality --no-ri --no-rdoc
+  - code_quality security_audit
+  - code_quality quality_audit fail_fast=false generate_index=true skip_lowest_score=89 rubocop_max_offenses=400
 
 script:
   - bundle exec rails db:migrate
