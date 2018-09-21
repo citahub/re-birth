@@ -18,6 +18,10 @@ RSpec.describe Api::Erc20TransfersController, type: :controller do
     Oj.load(response.body).with_indifferent_access[:result]
   end
 
+  before do
+    mock_get_meta_data
+  end
+
   context "index" do
     context "with transfer already exist" do
       before do

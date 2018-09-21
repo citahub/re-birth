@@ -12,6 +12,8 @@ RSpec.describe Api::TransactionsController, type: :controller do
   let(:count) { result[:count] }
 
   before do
+    mock_get_meta_data
+
     block_one = create :block_one
     13.times do
       create :transaction, block: block_one, cita_hash: random(32)

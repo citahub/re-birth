@@ -20,4 +20,31 @@ class SyncInfo < ApplicationRecord
       sync_info.update(value: block_number)
     end
   end
+
+  # get meta_data
+  #
+  # @return [Hash] Hash of mata_data
+  def self.meta_data
+    name = "meta_data"
+    meta_data = self.find_by(name: name)
+    if meta_data.nil?
+      result = CitaSync::Api.get_meta_data("latest")["result"]
+      meta_data = self.create(name: name, value: result)
+    end
+    meta_data.value
+  end
+
+  # get chain id
+  #
+  # @return [Integer]
+  def self.chain_id
+    $rebirth_chain_id ||= self.meta_data["chainId"]
+  end
+
+  # get chain name
+  #
+  # @return [String]
+  def self.chain_name
+    $rebirth_chain_name ||= self.meta_data["chainName"]
+  end
 end
