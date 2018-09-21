@@ -43,4 +43,33 @@ class Api::TransactionsController < ApplicationController
       }
     }
   end
+
+  # GET /api/transactions/:hash
+  def show
+    # use ILIKE to ignore case
+    options = {
+      from_or_to_matches: params[:account],
+      from_matches: params[:from],
+      to_matches: params[:to]
+    }
+
+    transaction = Transaction.where(cita_hash: params[:hash]).ransack(options).result.first
+
+    # return nil if transaction not found
+    if transaction.nil?
+      return render json: {
+        result: {
+          transaction: nil
+        }
+      }
+    end
+
+    decimal_value = params[:valueFormat] == 'decimal' ? true : false
+
+    render json: {
+      result: {
+        transaction: ::Api::TransactionSerializer.new(transaction, decimal_value: decimal_value)
+      }
+    }
+  end
 end
