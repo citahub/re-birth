@@ -3,6 +3,8 @@ class Erc20Transfer < ApplicationRecord
   belongs_to :tx, class_name: 'Transaction', foreign_key: "transaction_id"
   belongs_to :block, optional: true
 
+  before_save :downcase_before_save
+
   # validates :event_log, uniqueness: true
 
   # first of topics: event signature
@@ -23,6 +25,10 @@ class Erc20Transfer < ApplicationRecord
                     "name": "value",
                     "type": "uint256"
                   }]
+
+  private def downcase_before_save
+    self.address = self.address&.downcase
+  end
 
   class << self
     # decode data and topics to get from to and value
@@ -72,7 +78,7 @@ class Erc20Transfer < ApplicationRecord
     # @param address [String]
     # @return [void]
     def init_address(address)
-      event_logs = EventLog.where(address: address)
+      event_logs = EventLog.where(address: address.downcase)
       ApplicationRecord.transaction do
         event_logs.find_each do |el|
           save_from_event_log(el)
