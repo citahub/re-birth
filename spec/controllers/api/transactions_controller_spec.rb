@@ -8,7 +8,8 @@ RSpec.describe Api::TransactionsController, type: :controller do
   let(:from) { random(20) }
   let(:to) { random(20) }
 
-  let(:result) { Oj.load(response.body).with_indifferent_access[:result] }
+  let(:body) { Oj.load(response.body).with_indifferent_access }
+  let(:result) { body[:result] }
   let(:count) { result[:count] }
 
   before do
@@ -114,6 +115,56 @@ RSpec.describe Api::TransactionsController, type: :controller do
         get :index
 
         expect(result["transactions"].map {|n| n["value"]}.uniq).to match_array [value_hex]
+      end
+    end
+  end
+
+  context "show" do
+    let(:transaction) { Transaction.first }
+    let(:tx_hash) { transaction.cita_hash }
+    let(:from) { transaction.from }
+    let(:to) { transaction.to }
+
+    it "only hash" do
+      get :show, params: { hash: tx_hash }
+
+      expect(result[:transaction]).not_to be nil
+    end
+
+    it "wrong hash" do
+      get :show, params: { hash: tx_hash + "1" }
+
+      expect(result[:transaction]).to be nil
+    end
+
+    it "with account" do
+      get :show, params: { hash: tx_hash, account: to }
+
+      expect(result[:transaction]).not_to be nil
+    end
+
+    it "with from" do
+      get :show, params: { hash: tx_hash, from: from }
+
+      expect(result[:transaction]).not_to be nil
+    end
+
+    it "with to" do
+      get :show, params: { hash: tx_hash, to: to }
+      expect(result[:transaction]).not_to be nil
+    end
+
+    context "valueFormat" do
+      it "with valueFormat" do
+        get :show, params: { hash: tx_hash, valueFormat: 'decimal' }
+
+        expect(result.dig :transaction, :value).to be_a(Integer)
+      end
+
+      it "without valueFormat" do
+        get :show, params: { hash: tx_hash }
+
+        expect(result.dig :transaction, :value).to be_a(String)
       end
     end
   end
