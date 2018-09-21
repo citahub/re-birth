@@ -59,16 +59,17 @@ gem 'daemons', '~> 1.2', '>= 1.2.6'
 gem 'rack-cors', require: 'rack/cors'
 
 # ransack for SQL search
-gem 'ransack', '~> 1.8', '>= 1.8.8'
+# gem 'ransack', '~> 1.8', '>= 1.8.8'
+gem 'ransack', '~> 2.0', '>= 2.0.1'
 
 # paginate
-gem 'kaminari'
+gem 'kaminari', '~> 1.1', '>= 1.1.1'
 
 gem 'google-protobuf', '~> 3.6'
 
 gem 'ciri-crypto', '0.1.1'
 
-gem 'ethereum.rb'
+gem 'ethereum.rb', '~> 2.2'
 
 gem 'health_check', '~> 3.0'
 
