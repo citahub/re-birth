@@ -193,8 +193,10 @@ module CitaSync
       # @return [void]
       def realtime_sync
         loop do
-          save_blocks_with_infos
-        rescue StandardError
+          begin
+            save_blocks_with_infos
+          rescue
+          end
         end
       end
 
