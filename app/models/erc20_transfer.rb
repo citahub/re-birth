@@ -78,7 +78,7 @@ class Erc20Transfer < ApplicationRecord
     # @param address [String]
     # @return [void]
     def init_address(address)
-      event_logs = EventLog.where(address: address.downcase)
+      event_logs = EventLog.where("address ILIKE ?", address)
       ApplicationRecord.transaction do
         event_logs.find_each do |el|
           save_from_event_log(el)
