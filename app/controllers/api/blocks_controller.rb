@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::BlocksController < ApplicationController
   # get blocks info list and paginate it.
   #
@@ -54,6 +56,7 @@ class Api::BlocksController < ApplicationController
   # @return [Integer]
   def parse_hex(number)
     return number.to_i(16) if number.to_s.downcase.start_with?("0x")
+
     number
   end
 end

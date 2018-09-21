@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Block < ApplicationRecord
   has_many :transactions
   has_many :event_logs
@@ -24,7 +26,8 @@ class Block < ApplicationRecord
 
   # increase validator count after block create
   def increase_validator_count
-    return if self.block_number.zero?
-    ValidatorCache.increase(self.header["proposer"])
+    return if block_number.zero?
+
+    ValidatorCache.increase(header["proposer"])
   end
 end

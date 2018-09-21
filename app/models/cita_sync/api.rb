@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module CitaSync
   class Api
     class << self
-
       # New methods without prefix since CITA v0.16
       # now upgrade to CITA v0.18
       METHOD_NAMES = %w(
@@ -27,7 +28,7 @@ module CitaSync
         getMetaData
         getBlockHeader
         getStateProof
-      )
+      ).freeze
 
       METHOD_NAMES.each do |name|
         define_method name.underscore do |*params|
@@ -46,8 +47,6 @@ module CitaSync
         resp = CitaSync::Http.post(method, params: params, jsonrpc: jsonrpc, id: id)
         Oj.load(resp.body)
       end
-
     end
-
   end
 end

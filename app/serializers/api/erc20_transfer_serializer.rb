@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::Erc20TransferSerializer < ActiveModel::Serializer
   attributes :address, :from, :to, :value
   attribute :block_number, key: :blockNumber
@@ -17,6 +19,7 @@ class Api::Erc20TransferSerializer < ActiveModel::Serializer
   def address
     addr = @instance_options[:address]
     return addr unless addr.nil?
+
     object&.address
   end
 end

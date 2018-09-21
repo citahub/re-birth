@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::Erc20TransfersController < ApplicationController
   # params:
   # {
@@ -32,7 +34,6 @@ class Api::Erc20TransfersController < ApplicationController
       Erc20Transfer.init_address(address)
     end
     transfers = Erc20Transfer.where(address: address).order(id: :desc).ransack(options).result
-
 
     if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
       offset = params[:offset] || 0
