@@ -90,7 +90,7 @@ group :development, :test do
   gem 'yard-activesupport-concern'
 
   # Ruby static code analyzer and code formatter
-  gem "rubocop", require: false
+  gem "rubocop", "~> 0.59", require: false
 end
 
 group :development do
