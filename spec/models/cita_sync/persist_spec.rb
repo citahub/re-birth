@@ -94,6 +94,53 @@ RSpec.describe CitaSync::Api, type: :model do
     end
   end
 
+  context "save event logs" do
+    let(:event_log_attrs) do
+      {
+        "address": "0x35bd452c37d28beca42097cfd8ba671c8dd430a1",
+        "blockHash": "0x2bb2dab1bc4e332ca61fe15febf06a1fd09738d6304d76c5dd9b57cb46880e28",
+        "blockNumber": "0xf11e2",
+        "data": "0x00000000000000000000000046a23e25df9a0f6c18729dda9ad1af3b6a1311600000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001c68656c6c6f20776f726c64206174203135333534343433343437363700000000",
+        "logIndex": "0x0",
+        "topics": [
+          "0xe4af93ca7e370881e6f1b57272e42a3d851d3cc6d951b4f4d2e7a963914468a2",
+          "0x000000000000000000000000000000000000000000000000000001657f9d5fbf"
+        ],
+        "transactionHash": "0x2c12c54a55428b56fd35b5882d5087d6cf2e20a410dc3a1b6515c2ecc3f53f22",
+        "transactionIndex": "0x0",
+        "transactionLogIndex": "0x0"
+      }.with_indifferent_access
+    end
+    let!(:tx) { create :transaction, cita_hash: event_log_attrs[:transactionHash] }
+    let(:bk) { create :block, cita_hash: event_log_attrs[:blockHash] }
+
+    it "save success" do
+      bk
+      event_logs = CitaSync::Persist.save_event_logs([event_log_attrs])
+
+      expect(event_logs.size).to eq 1
+      el = event_logs.first
+
+      expect(el.block).to eq bk
+      expect(el.tx).to eq tx
+      event_log_attrs.transform_keys { |key| key.to_s.underscore }.each do |key, value|
+        expect(el.public_send key).to eq value
+      end
+    end
+
+    it "without block" do
+      set_false
+
+      event_logs = CitaSync::Persist.save_event_logs([event_log_attrs])
+      expect(event_logs.size).to eq 1
+      el = event_logs.first
+
+      expect(el.block).to be nil
+      expect(el.tx).to eq tx
+    end
+
+  end
+
   context "save balance" do
     it "save success" do
       balance, = CitaSync::Persist.save_balance(account_address, "0x0")

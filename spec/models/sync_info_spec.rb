@@ -42,4 +42,40 @@ RSpec.describe SyncInfo, type: :model do
       expect(SyncInfo.current_block_number).to eq value
     end
   end
+
+  context "meta_data" do
+    before do
+      mock_get_meta_data
+    end
+
+    let(:name) { "meta_data" }
+    let(:chain_id) { 1 }
+    let(:chain_name) { "test-chain" }
+
+    it "no data before" do
+      expect(SyncInfo.find_by name: name).to be nil
+
+      expect(SyncInfo.meta_data["chainId"]).to eq chain_id
+    end
+
+    it "have data before" do
+      SyncInfo.meta_data
+      expect(SyncInfo.meta_data["chainId"]).to eq chain_id
+    end
+
+    context "chain_id" do
+      it "success" do
+        expect(SyncInfo.chain_id).to eq chain_id
+        expect($rebirth_chain_id).to eq chain_id
+      end
+    end
+
+    context "chain_name" do
+      it "success" do
+        expect(SyncInfo.chain_name).to eq chain_name
+        expect($rebirth_chain_name).to eq chain_name
+      end
+    end
+  end
+
 end

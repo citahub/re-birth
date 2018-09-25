@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   rescue_from ActionController::RoutingError do |e|
     render json: {

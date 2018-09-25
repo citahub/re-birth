@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SplitRequestsConcern
   extend ActiveSupport::Concern
   include LocalInfosConcern
@@ -7,13 +9,13 @@ module SplitRequestsConcern
     getBlockByNumber
     getBlockByHash
     getTransaction
-  )
+  ).freeze
 
   # methods that save to db when user called
   PERSIST_METHODS = %w(
     getBalance
     getAbi
-  )
+  ).freeze
 
   included do
     # method of `SYNC_METHODS` should find in db first, if not found, call rpc for result.
@@ -30,13 +32,16 @@ module SplitRequestsConcern
     def call_sync_methods(params)
       method = params[:method]
       return unless SYNC_METHODS.include?(method)
+
       method_name = method.underscore
       obj_json = send(method_name, params[:params])
-      return {
-        jsonrpc: params[:jsonrpc],
-        id: params[:id],
-        result: obj_json
-      } unless obj_json.nil?
+      unless obj_json.nil?
+        return {
+          jsonrpc: params[:jsonrpc],
+          id: params[:id],
+          result: obj_json
+        }
+      end
 
       # call remote
       CitaSync::Api.call_rpc(method, params: params[:params], jsonrpc: params[:jsonrpc], id: params[:id])
@@ -49,13 +54,16 @@ module SplitRequestsConcern
     def call_persist_methods(params)
       method = params[:method]
       return unless PERSIST_METHODS.include?(method)
+
       method_name = method.underscore
       obj_json = send(method_name, params[:params])
-      return {
-        jsonrpc: params[:jsonrpc],
-        id: params[:id],
-        result: obj_json
-      } unless obj_json.nil?
+      unless obj_json.nil?
+        return {
+          jsonrpc: params[:jsonrpc],
+          id: params[:id],
+          result: obj_json
+        }
+      end
       _obj, data = CitaSync::Persist.send(method_name.gsub("get", "save"), *params[:params])
       data
     end

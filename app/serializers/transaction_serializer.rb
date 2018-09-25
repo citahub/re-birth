@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TransactionSerializer < ActiveModel::Serializer
   attributes :content, :index
   attribute :block_number, key: :blockNumber

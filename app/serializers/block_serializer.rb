@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BlockSerializer < ActiveModel::Serializer
   attributes :version
   attribute :cita_hash, key: :hash

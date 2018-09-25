@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 module CitaSync
   class Persist
-
     class << self
       # get save blocks or not config
       #
@@ -53,9 +54,7 @@ module CitaSync
         return nil if result.nil?
 
         block = if save_blocks?
-                  Block.find_by_block_number(HexUtils.to_decimal(result["blockNumber"]))
-                else
-                  nil
+                  Block.find_by(block_number: HexUtils.to_decimal(result["blockNumber"]))
                 end
         content = result["content"]
         message = Message.new(content)
@@ -78,7 +77,30 @@ module CitaSync
           transaction.gas_used = receipt_result["gasUsed"]
         end
         transaction.save
+        save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
         transaction
+      end
+
+      # save event logs
+      #
+      # @param logs [Array] event logs
+      # @return [[EventLog]]
+      def save_event_logs(logs)
+        return if logs.blank?
+
+        attrs = logs.map do |log|
+          tx = Transaction.find_by(cita_hash: log["transactionHash"])
+          block = save_blocks? ? Block.find_by(cita_hash: log["blockHash"]) : nil
+          log.transform_keys { |key| key.to_s.underscore }.merge(tx: tx, block: block)
+        end
+
+        event_logs = EventLog.create(attrs)
+        # if event log is a registered ERC20 contract address, process it
+        event_logs.each do |el|
+          if Erc20Transfer.exists?(el.address&.downcase) && Erc20Transfer.transfer?(el.topics)
+            Erc20Transfer.save_from_event_log(el)
+          end
+        end
       end
 
       # save balance, get balance and http response body
@@ -96,6 +118,7 @@ module CitaSync
         return [handle_error("getBalance", [addr_downcase, block_number], error), data] unless error.nil?
 
         return [nil, data] unless block_number.start_with?("0x")
+
         value = data["result"]
         balance = Balance.create(
           address: addr_downcase,
@@ -120,6 +143,7 @@ module CitaSync
         return [handle_error("getAbi", [addr_downcase, block_number], error), data] unless error.nil?
 
         return [nil, data] unless block_number.start_with?("0x")
+
         value = data["result"]
         abi = Abi.create(
           address: addr_downcase,
@@ -127,19 +151,6 @@ module CitaSync
           value: value
         )
         [abi, data]
-      end
-
-      private def handle_error(method, params, error)
-        return if error.nil? || error.empty?
-        code = error["code"]
-        message = error["message"]
-
-        SyncError.create(
-          method: method,
-          params: params,
-          code: code,
-          message: message
-        )
       end
 
       # save one block with it's transactions and meta data
@@ -151,7 +162,8 @@ module CitaSync
         ApplicationRecord.transaction do
           block = save_block(block_number_hex_str)
           return if block.nil?
-          hashes = block.transactions.map { |t| t&.with_indifferent_access[:hash] }
+
+          hashes = block.transactions.map { |t| t&.with_indifferent_access&.dig :hash }
           hashes.each do |hash|
             save_transaction(hash)
           end
@@ -188,7 +200,21 @@ module CitaSync
         end
       end
 
-    end
+      private
 
+      def handle_error(method, params, error)
+        return if error.blank?
+
+        code = error["code"]
+        message = error["message"]
+
+        SyncError.create(
+          method: method,
+          params: params,
+          code: code,
+          message: message
+        )
+      end
+    end
   end
 end

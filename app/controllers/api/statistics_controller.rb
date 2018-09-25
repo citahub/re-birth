@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::StatisticsController < ApplicationController
   BLOCK_COUNT = 100
 
@@ -52,9 +54,11 @@ class Api::StatisticsController < ApplicationController
 
     block_count = [blocks.count, BLOCK_COUNT].min
 
-    return render json: {
-      result: {}
-    } if blocks.empty?
+    if blocks.empty?
+      return render json: {
+        result: {}
+      }
+    end
 
     end_timestamp = blocks.first.timestamp
     start_timestamp = blocks.last.timestamp
@@ -72,5 +76,4 @@ class Api::StatisticsController < ApplicationController
       }
     }
   end
-
 end

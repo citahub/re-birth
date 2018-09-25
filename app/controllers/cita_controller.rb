@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CitaController < ApplicationController
   include SplitRequestsConcern
 
@@ -8,5 +10,4 @@ class CitaController < ApplicationController
     resp = find(params)
     render json: resp
   end
-
 end

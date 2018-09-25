@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HexUtils
   class << self
     # convert decimal number to hex string with "0x" prefix
