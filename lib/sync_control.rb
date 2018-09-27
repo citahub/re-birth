@@ -1,5 +1,7 @@
-require 'daemons'
-require_relative '../config/environment'
+# frozen_string_literal: true
+
+require "daemons"
+require_relative "../config/environment"
 
 options = {
   log_output: false,

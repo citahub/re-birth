@@ -167,6 +167,7 @@ module BlockMockSupport
     let(:mock_get_meta_data) do
       stub_request_wrapper("getMetaData", ["0x0"], meta_data_result)
       stub_request_wrapper("getMetaData", ["0x1"], meta_data_result)
+      stub_request_wrapper("getMetaData", ["latest"], meta_data_result)
     end
 
     let(:meta_data_params_error_code) { -32700 }

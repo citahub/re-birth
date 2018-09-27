@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ValidatorCache < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
@@ -9,6 +11,7 @@ class ValidatorCache < ApplicationRecord
     # add transaction for lock cache
     ApplicationRecord.transaction do
       return if name.blank?
+
       cache = ValidatorCache.find_by(name: name)
       if cache.nil?
         ValidatorCache.create(name: name, counter: 1)

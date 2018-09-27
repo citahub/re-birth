@@ -11,6 +11,8 @@ Rails.application.routes.draw do
     resources :statistics, only: [:index]
     resources :status, only: [:index]
     resources :sync_errors, only: [:index]
+    get "erc20/transfers", to: "erc20_transfers#index"
+    get "transactions/:hash", to: "transactions#show"
   end
 
   health_check_routes

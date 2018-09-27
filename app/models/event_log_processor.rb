@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Style/AccessModifierDeclarations
 class EventLogProcessor
   attr_reader :config, :table_name, :model_name, :columns, :file_name, :real_table_name
 
@@ -7,7 +10,7 @@ class EventLogProcessor
   # sync all event logs
   def self.sync_all
     event_tables = ApplicationRecord.connection.tables.select { |t| t.start_with?(TABLE_PREFIX) }
-    event_tables.map {|n| n[10..-1]}.each do |n|
+    event_tables.map { |n| n[10..-1] }.each do |n|
       EventLogProcessor.new(n).save_event_log
     end
   end
@@ -23,7 +26,7 @@ class EventLogProcessor
   # @return [void]
   def initialize(file)
     @file_name = "#{file}.yml"
-    @config = YAML.load(File.read(Rails.root.join("config", "customs", file_name))).with_indifferent_access
+    @config = YAML.safe_load(File.read(Rails.root.join("config", "customs", file_name))).with_indifferent_access
     @table_name = file
     @model_name = table_name.camelcase.singularize
     @columns = config[:columns]
@@ -41,18 +44,18 @@ class EventLogProcessor
     raise "table already exists" if ApplicationRecord.connection.table_exists?(real_table_name)
 
     sql = <<~SQL
-          create table if not exists #{real_table_name}
-          (
-            id bigserial not null constraint #{real_table_name}_pkey primary key,
-            "created_at" timestamp not null,
-            "updated_at" timestamp not null,
-            "transactionHash" varchar not null UNIQUE,  
-            #{columns.map { |col| "\"#{col.second}\" #{col.first}," }.join("\n  ")}
-            #{get_decode_columns&.map { |col| "\"#{col.second}\" #{col.first}," }&.join("\n  ")}
-          )
+      create table if not exists #{real_table_name}
+      (
+        id bigserial not null constraint #{real_table_name}_pkey primary key,
+        "created_at" timestamp not null,
+        "updated_at" timestamp not null,
+        "transactionHash" varchar not null UNIQUE,
+        #{columns.map { |col| "\"#{col.second}\" #{col.first}," }.join("\n  ")}
+        #{get_decode_columns&.map { |col| "\"#{col.second}\" #{col.first}," }&.join("\n  ")}
+      )
     SQL
     lines = sql.lines
-    lines[-2].gsub!(/,/, '')
+    lines[-2].delete!(",")
     sql = lines.join
     # execute to create table
     ApplicationRecord.connection.execute(sql)
@@ -68,16 +71,17 @@ class EventLogProcessor
     filter = { fromBlock: from_block }
     address = config[:address]
     topics = config[:topics]
-    filter.merge!(address: address) unless address.blank?
-    filter.merge!(topics: topics) unless topics.nil? || topics.empty?
+    filter[:address] = address if address.present?
+    filter[:topics] = topics if topics.present?
     CitaSync::Api.get_logs(filter)
   end
 
   private def get_current_block_number
     attr_name = "blockNumberInDecimal"
-    sql = %Q{ SELECT "#{attr_name}" from #{real_table_name} ORDER BY "#{attr_name}" DESC LIMIT 1 }
+    sql = %( SELECT "#{attr_name}" from #{real_table_name} ORDER BY "#{attr_name}" DESC LIMIT 1 )
     first = ApplicationRecord.connection.execute(sql).to_set.first
     return if first.nil?
+
     first[attr_name]
   end
 
@@ -96,15 +100,16 @@ class EventLogProcessor
 
     decode_info = config[:decode]
     return if decode_info.nil?
+
     abi_inputs = decode_info[:abi_inputs]
-    data_inputs = abi_inputs.select { |i| !i[:indexed] }
+    data_inputs = abi_inputs.reject { |i| i[:indexed] }
     inputs = data_inputs.map { |input| Ethereum::FunctionInput.new(input) }
     decoded_data = decoder.decode_arguments(inputs, log[:data])
     data_inputs.each_with_index { |d, i| d[:decoded_data] = decoded_data[i] }
 
     # topics
     topics = log[:topics]
-    topic_inputs = abi_inputs.select { |i| i[:indexed] }.each_with_index do |a, i|
+    abi_inputs.select { |i| i[:indexed] }.each_with_index do |a, i|
       a[:decoded_data] = decoder.decode(a[:type], topics[i + 1])
     end
 
@@ -122,7 +127,7 @@ class EventLogProcessor
     result.each do |log|
       block_number = log["blockNumber"]
       block_number_in_decimal = HexUtils.to_decimal(block_number)
-      attrs = log.slice(*reference.keys).transform_keys { |k| reference[k] }.merge(get_decode_attrs(log.with_indifferent_access)).merge({ blockNumberInDecimal: block_number_in_decimal })
+      attrs = log.slice(*reference.keys).transform_keys { |k| reference[k] }.merge(get_decode_attrs(log.with_indifferent_access)).merge(blockNumberInDecimal: block_number_in_decimal)
       ApplicationRecord.transaction do
         "EventLogProcessor::Customs::#{model_name}".constantize.create(attrs)
       end
@@ -140,13 +145,13 @@ class EventLogProcessor
   module Customs
   end
   private def dynamic_model
-    class_name = "#{model_name}"
+    class_name = model_name.to_s
 
     return if EventLogProcessor::Customs.const_defined?(class_name)
 
     rtn = real_table_name
     klass = Class.new(CustomsBaseClass) do
-      self.table_name = "#{rtn}"
+      self.table_name = rtn.to_s
     end
 
     Customs.const_set class_name, klass
@@ -160,6 +165,7 @@ class EventLogProcessor
     names = config.dig :decode, :names
     return if names.nil? || column_types.nil?
     raise "decode names length not equals to decode column_names" if names.size != column_types.size
+
     column_types.zip(names)
   end
 
@@ -172,6 +178,7 @@ class EventLogProcessor
     names = config.dig :decode, :names
     return if names.nil? || decoded_data.nil?
     raise "decode names length not equals to inputs" if names.size != decoded_data.size
+
     Hash[names.zip(decoded_data)]
   end
 
@@ -181,10 +188,10 @@ class EventLogProcessor
   private def mock_log
     {
       "address" => "0x35bd452c37d28beca42097cfd8ba671c8dd430a1",
-      "topics" => [
-        "0xe4af93ca7e370881e6f1b57272e42a3d851d3cc6d951b4f4d2e7a963914468a2",
-        "0x000000000000000000000000000000000000000000000000000001657f9d5fbf"
-      ],
+      "topics" => %w(
+        0xe4af93ca7e370881e6f1b57272e42a3d851d3cc6d951b4f4d2e7a963914468a2
+        0x000000000000000000000000000000000000000000000000000001657f9d5fbf
+      ),
       "data" => "0x00000000000000000000000046a23e25df9a0f6c18729dda9ad1af3b6a1311600000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000001c68656c6c6f20776f726c64206174203135333534343433343437363700000000",
       "blockHash" => "0x2bb2dab1bc4e332ca61fe15febf06a1fd09738d6304d76c5dd9b57cb46880e28",
       "blockNumber" => "0xf11e2",
@@ -197,8 +204,9 @@ class EventLogProcessor
 
   # helper method, use it carefully
   private def drop_table
-    sql = %Q{ DROP TABLE IF EXISTS #{real_table_name}; }
+    sql = %( DROP TABLE IF EXISTS #{real_table_name}; )
     ApplicationRecord.connection.execute(sql)
   end
-
 end
+
+# rubocop:enable Style/AccessModifierDeclarations

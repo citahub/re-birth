@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "blockchain_pb"
 require "ciri/utils"
 require "ciri/crypto"
@@ -48,8 +50,9 @@ class Message
   # a method to convert hex byte string to hex number string with prefix "0x"
   # @return [String] an hex string of address
   def to_hex(hex)
-    str = hex.unpack("H*").first
+    str = hex.unpack1("H*")
     return str if str.downcase.start_with?("0x")
+
     "0x" + str
   end
 
@@ -59,6 +62,7 @@ class Message
   # @return [String]
   def filter_hex_str(hex)
     return hex[2..-1] if hex.start_with?("0x")
+
     hex
   end
 
@@ -68,7 +72,7 @@ class Message
   # @return [Array<Integer>] byte code array
   def hex_to_buffer(hex)
     hex_str = filter_hex_str(hex)
-    [hex_str].pack('H*').bytes.to_a
+    [hex_str].pack("H*").bytes.to_a
   end
 
   # convert hex string to binary string
@@ -78,5 +82,4 @@ class Message
   def hex_to_binary_str(hex)
     hex_to_buffer(hex).pack("c*")
   end
-
 end
