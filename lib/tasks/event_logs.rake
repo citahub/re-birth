@@ -5,7 +5,7 @@ namespace :event_logs do
   task fix_old: :environment do
     Transaction.find_each do |t|
       receipt = CitaSync::Api.get_transaction_receipt(t.cita_hash)
-      logs = receipt["result"]["logs"]
+      logs = receipt.dig "result", "logs"
       next if logs.blank?
 
       CitaSync::Persist.save_event_logs(logs)
