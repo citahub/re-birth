@@ -12,6 +12,8 @@ Now upgrade to work with CITA v0.18
 
 ⚠️ NOTE: when update this version, you should run `bundle exec rake event_logs:fix_old` to sync event logs that it's transaction already saved.
 
+⚠️ NOTE: add `errorMessage` to `transactions`, run `bundle exec rake transactions:add_error_message` to add.
+
 ## Docker
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
