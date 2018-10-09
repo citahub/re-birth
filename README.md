@@ -220,7 +220,8 @@ Get transactions list and paginate it.
                 "hash": "0xf005a3585f9cfce03c7e428b9221eccdedeeae2736c8496c03113f90633135d8",
                 "timestamp": 1532511655997,
                 "chainId": 1,
-                "chainName": "test-chain"
+                "chainName": "test-chain",
+                "errorMessage": "Not enough base gas."
             }
         ]
     }
@@ -262,7 +263,8 @@ example
             "hash": "0xf005a3585f9cfce03c7e428b9221eccdedeeae2736c8496c03113f90633135d8",
             "timestamp": 1532511655997,
             "chainId": 1,
-            "chainName": "test-chain"
+            "chainName": "test-chain",
+            "errorMessage": "Not enough base gas."
         }
     }
 }
