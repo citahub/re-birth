@@ -72,9 +72,11 @@ module CitaSync
         )
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
         receipt_result = receipt_data["result"]
-        unless receipt_result.nil?
-          transaction.contract_address = receipt_result["contractAddress"]
-          transaction.gas_used = receipt_result["gasUsed"]
+        receipt_error = receipt_data["error"]
+        unless receipt_result.nil? && receipt_error.nil?
+          transaction.contract_address = receipt_result&.dig("contractAddress") || receipt_error&.dig("contractAddress")
+          transaction.gas_used = receipt_result&.dig("gasUsed") || receipt_error&.dig("gasUsed")
+          transaction.error_message = receipt_result&.dig("errorMessage") || receipt_error&.dig("errorMessage")
         end
         transaction.save
         save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
