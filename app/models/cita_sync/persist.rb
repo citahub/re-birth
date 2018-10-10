@@ -75,6 +75,7 @@ module CitaSync
         unless receipt_result.nil?
           transaction.contract_address = receipt_result["contractAddress"]
           transaction.gas_used = receipt_result["gasUsed"]
+          transaction.error_message = receipt_result["errorMessage"]
         end
         transaction.save
         save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
