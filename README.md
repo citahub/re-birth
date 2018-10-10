@@ -12,6 +12,8 @@ Now upgrade to work with CITA v0.18
 
 ⚠️ NOTE: when update this version, you should run `bundle exec rake event_logs:fix_old` to sync event logs that it's transaction already saved.
 
+⚠️ NOTE: add `errorMessage` to `transactions`, run `bundle exec rake transactions:add_error_message` to add.
+
 ## Docker
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
@@ -218,7 +220,8 @@ Get transactions list and paginate it.
                 "hash": "0xf005a3585f9cfce03c7e428b9221eccdedeeae2736c8496c03113f90633135d8",
                 "timestamp": 1532511655997,
                 "chainId": 1,
-                "chainName": "test-chain"
+                "chainName": "test-chain",
+                "errorMessage": "Not enough base gas."
             }
         ]
     }
@@ -260,7 +263,8 @@ example
             "hash": "0xf005a3585f9cfce03c7e428b9221eccdedeeae2736c8496c03113f90633135d8",
             "timestamp": 1532511655997,
             "chainId": 1,
-            "chainName": "test-chain"
+            "chainName": "test-chain",
+            "errorMessage": "Not enough base gas."
         }
     }
 }

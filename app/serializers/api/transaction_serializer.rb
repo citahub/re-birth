@@ -8,6 +8,7 @@ class Api::TransactionSerializer < ActiveModel::Serializer
   attributes :timestamp
   attribute :chain_id, key: :chainId
   attribute :chain_name, key: :chainName
+  attribute :error_message, key: :errorMessage
 
   def value
     decimal_value = @instance_options[:decimal_value]

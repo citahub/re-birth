@@ -9,12 +9,6 @@ addons:
 rvm:
   - 2.5.1
 
-branches:
-  only:
-  - master
-  - develop
-  - release
-
 env:
   global:
     - RAILS_ENV=test
