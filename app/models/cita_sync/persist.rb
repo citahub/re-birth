@@ -98,7 +98,7 @@ module CitaSync
         event_logs = EventLog.create(attrs)
         # if event log is a registered ERC20 contract address, process it
         event_logs.each do |el|
-          if Erc20Transfer.exists?(el.address&.downcase) && Erc20Transfer.transfer?(el.topics)
+          if Erc20Transfer.exists?(address: el.address&.downcase) && Erc20Transfer.transfer?(el.topics)
             Erc20Transfer.save_from_event_log(el)
           end
         end
