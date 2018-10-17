@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     resources :sync_errors, only: [:index]
     get "erc20/transfers", to: "erc20_transfers#index"
     get "transactions/:hash", to: "transactions#show"
+    get "event_logs/:address", to: "event_logs#show"
   end
 
   health_check_routes
