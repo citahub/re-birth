@@ -15,7 +15,7 @@ class Api::EventLogsController < ApplicationController
     render json: {
       result: {
         count: event_logs.total_count,
-        event_logs: ActiveModelSerializers::SerializableResource.new(event_logs, each_serializer: ::Api::EventLogSerializer)
+        eventLogs: ActiveModelSerializers::SerializableResource.new(event_logs, each_serializer: ::Api::EventLogSerializer)
       }
     }
   end

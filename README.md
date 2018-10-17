@@ -431,3 +431,45 @@ Get erc20 contracts transfer event logs by address
     }
 }
 ```
+
+### EventLog by address
+
+Get event logs by address
+
+> GET /api/event_logs/:address
+
+#### params
+
+```ruby
+{
+    "page": 1, # default 1
+    "perPage": 10, # default 10
+}
+```
+
+#### response
+
+```ruby
+{
+  "result": {
+    "count": 1,
+    "eventLogs": [
+      {
+        "address": "0x0b9a7bad10e78aefbe6d99e61c7ea2a23c3ec888",
+        "data": "0x000000000000000000000000000000000000000000000000000000000000000a",
+        "topics": [
+          "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+          "0x000000000000000000000000ac30bce77cf849d869aa37e39b983fa50767a2dd",
+          "0x0000000000000000000000006005ed6b942c99533b896b95fe8a90c7a7ecbf6a"
+        ],
+        "blockHash": "0xa2574fbd6fe9083ad8a1729630d1fa2c227f0a6df2dbb1f0d6d69faa4145c5cb",
+        "blockNumber": "0x18a1ec",
+        "logIndex": "0x0",
+        "transactionHash": "0x14b06be4067ba65d05e41d8821e2cf7d572a65b1bf53857a6a504ec42e69fdfd",
+        "transactionIndex": "0x0",
+        "transactionLogIndex": "0x0"
+      }
+    ]
+  }
+}
+```
