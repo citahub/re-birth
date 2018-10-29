@@ -13,7 +13,7 @@ class ApplicationController < ActionController::API
 
   def homepage
     render json: {
-      message: "Read more api interface info in https://github.com/cryptape/re-birth"
+      message: "Read more API interface info at https://github.com/cryptape/re-birth"
     }
   end
 end
