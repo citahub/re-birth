@@ -63,7 +63,6 @@ end
 task :setup do
   # command %{rbenv install 2.3.0 --skip-existing}
   command %[touch "#{fetch(:shared_path)}/config/puma.rb"]
-  command %[touch "#{fetch(:shared_path)}/config/master.key"]
   command %[touch "#{fetch(:shared_path)}/.env.local"]
   comment color_str("Be sure to edit config files")
 end
@@ -79,7 +78,7 @@ task :deploy do
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
-    invoke :'rails:assets_precompile'
+    # invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
     on :launch do
