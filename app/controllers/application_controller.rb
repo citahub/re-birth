@@ -10,4 +10,10 @@ class ApplicationController < ActionController::API
   def not_found
     raise ActionController::RoutingError, "not found"
   end
+
+  def homepage
+    render json: {
+      message: "Read more API interface info at https://github.com/cryptape/re-birth"
+    }
+  end
 end
