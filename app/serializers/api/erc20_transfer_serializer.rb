@@ -9,7 +9,7 @@ class Api::Erc20TransferSerializer < ActiveModel::Serializer
   attribute :chain_name, key: :chainName
 
   def chain_id
-    SyncInfo.chain_id
+    object.tx.chain_id
   end
 
   def chain_name

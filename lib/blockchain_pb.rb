@@ -15,8 +15,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :state_root, :bytes, 4
     optional :transactions_root, :bytes, 5
     optional :receipts_root, :bytes, 6
-    optional :gas_used, :uint64, 7
-    optional :gas_limit, :uint64, 8
+    optional :quota_used, :uint64, 7
+    optional :quota_limit, :uint64, 8
     optional :proof, :message, 9, "Proof"
     optional :proposer, :bytes, 10
   end
@@ -25,14 +25,16 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :height, :uint64, 2
   end
   add_message "AccountGasLimit" do
-    optional :common_gas_limit, :uint64, 1
-    map :specific_gas_limit, :string, :uint64, 2
+    optional :common_quota_limit, :uint64, 1
+    map :specific_quota_limit, :string, :uint64, 2
   end
   add_message "RichStatus" do
     optional :hash, :bytes, 1
     optional :height, :uint64, 2
     repeated :nodes, :bytes, 3
     optional :interval, :uint64, 4
+    optional :version, :uint32, 5
+    repeated :validators, :bytes, 6
   end
   add_message "ProtoTransaction" do
     optional :to, :string, 1
@@ -43,6 +45,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     optional :value, :bytes, 6
     optional :chain_id, :uint32, 7
     optional :version, :uint32, 8
+    optional :to_v1, :bytes, 9
+    optional :chain_id_v1, :bytes, 10
   end
   add_message "UnverifiedTransaction" do
     optional :transaction, :message, 1, "ProtoTransaction"
@@ -74,10 +78,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     repeated :black_list, :bytes, 1
     repeated :clear_list, :bytes, 2
   end
+  add_message "StateSignal" do
+    optional :height, :uint64, 1
+  end
   add_enum "ProofType" do
     value :AuthorityRound, 0
     value :Raft, 1
-    value :Tendermint, 2
+    value :Bft, 2
   end
   add_enum "Crypto" do
     value :SECP, 0
@@ -98,5 +105,6 @@ ProtoBlock = Google::Protobuf::DescriptorPool.generated_pool.lookup("ProtoBlock"
 BlockWithProof = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlockWithProof").msgclass
 BlockTxs = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlockTxs").msgclass
 BlackList = Google::Protobuf::DescriptorPool.generated_pool.lookup("BlackList").msgclass
+StateSignal = Google::Protobuf::DescriptorPool.generated_pool.lookup("StateSignal").msgclass
 ProofType = Google::Protobuf::DescriptorPool.generated_pool.lookup("ProofType").enummodule
 Crypto = Google::Protobuf::DescriptorPool.generated_pool.lookup("Crypto").enummodule

@@ -17,10 +17,6 @@ class Api::TransactionSerializer < ActiveModel::Serializer
     object.value
   end
 
-  def chain_id
-    SyncInfo.chain_id
-  end
-
   def chain_name
     SyncInfo.chain_name
   end

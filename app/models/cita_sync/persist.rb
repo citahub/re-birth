@@ -68,7 +68,9 @@ module CitaSync
           from: message.from,
           to: message.to,
           data: message.data,
-          value: message.value
+          value: message.value,
+          version: message.version,
+          chain_id: message.chain_id
         )
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
         receipt_result = receipt_data["result"]

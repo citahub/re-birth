@@ -44,6 +44,10 @@ class SyncInfo < ApplicationRecord
     $rebirth_chain_id ||= meta_data["chainId"]
   end
 
+  def self.chain_id_v1
+    $rebirth_chain_id_v1 ||= meta_data["chainIdV1"]
+  end
+
   # get chain name
   #
   # @return [String]

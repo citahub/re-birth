@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_09_022937) do
+ActiveRecord::Schema.define(version: 2018_11_01_035658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,6 +122,8 @@ ActiveRecord::Schema.define(version: 2018_10_09_022937) do
     t.string "contract_address"
     t.string "gas_used"
     t.string "error_message"
+    t.bigint "version", default: 0
+    t.jsonb "chain_id"
     t.index ["block_id"], name: "index_transactions_on_block_id"
     t.index ["cita_hash"], name: "index_transactions_on_cita_hash", unique: true
   end
