@@ -10,6 +10,10 @@ class Api::TransactionSerializer < ActiveModel::Serializer
   attribute :chain_name, key: :chainName
   attribute :error_message, key: :errorMessage
 
+  def chain_id
+    object.chain_id || SyncInfo.chain_id
+  end
+
   def value
     decimal_value = @instance_options[:decimal_value]
     return HexUtils.to_decimal(object.value) if decimal_value
