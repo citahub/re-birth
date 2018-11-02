@@ -6,7 +6,7 @@ FactoryBot.define do
     value { 10 }
     transaction_hash { "0x14b06be4067ba65d05e41d8821e2cf7d572a65b1bf53857a6a504ec42e69fdfd" }
     block_number { "0x18a1ec" }
-    gas_used { "0x2d483" }
+    quota_used { "0x2d483" }
 
     association :tx, factory: :transaction
     association :event_log, factory: :erc20_event_log

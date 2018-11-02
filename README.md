@@ -6,13 +6,15 @@
 
 A blockchain explorer cache server for [Nervos AppChain](https://docs.nervos.org/nervos-appchain-docs/#/).
 
-Now upgrade to work with CITA v0.18
+Now upgrade to work with CITA v0.20
 
 ⚠️ NOTE: If you upgrade your chain to 0.18 from 0.17, after upgrade, you should stop sync task(`rake daemons:sync:stop`) and run `rake zero18:update` to update your old data, and start your sync task (`rake daemons:sync:start`), then restart your server 😄
 
 ⚠️ NOTE: when update this version, you should run `bundle exec rake event_logs:fix_old` to sync event logs that it's transaction already saved.
 
 ⚠️ NOTE: add `errorMessage` to `transactions`, run `bundle exec rake transactions:add_error_message` to add.
+
+⚠️ NOTE: If you upgrade your chain to 0.20, after upgrade, you should stop sync task(`rake daemons:sync:stop`) and run `rake zero20:update` to update your old data, and start your sync task (`rake daemons:sync:start`), then restart your server
 
 ## Docker
 

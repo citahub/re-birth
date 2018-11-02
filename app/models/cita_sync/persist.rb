@@ -76,7 +76,7 @@ module CitaSync
         receipt_result = receipt_data["result"]
         unless receipt_result.nil?
           transaction.contract_address = receipt_result["contractAddress"]
-          transaction.gas_used = receipt_result["gasUsed"]
+          transaction.quota_used = receipt_result["quotaUsed"] || receipt_result["gasUsed"]
           transaction.error_message = receipt_result["errorMessage"]
         end
         transaction.save
