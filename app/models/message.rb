@@ -6,7 +6,7 @@ require "ciri/crypto"
 
 class Message
   attr_reader :original_data, :original_signature, :unverified_transaction
-  attr_reader :data, :signature, :value, :to, :from
+  attr_reader :data, :signature, :value, :to, :from, :version, :chain_id
 
   # initialize the object and values...
   #
@@ -21,8 +21,23 @@ class Message
     @data = to_hex(@original_data)
     @signature = to_hex(@original_signature)
 
+    @version = @unverified_transaction["transaction"]["version"]
+
     @value = to_hex(@unverified_transaction["transaction"]["value"])
-    @to = "0x" + @unverified_transaction["transaction"]["to"]
+    @to = "0x" + if @version.zero?
+                   @unverified_transaction["transaction"]["to"]
+                 elsif @version == 1
+                   @unverified_transaction["transaction"]["to_v1"]&.unpack1("H*")
+                 else
+                   ""
+                 end
+
+    @chain_id = if @version.zero?
+                  @unverified_transaction["transaction"]["chain_id"]
+                elsif @version == 1
+                  chain_id_v1 = @unverified_transaction["transaction"]["chain_id_v1"]&.unpack1("H*")
+                  "0x#{chain_id_v1}"
+                end
 
     @from = get_from
   end

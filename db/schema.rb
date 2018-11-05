@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_09_022937) do
+ActiveRecord::Schema.define(version: 2018_11_01_095358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,7 +54,7 @@ ActiveRecord::Schema.define(version: 2018_10_09_022937) do
     t.string "transaction_hash"
     t.bigint "timestamp"
     t.string "block_number"
-    t.string "gas_used"
+    t.string "quota_used"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "event_log_id"
@@ -120,8 +120,10 @@ ActiveRecord::Schema.define(version: 2018_10_09_022937) do
     t.text "data"
     t.string "value"
     t.string "contract_address"
-    t.string "gas_used"
+    t.string "quota_used"
     t.string "error_message"
+    t.bigint "version", default: 0
+    t.jsonb "chain_id"
     t.index ["block_id"], name: "index_transactions_on_block_id"
     t.index ["cita_hash"], name: "index_transactions_on_cita_hash", unique: true
   end
