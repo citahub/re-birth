@@ -1,3 +1,14 @@
+GIT
+  remote: https://github.com/cryptape/appchain.rb.git
+  revision: 3a7e2288b57a5d2ef2bf850ab548e79fc3a8a6b7
+  specs:
+    appchain.rb (0.2.0)
+      activesupport (~> 5.2.1)
+      ciri-crypto (= 0.1.1)
+      faraday (~> 0.15.3)
+      google-protobuf (~> 3.6)
+      web3-eth (~> 0.2.16)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -199,6 +210,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    rlp (0.7.3)
     rspec-core (3.8.0)
       rspec-support (~> 3.8.0)
     rspec-expectations (3.8.2)
@@ -250,6 +262,9 @@ GEM
       thread_safe (~> 0.1)
     unicode-display_width (1.4.0)
     url (0.3.2)
+    web3-eth (0.2.16)
+      digest-sha3 (~> 1.1.0)
+      rlp (~> 0.7.3)
     webmock (3.4.2)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -266,6 +281,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.7)
+  appchain.rb!
   awesome_print
   bootsnap (>= 1.1.0)
   byebug

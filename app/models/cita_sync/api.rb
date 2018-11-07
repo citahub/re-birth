@@ -2,34 +2,11 @@
 
 module CitaSync
   class Api
-    class << self
-      # New methods without prefix since CITA v0.16
-      # now upgrade to CITA v0.18
-      METHOD_NAMES = %w(
-        peerCount
-        blockNumber
-        sendRawTransaction
-        getBlockByHash
-        getBlockByNumber
-        getTransaction
-        getTransactionReceipt
-        getLogs
-        call
-        getTransactionCount
-        getCode
-        getAbi
-        getBalance
-        newFilter
-        newBlockFilter
-        uninstallFilter
-        getFilterChanges
-        getFilterLogs
-        getTransactionProof
-        getMetaData
-        getBlockHeader
-        getStateProof
-      ).freeze
+    # New methods without prefix since CITA v0.16
+    # now upgrade to CITA v0.20
+    METHOD_NAMES = AppChain::RPC::METHOD_NAMES
 
+    class << self
       METHOD_NAMES.each do |name|
         define_method name.underscore do |*params|
           call_rpc(name, params: params)
@@ -44,8 +21,9 @@ module CitaSync
       # @param id [Integer] id number
       # @return [Hash, String, Array] json decode to hash
       def call_rpc(method, params: [], jsonrpc: "2.0", id: 83)
-        resp = CitaSync::Http.post(method, params: params, jsonrpc: jsonrpc, id: id)
-        Oj.load(resp.body)
+        cita_url = ENV["CITA_URL"]
+        client = AppChain::Client.new(cita_url)
+        client.rpc.call_rpc(method, jsonrpc: jsonrpc, params: params, id: id)
       end
     end
   end
