@@ -53,6 +53,9 @@ gem 'ethereum.rb', '~> 2.2'
 
 gem 'health_check', '~> 3.0'
 
+# appchain sdk
+gem "appchain.rb", github: "cryptape/appchain.rb"
+
 # Deployment
 gem 'mina', require: false
 gem 'mina-puma', require: false
