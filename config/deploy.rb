@@ -55,7 +55,7 @@ task :remote_environment do
 
   # For those using RVM, use this to load an RVM version@gemset.
   # invoke :'rvm:use', 'ruby-1.9.3-p125@default'
-  invoke :'rvm:use', 'ruby-2.5.1'
+  invoke :'rvm:use', 'ruby-2.5.3'
 end
 
 # Put any custom commands you need to run at setup
@@ -63,7 +63,6 @@ end
 task :setup do
   # command %{rbenv install 2.3.0 --skip-existing}
   command %[touch "#{fetch(:shared_path)}/config/puma.rb"]
-  command %[touch "#{fetch(:shared_path)}/config/master.key"]
   command %[touch "#{fetch(:shared_path)}/.env.local"]
   comment color_str("Be sure to edit config files")
 end
@@ -79,7 +78,7 @@ task :deploy do
     invoke :'deploy:link_shared_paths'
     invoke :'bundle:install'
     invoke :'rails:db_migrate'
-    invoke :'rails:assets_precompile'
+    # invoke :'rails:assets_precompile'
     invoke :'deploy:cleanup'
 
     on :launch do

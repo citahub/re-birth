@@ -7,7 +7,7 @@ FactoryBot.define do
     header { {
              "proof" => nil,
              "number" => "0x0",
-             "gasUsed" => "0x0",
+             "quotaUsed" => "0x0",
              "prevHash" => "0x0000000000000000000000000000000000000000000000000000000000000000",
              "proposer" => "0x0000000000000000000000000000000000000000",
              "stateRoot" => "0xc9509aed05b800c7d9a27395b1f7cdde9428f56a72e9f07661c1f1731d7dda44",
@@ -33,7 +33,7 @@ FactoryBot.define do
              "stateRoot": "0x9b3609aca48d23cadcbab0d768fa0d2187807a23f4ae19742db128a9a64f3bfc",
              "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
              "receiptsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
-             "gasUsed": "0x0",
+             "quotaUsed": "0x0",
              "proof": nil,
              "proposer": "0x0000000000000000000000000000000000000000"
            } }
@@ -54,7 +54,7 @@ FactoryBot.define do
              "stateRoot": "0x048523e8326427968d05673210cc77a8f76e60d0b9170d1bdc1d49c131da9c85",
              "transactionsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
              "receiptsRoot": "0x56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421",
-             "gasUsed": "0x0",
+             "quotaUsed": "0x0",
              "proof": nil,
              "proposer": "0x91827976af27e1fd405469b00dc8d3b0ea2203f6"
            } }

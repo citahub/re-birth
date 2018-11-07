@@ -27,4 +27,37 @@ RSpec.describe Message do
     expect(message.to).to eq to
   end
 
+  context "version 0" do
+    let(:content) { transaction_result_two[:content] }
+
+    it "chain_id" do
+      expect(message.version).to eq 0
+      expect(message.chain_id).to eq message.unverified_transaction["transaction"]["chain_id"]
+    end
+
+    it "to" do
+      expect(message.version).to eq 0
+      expected_to = "0x" + message.unverified_transaction["transaction"]["to"]
+      expect(message.to).to eq expected_to
+    end
+  end
+
+  context "version 1" do
+    let(:content) { transaction_result_version1[:content] }
+
+    it "chain_id" do
+      chain_id_v1 = "0x" + message.unverified_transaction["transaction"]["chain_id_v1"].unpack1("H*")
+
+      expect(message.version).to eq 1
+      expect(message.chain_id).to eq chain_id_v1
+    end
+
+    it "to" do
+      to_v1 = "0x" + message.unverified_transaction["transaction"]["to_v1"].unpack1("H*")
+
+      expect(message.version).to eq 1
+      expect(message.to).to eq to_v1
+    end
+  end
+
 end

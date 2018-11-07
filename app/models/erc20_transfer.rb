@@ -7,6 +7,8 @@ class Erc20Transfer < ApplicationRecord
 
   before_save :downcase_before_save
 
+  alias_attribute :gas_used, :quota_used
+
   # validates :event_log, uniqueness: true
 
   # first of topics: event signature
@@ -65,7 +67,7 @@ class Erc20Transfer < ApplicationRecord
         address: event_log.address,
         transaction_hash: event_log.transaction_hash,
         block_number: event_log.block_number,
-        gas_used: event_log.tx.gas_used,
+        quota_used: event_log.tx.quota_used,
         from: info[:from],
         to: info[:to],
         value: info[:value],
