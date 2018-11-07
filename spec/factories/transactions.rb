@@ -10,7 +10,7 @@ FactoryBot.define do
     data { "0x" }
     value { "0x0000000000000000000000000000000000000000000000000000000000001000" }
     contract_address { "0x89be88054e2ee94911549be521ab1241c7700a1b" }
-    gas_used { "0x2d483" }
+    quota_used { "0x2d483" }
 
     association :block, factory: :block_one
   end

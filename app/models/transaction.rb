@@ -9,4 +9,6 @@ class Transaction < ApplicationRecord
 
   # validates :block, presence: true
   validates :cita_hash, presence: true, uniqueness: true
+
+  alias_attribute :gas_used, :quota_used
 end
