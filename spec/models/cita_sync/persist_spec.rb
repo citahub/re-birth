@@ -38,7 +38,7 @@ RSpec.describe CitaSync::Api, type: :model do
     it "with error params" do
       sync_error = CitaSync::Persist.save_block("a")
       expect(sync_error.method).to eq "getBlockByNumber"
-      expect(sync_error.params).to eq ["a", true]
+      expect(sync_error.params).to eq ["a", false]
       expect(sync_error.code).to eq block_zero_params_error_code
       expect(sync_error.message).to eq block_zero_params_error_message
       expect(sync_error.data).to be nil
@@ -175,28 +175,33 @@ RSpec.describe CitaSync::Api, type: :model do
     end
   end
 
-  context "save block with infos" do
-    it "save success" do
-      CitaSync::Persist.save_block_with_infos("0x1")
-      block = Block.first
-      transaction = Transaction.first
-      expect(Block.count).to eq 1
-      expect(Transaction.count).to eq 1
-      expect(transaction.block_number).to eq block.header["number"]
-      expect(transaction.block).to eq block
-    end
-  end
+  # context "save block with infos" do
+  #   it "save success" do
+  #     CitaSync::Persist.save_block_with_infos("0x1")
+  #     block = Block.first
+  #     transaction = Transaction.first
+  #     expect(Block.count).to eq 1
+  #     expect(Transaction.count).to eq 1
+  #     expect(transaction.block_number).to eq block.header["number"]
+  #     expect(transaction.block).to eq block
+  #   end
+  # end
 
   context "save blocks with infos" do
     it "save blocks with transactions with empty db" do
+      Sidekiq::Worker.clear_all
       CitaSync::Persist.save_blocks_with_infos
+      Sidekiq::Worker.drain_all
+
       expect(Block.count).to eq 2
       expect(Transaction.count).to eq 1
     end
 
     it "save blocks with transactions with exist block" do
+      Sidekiq::Worker.clear_all
       CitaSync::Persist.save_block("0x0")
       CitaSync::Persist.save_blocks_with_infos
+      Sidekiq::Worker.drain_all
       expect(Block.count).to eq 2
       expect(Transaction.count).to eq 1
     end

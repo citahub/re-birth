@@ -65,6 +65,7 @@ module BlockMockSupport
     end
     let(:mock_get_block_by_number_zero) do
       stub_request_wrapper("getBlockByNumber", ["0x0", true], block_zero_result)
+      stub_request_wrapper("getBlockByNumber", ["0x0", false], block_zero_result)
     end
 
     let(:block_zero_params_error_code) { -32700 }
@@ -76,7 +77,7 @@ module BlockMockSupport
       }
     end
     let(:mock_get_block_by_number_zero_params_error) do
-      stub_request_error_wrapper("getBlockByNumber", ["a", true], block_zero_params_error)
+      stub_request_error_wrapper("getBlockByNumber", ["a", false], block_zero_params_error)
     end
 
     let(:block_one_hash) { "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b" }
@@ -107,6 +108,10 @@ module BlockMockSupport
     end
     let(:mock_get_block_by_number_one) do
       stub_request_wrapper("getBlockByNumber", ["0x1", true], block_one_result)
+      false_result = block_one_result.dup
+      txs = false_result["body"]["transactions"]
+      false_result["body"]["transactions"] = txs.map { |tx| tx[:hash] }
+      stub_request_wrapper("getBlockByNumber", ["0x1", false], false_result)
     end
 
     # CITA 0.20 version 0

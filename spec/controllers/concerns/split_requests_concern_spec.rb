@@ -8,7 +8,7 @@ RSpec.describe SplitRequestsConcern do
   let(:split_requests) { SplitRequests.new }
 
   let(:sync_methods) do
-    %w(getBlockByNumber getBlockByHash getTransaction)
+    %w(getTransaction)
   end
 
   let(:persist_methods) do
@@ -26,15 +26,15 @@ RSpec.describe SplitRequestsConcern do
       }
     end
 
-    it "find locally if exist" do
-      create :block_zero
+    # it "find locally if exist" do
+    #   create :block_zero
+    #
+    #   expect {
+    #     split_requests.find(params)
+    #   }.not_to raise_error
+    # end
 
-      expect {
-        split_requests.find(params)
-      }.not_to raise_error
-    end
-
-    context "find remote if not exist" do
+    context "find remote" do
       it "not found in remote" do
         expect {
           split_requests.find(params)
