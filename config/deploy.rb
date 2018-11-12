@@ -20,6 +20,7 @@ set :repository, 'https://github.com/cryptape/re-birth.git'
 set :branch, 'develop'
 set :rails_env, 'production'
 set :user, 'deploy'
+set :sidekiq_pid, -> { "#{fetch(:deploy_to)}/shared/tmp/pids/sidekiq.pid" }
 
 # Optional settings:
 #   set :user, 'foobar'          # Username in the server to SSH to.
