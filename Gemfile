@@ -56,10 +56,20 @@ gem 'health_check', '~> 3.0'
 # appchain sdk
 gem "appchain.rb", github: "cryptape/appchain.rb"
 
+# Redis
+gem 'hiredis', '~> 0.6.1'
+gem 'redis', '~> 4.0', '>= 4.0.3'
+gem 'redis-namespace', '~> 1.6'
+gem 'redis-objects', '~> 1.4', '>= 1.4.3'
+
+# Sidekiq
+gem 'sidekiq', '~> 5.2', '>= 5.2.3'
+
 # Deployment
 gem 'mina', require: false
 gem 'mina-puma', require: false
 gem 'mina-multistage', require: false
+gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

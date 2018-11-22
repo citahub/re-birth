@@ -39,6 +39,7 @@ doc
 
 # docker database
 docker/data
+docker/redis
 
 # custom configs
 config/customs/*.yml
