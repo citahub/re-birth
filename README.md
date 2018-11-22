@@ -24,6 +24,7 @@ Remember to run `rails secret` to generate secret key and write in `.env.local` 
 Remember to change your sidekiq username and password in `.env.local`
 
 ⚠️ IMPORTANT: your database data will save at docker/data
+
 ⚠️ IMPORTANT: your redis data will save at docker/redis
 
 App will run at http://localhost:8888
