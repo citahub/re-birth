@@ -11,6 +11,10 @@ require 'simplecov'
 SimpleCov.start
 require "webmock/rspec"
 
+# sidekiq test helper
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
+
 if ENV['CI'] == 'true'
   require 'codecov'
   SimpleCov.formatter = SimpleCov::Formatter::Codecov

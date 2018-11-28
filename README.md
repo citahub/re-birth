@@ -20,9 +20,12 @@ Now upgrade to work with CITA v0.20
 
 If you just want to run this, just use [docker 🐳](https://docs.docker.com/install)
 
-Remember to run `rails secret` to generate secret key and write in .env.local (read .env for more info)
+Remember to run `rails secret` to generate secret key and write in `.env.local` (read `.env` for more info)
+Remember to change your sidekiq username and password in `.env.local`
 
 ⚠️ IMPORTANT: your database data will save at docker/data
+
+⚠️ IMPORTANT: your redis data will save at docker/redis
 
 App will run at http://localhost:8888
 
@@ -37,7 +40,7 @@ you can get more info from Makefile
 ## Packages
 
 - [postgresql](https://www.postgresql.org/) 9.4 and above
-- install secp256k1 (see [secp256k1](https://github.com/bitcoin-core/secp256k1.git) for more info)
+- install [secp256k1](https://github.com/bitcoin-core/secp256k1.git)
 
   ```shell
   $ cd re-birth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../..

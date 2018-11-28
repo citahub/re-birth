@@ -9,10 +9,10 @@ RSpec.describe Message do
   let(:value) { "0x0000000000000000000000000000000000000000000000000000000000001000" }
   let(:message) { Message.new(content) }
   let(:unverified_transaction) { message.unverified_transaction }
-  let(:transaction) { unverified_transaction["transaction"] }
+  let(:transaction) { unverified_transaction[:transaction] }
 
   it "quota should be 1000" do
-    expect(transaction["quota"]).to eq quota
+    expect(transaction[:quota]).to eq quota
   end
 
   it "value should be eq" do
@@ -32,12 +32,12 @@ RSpec.describe Message do
 
     it "chain_id" do
       expect(message.version).to eq 0
-      expect(message.chain_id).to eq message.unverified_transaction["transaction"]["chain_id"]
+      expect(message.chain_id).to eq message.unverified_transaction[:transaction][:chain_id]
     end
 
     it "to" do
       expect(message.version).to eq 0
-      expected_to = "0x" + message.unverified_transaction["transaction"]["to"]
+      expected_to = message.unverified_transaction[:transaction][:to]
       expect(message.to).to eq expected_to
     end
   end
@@ -46,14 +46,14 @@ RSpec.describe Message do
     let(:content) { transaction_result_version1[:content] }
 
     it "chain_id" do
-      chain_id_v1 = "0x" + message.unverified_transaction["transaction"]["chain_id_v1"].unpack1("H*")
+      chain_id_v1 = message.unverified_transaction[:transaction][:chain_id]
 
       expect(message.version).to eq 1
       expect(message.chain_id).to eq chain_id_v1
     end
 
     it "to" do
-      to_v1 = "0x" + message.unverified_transaction["transaction"]["to_v1"].unpack1("H*")
+      to_v1 = message.unverified_transaction[:transaction][:to]
 
       expect(message.version).to eq 1
       expect(message.to).to eq to_v1
