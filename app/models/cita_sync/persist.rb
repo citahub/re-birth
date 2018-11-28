@@ -15,27 +15,33 @@ module CitaSync
       # @param hex_num_str [String] block number in hex_num_str
       # @return [Block, SyncError] return SyncError if rpc return an error
       def save_block(hex_num_str)
-        data = CitaSync::Api.get_block_by_number(hex_num_str, true)
+        data = CitaSync::Api.get_block_by_number(hex_num_str, false)
         result = data["result"]
         error = data["error"]
 
         # handle error
-        return handle_error("getBlockByNumber", [hex_num_str, true], error) unless error.nil?
+        return handle_error("getBlockByNumber", [hex_num_str, false], error) unless error.nil?
 
         # handle for result.nil
         return nil if result.nil?
 
         block_number_hex_str = result.dig("header", "number")
         block_number = HexUtils.to_decimal(block_number_hex_str)
+        transaction_hashes = result.dig("body", "transactions")
         block = Block.new(
           version: result["version"],
           cita_hash: result["hash"],
           header: result["header"],
-          body: result["body"],
+          # body: result["body"],
           block_number: block_number,
-          transaction_count: result.dig("body", "transactions").count
+          transaction_count: transaction_hashes.count
         )
         block.save if save_blocks?
+
+        transaction_hashes.each do |hash|
+          SaveTransactionWorker.perform_async(hash)
+        end
+
         block
       end
 
@@ -53,9 +59,9 @@ module CitaSync
         return handle_error("getTransaction", [hash], error) unless error.nil?
         return nil if result.nil?
 
-        block = if save_blocks?
-                  Block.find_by(block_number: HexUtils.to_decimal(result["blockNumber"]))
-                end
+        block = nil
+        block = Block.find_by(block_number: HexUtils.to_decimal(result["blockNumber"])) if save_blocks?
+
         content = result["content"]
         message = Message.new(content)
         transaction = Transaction.new(
@@ -80,7 +86,7 @@ module CitaSync
           transaction.error_message = receipt_result["errorMessage"]
         end
         transaction.save
-        save_event_logs(receipt_result["logs"]) unless receipt_result.nil?
+        SaveEventLogsWorker.perform_async(receipt_result["logs"]) unless receipt_result.nil?
         transaction
       end
 
@@ -100,9 +106,7 @@ module CitaSync
         event_logs = EventLog.create(attrs)
         # if event log is a registered ERC20 contract address, process it
         event_logs.each do |el|
-          if Erc20Transfer.exists?(address: el.address&.downcase) && Erc20Transfer.transfer?(el.topics)
-            Erc20Transfer.save_from_event_log(el)
-          end
+          SaveErc20TransferWorker.perform_async(el.id)
         end
       end
 
@@ -156,23 +160,6 @@ module CitaSync
         [abi, data]
       end
 
-      # save one block with it's transactions and meta data
-      #
-      # @param block_number_hex_str [String] hex string with "0x" prefix
-      # @return [void]
-      def save_block_with_infos(block_number_hex_str)
-        # merge to one commit, can be faster
-        ApplicationRecord.transaction do
-          block = save_block(block_number_hex_str)
-          return if block.nil?
-
-          hashes = block.transactions.map { |t| t&.with_indifferent_access&.dig :hash }
-          hashes.each do |hash|
-            save_transaction(hash)
-          end
-        end
-      end
-
       # save blocks and there's transactions and meta data, from next db block to last block in chain
       #
       # @return [void]
@@ -185,7 +172,7 @@ module CitaSync
         ((last_block_number + 1)..block_number).each do |num|
           hex_str = HexUtils.to_hex(num)
           ApplicationRecord.transaction do
-            save_block_with_infos(hex_str)
+            save_block(hex_str)
             SyncInfo.current_block_number = num
           end
         end
@@ -196,10 +183,7 @@ module CitaSync
       # @return [void]
       def realtime_sync
         loop do
-          begin
-            save_blocks_with_infos
-          rescue
-          end
+          save_blocks_with_infos
         end
       end
 

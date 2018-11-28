@@ -2,3 +2,4 @@
 .github
 tmp
 docker/data
+docker/redis

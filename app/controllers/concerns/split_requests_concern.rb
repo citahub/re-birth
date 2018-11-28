@@ -6,8 +6,6 @@ module SplitRequestsConcern
 
   # real time sync methods
   SYNC_METHODS = %w(
-    getBlockByNumber
-    getBlockByHash
     getTransaction
   ).freeze
 

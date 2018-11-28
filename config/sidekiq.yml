@@ -1,0 +1,6 @@
+---
+:concurrency: <%= ENV["SIDEKIQ_THREADS"]&.to_i || 25 %>
+:pidfile: tmp/pids/sidekiq.pid
+:logfile: log/sidekiq.log
+:queues:
+  - [default, 1]
