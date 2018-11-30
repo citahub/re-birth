@@ -23,7 +23,7 @@ before_install:
   - gem install bundler -v 1.17.1
 
 install:
-  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && ./tests && sudo make install && cd ..
+  - git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery && make && ./tests && sudo make install && cd ..
   - bundle install
   - nvm install 8.11.2
   - node -v

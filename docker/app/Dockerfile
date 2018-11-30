@@ -12,7 +12,7 @@ ENV LC_ALL en_US.UTF-8
 
 RUN mkdir /secp256k1
 WORKDIR /secp256k1
-RUN git clone https://github.com/bitcoin-core/secp256k1.git . && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && make install
+RUN git clone https://github.com/bitcoin-core/secp256k1.git . && ./autogen.sh && ./configure --enable-module-recovery && make && make install
 
 RUN echo 'gem: --no-document' >> /usr/local/etc/gemrc
 RUN gem install bundler

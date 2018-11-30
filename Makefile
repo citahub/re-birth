@@ -9,10 +9,12 @@ build:
 
 # run app daemon
 up:
+	@mkdir -p tmp/pids
 	docker-compose up -d
 
 # run app
 start:
+	@mkdir -p tmp/pids
 	docker-compose up
 
 # stop app

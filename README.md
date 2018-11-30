@@ -43,7 +43,7 @@ you can get more info from Makefile
 - install [secp256k1](https://github.com/bitcoin-core/secp256k1.git)
 
   ```shell
-  $ cd re-birth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery --enable-experimental --enable-module-ecdh && make && sudo make install && cd ../..
+  $ cd re-birth/tmp && git clone https://github.com/bitcoin-core/secp256k1.git && cd secp256k1 && ./autogen.sh && ./configure --enable-module-recovery && make && sudo make install && cd ../..
   ```
 
 ## Initial Project
