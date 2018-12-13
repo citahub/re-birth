@@ -84,13 +84,14 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "with error params" do
       params = ["0x0"]
-      sync_error = CitaSync::Persist.save_transaction(*params)
+      tx_sync_error, receipt_sync_error = CitaSync::Persist.save_transaction(*params)
 
-      expect(sync_error.method).to eq "getTransaction"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq transaction_params_error_code
-      expect(sync_error.message).to eq transaction_params_error_message
-      expect(sync_error.data).to be nil
+      expect(tx_sync_error.method).to eq "getTransaction"
+      expect(receipt_sync_error.method).to eq "getTransactionReceipt"
+      expect(tx_sync_error.params).to eq params
+      expect(tx_sync_error.code).to eq transaction_params_error_code
+      expect(tx_sync_error.message).to eq transaction_params_error_message
+      expect(tx_sync_error.data).to be nil
     end
   end
 

@@ -3,8 +3,10 @@
 module CitaSync
   class Persist
 
-    class SystemTimeoutError < StandardError; end
-    class NotReadyError < StandardError; end
+    class SystemTimeoutError < StandardError
+    end
+    class NotReadyError < StandardError
+    end
 
     class << self
       # get save blocks or not config
@@ -57,42 +59,59 @@ module CitaSync
       # @param hash [String] hash of transaction
       # @return [Transaction, SyncError] return SyncError if rpc return an error
       def save_transaction(hash)
-        data = CitaSync::Api.get_transaction(hash)
-        result = data["result"]
-        error = data["error"]
+        tx_data = CitaSync::Api.get_transaction(hash)
+        receipt_data = CitaSync::Api.get_transaction_receipt(hash)
+
+        tx_result = tx_data["result"]
+        tx_error = tx_data["error"]
+
+        receipt_result = receipt_data["result"]
+        receipt_error = receipt_data["error"]
 
         # handle error
-        return handle_error("getTransaction", [hash], error) unless error.nil?
-        return nil if result.nil?
+        unless tx_error.nil? && receipt_error.nil?
+          tx_sync_error = handle_error("getTransaction", [hash], tx_error) unless tx_error.nil?
+          receipt_sync_error = handle_error("getTransactionReceipt", [hash], receipt_error) unless receipt_error.nil?
+          return [tx_sync_error, receipt_sync_error]
+        end
+
+        return if tx_result.nil? && receipt_result.nil?
 
         block = nil
-        block = Block.find_by(block_number: HexUtils.to_decimal(result["blockNumber"])) if save_blocks?
+        block = Block.find_by(block_number: HexUtils.to_decimal(tx_result["blockNumber"])) if save_blocks?
 
-        content = result["content"]
+        content = tx_result["content"]
         message = Message.new(content)
         transaction = Transaction.new(
-          cita_hash: result["hash"],
+          cita_hash: tx_result["hash"],
           content: content,
-          block_number: result["blockNumber"],
-          block_hash: result["blockHash"],
-          index: result["index"],
+          block_number: tx_result["blockNumber"],
+          block_hash: tx_result["blockHash"],
+          index: tx_result["index"],
           block: block,
           from: message.from,
           to: message.to,
           data: message.data,
           value: message.value,
           version: message.version,
-          chain_id: message.chain_id
+          chain_id: message.chain_id,
+          contract_address: receipt_result["contractAddress"],
+          quota_used: receipt_result["quotaUsed"] || receipt_result["gasUsed"],
+          error_message: receipt_result["errorMessage"]
         )
-        receipt_data = CitaSync::Api.get_transaction_receipt(hash)
-        receipt_result = receipt_data["result"]
-        unless receipt_result.nil?
-          transaction.contract_address = receipt_result["contractAddress"]
-          transaction.quota_used = receipt_result["quotaUsed"] || receipt_result["gasUsed"]
-          transaction.error_message = receipt_result["errorMessage"]
+
+        ApplicationRecord.transaction do
+          transaction.save!
+          receipt_result["logs"]&.each do |log|
+            transaction.event_logs.build(log.transform_keys { |key| key.to_s.underscore }.merge(block: block))
+          end
+          transaction.save!
         end
-        transaction.save!
-        SaveEventLogsWorker.perform_async(receipt_result["logs"]) unless receipt_result.nil?
+
+        transaction.event_logs.each do |el|
+          SaveErc20TransferWorker.perform_async(el.id)
+        end
+
         transaction
       end
 
