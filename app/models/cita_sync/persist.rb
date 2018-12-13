@@ -2,6 +2,10 @@
 
 module CitaSync
   class Persist
+
+    class SystemTimeoutError < StandardError; end
+    class NotReadyError < StandardError; end
+
     class << self
       # get save blocks or not config
       #
@@ -23,7 +27,9 @@ module CitaSync
         return handle_error("getBlockByNumber", [hex_num_str, false], error) unless error.nil?
 
         # handle for result.nil
-        return nil if result.nil?
+        # raise "network error, retry later" if result.nil?
+        # error is nil now, if result is also nil, means result is nil (like after snapshot)
+        return if result.nil?
 
         block_number_hex_str = result.dig("header", "number")
         block_number = HexUtils.to_decimal(block_number_hex_str)
@@ -36,7 +42,7 @@ module CitaSync
           block_number: block_number,
           transaction_count: transaction_hashes.count
         )
-        block.save if save_blocks?
+        block.save! if save_blocks?
 
         transaction_hashes.each do |hash|
           SaveTransactionWorker.perform_async(hash)
@@ -167,14 +173,19 @@ module CitaSync
         block_number_hex_str = CitaSync::Api.block_number["result"]
         block_number = HexUtils.to_decimal(block_number_hex_str)
 
+        return if block_number.nil?
+
+        event_loop_queue = Sidekiq::Queue.new("event_loop")
+        default_queue = Sidekiq::Queue.new("default")
+
         # current biggest block number in database
         last_block_number = SyncInfo.current_block_number || -1
         ((last_block_number + 1)..block_number).each do |num|
+          break if event_loop_queue.size >= 100 || default_queue.size >= 500
+
           hex_str = HexUtils.to_hex(num)
-          ApplicationRecord.transaction do
-            save_block(hex_str)
-            SyncInfo.current_block_number = num
-          end
+          SaveBlockWorker.perform_async(hex_str)
+          SyncInfo.current_block_number = num
         end
       end
 
@@ -194,6 +205,9 @@ module CitaSync
 
         code = error["code"]
         message = error["message"]
+
+        raise SystemTimeoutError, message if code == -32099
+        raise NotReadyError, message if code == -32603
 
         SyncError.create(
           method: method,
