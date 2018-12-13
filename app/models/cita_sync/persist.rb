@@ -181,7 +181,7 @@ module CitaSync
         # current biggest block number in database
         last_block_number = SyncInfo.current_block_number || -1
         ((last_block_number + 1)..block_number).each do |num|
-          break if event_loop_queue.size >= 100 || default_queue.size >= 500
+          break if !Rails.env.test? && (event_loop_queue.size >= 100 || default_queue.size >= 500)
 
           hex_str = HexUtils.to_hex(num)
           SaveBlockWorker.perform_async(hex_str)
