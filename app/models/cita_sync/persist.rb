@@ -91,7 +91,7 @@ module CitaSync
           transaction.quota_used = receipt_result["quotaUsed"] || receipt_result["gasUsed"]
           transaction.error_message = receipt_result["errorMessage"]
         end
-        transaction.save
+        transaction.save!
         SaveEventLogsWorker.perform_async(receipt_result["logs"]) unless receipt_result.nil?
         transaction
       end
@@ -109,7 +109,7 @@ module CitaSync
           log.transform_keys { |key| key.to_s.underscore }.merge(tx: tx, block: block)
         end
 
-        event_logs = EventLog.create(attrs)
+        event_logs = EventLog.create!(attrs)
         # if event log is a registered ERC20 contract address, process it
         event_logs.each do |el|
           SaveErc20TransferWorker.perform_async(el.id)
