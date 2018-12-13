@@ -200,6 +200,7 @@ RSpec.describe CitaSync::Api, type: :model do
     it "save blocks with transactions with exist block" do
       Sidekiq::Worker.clear_all
       CitaSync::Persist.save_block("0x0")
+      SyncInfo.current_block_number = 0
       CitaSync::Persist.save_blocks_with_infos
       Sidekiq::Worker.drain_all
       expect(Block.count).to eq 2
