@@ -3,9 +3,9 @@
 module CitaSync
   class Persist
 
-    class SystemTimeoutError < StandardError;
+    class SystemTimeoutError < StandardError
     end
-    class NotReadyError < StandardError;
+    class NotReadyError < StandardError
     end
 
     class << self
@@ -70,9 +70,9 @@ module CitaSync
 
         # handle error
         unless tx_error.nil? && receipt_error.nil?
-          handle_error("getTransaction", [hash], tx_error) unless tx_error.nil?
-          handle_error("getTransactionReceipt", [hash], error) unless receipt_error.nil?
-          return
+          tx_sync_error = handle_error("getTransaction", [hash], tx_error) unless tx_error.nil?
+          receipt_sync_error = handle_error("getTransactionReceipt", [hash], receipt_error) unless receipt_error.nil?
+          return [tx_sync_error, receipt_sync_error]
         end
 
         return if tx_result.nil? && receipt_result.nil?

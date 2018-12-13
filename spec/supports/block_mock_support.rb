@@ -279,6 +279,9 @@ module BlockMockSupport
     let(:mock_get_transaction_params_error) do
       stub_request_error_wrapper("getTransaction", ["0x0"], transaction_params_error)
     end
+    let(:mock_get_transaction_receipt_params_error) do
+      stub_request_error_wrapper("getTransactionReceipt", ["0x0"], transaction_params_error)
+    end
 
     let(:transaction_receipt_result) do
       {
@@ -375,6 +378,7 @@ module BlockMockSupport
       mock_get_block_by_number_version1
       mock_get_transaction
       mock_get_transaction_params_error
+      mock_get_transaction_receipt_params_error
       mock_get_transaction_receipt
       mock_get_transaction_two
       mock_get_transaction_receipt_two
