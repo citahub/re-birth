@@ -38,7 +38,7 @@ RSpec.describe CitaSync::Api, type: :model do
     it "with error params" do
       sync_error = CitaSync::Persist.save_block("a")
       expect(sync_error.method).to eq "getBlockByNumber"
-      expect(sync_error.params).to eq ["a", false]
+      expect(sync_error.params).to eq ["a", true]
       expect(sync_error.code).to eq block_zero_params_error_code
       expect(sync_error.message).to eq block_zero_params_error_message
       expect(sync_error.data).to be nil
@@ -53,9 +53,16 @@ RSpec.describe CitaSync::Api, type: :model do
   end
 
   context "save transaction" do
+    let(:tx_data) do
+      {
+        "hash" => transaction_hash,
+        "content" => transaction_content
+      }
+    end
+
     it "save transaction" do
       block = CitaSync::Persist.save_block("0x1")
-      transaction = CitaSync::Persist.save_transaction(transaction_hash)
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, HexUtils.to_hex(block.block_number), block.cita_hash, block.id)
       expect(transaction.cita_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to eq block
@@ -63,7 +70,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "save transaction with SAVE_BLOCKS set false" do
       set_false
-      transaction = CitaSync::Persist.save_transaction(transaction_hash)
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, "0x0", "0x123", nil)
       expect(transaction.cita_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to be nil
@@ -78,20 +85,29 @@ RSpec.describe CitaSync::Api, type: :model do
     # end
 
     it "save transaction without block will be success" do
-      transaction = CitaSync::Persist.save_transaction(transaction_hash)
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, nil, nil, nil)
       expect(transaction.errors.full_messages).to be_empty
     end
 
     it "with error params" do
-      params = ["0x0"]
-      tx_sync_error, receipt_sync_error = CitaSync::Persist.save_transaction(*params)
+      params = [
+        {
+          "hash" => "0x0",
+          "content" => "0x123"
+        },
+        0,
+        nil,
+        nil,
+        nil
+      ]
 
-      expect(tx_sync_error.method).to eq "getTransaction"
+      receipt_sync_error = CitaSync::Persist.save_transaction(*params)
+
       expect(receipt_sync_error.method).to eq "getTransactionReceipt"
-      expect(tx_sync_error.params).to eq params
-      expect(tx_sync_error.code).to eq transaction_params_error_code
-      expect(tx_sync_error.message).to eq transaction_params_error_message
-      expect(tx_sync_error.data).to be nil
+      expect(receipt_sync_error.params).to eq ["0x0"]
+      expect(receipt_sync_error.code).to eq transaction_params_error_code
+      expect(receipt_sync_error.message).to eq transaction_params_error_message
+      expect(receipt_sync_error.data).to be nil
     end
   end
 
