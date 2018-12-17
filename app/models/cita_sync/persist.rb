@@ -21,12 +21,13 @@ module CitaSync
       # @param hex_num_str [String] block number in hex_num_str
       # @return [Block, SyncError] return SyncError if rpc return an error
       def save_block(hex_num_str)
-        data = CitaSync::Api.get_block_by_number(hex_num_str, false)
+        rpc_params = [hex_num_str, true]
+        data = CitaSync::Api.get_block_by_number(*rpc_params)
         result = data["result"]
         error = data["error"]
 
         # handle error
-        return handle_error("getBlockByNumber", [hex_num_str, false], error) unless error.nil?
+        return handle_error("getBlockByNumber", rpc_params, error) unless error.nil?
 
         # handle for result.nil
         # raise "network error, retry later" if result.nil?
@@ -35,19 +36,20 @@ module CitaSync
 
         block_number_hex_str = result.dig("header", "number")
         block_number = HexUtils.to_decimal(block_number_hex_str)
-        transaction_hashes = result.dig("body", "transactions")
+        block_hash = result["hash"]
+        transactions_data = result.dig("body", "transactions")
         block = Block.new(
           version: result["version"],
-          cita_hash: result["hash"],
+          cita_hash: block_hash,
           header: result["header"],
           # body: result["body"],
           block_number: block_number,
-          transaction_count: transaction_hashes.count
+          transaction_count: transactions_data.count
         )
         block.save! if save_blocks?
 
-        transaction_hashes.each do |hash|
-          SaveTransactionWorker.perform_async(hash)
+        transactions_data.each.with_index do |tx_data, index|
+          SaveTransactionWorker.perform_async(tx_data, index, block_number_hex_str, block_hash, block.id)
         end
 
         block
@@ -56,39 +58,30 @@ module CitaSync
       # save a transaction
       # block persisted first
       #
-      # @param hash [String] hash of transaction
+      # @param tx_data [Hash] hash and content of transaction
+      # @param index [Integer] transaction index
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(hash)
-        tx_data = CitaSync::Api.get_transaction(hash)
+      def save_transaction(tx_data, index, block_number_hex_str, block_hash, block_id)
+        hash = tx_data["hash"]
+        content = tx_data["content"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
-
-        tx_result = tx_data["result"]
-        tx_error = tx_data["error"]
 
         receipt_result = receipt_data["result"]
         receipt_error = receipt_data["error"]
 
         # handle error
-        unless tx_error.nil? && receipt_error.nil?
-          tx_sync_error = handle_error("getTransaction", [hash], tx_error) unless tx_error.nil?
-          receipt_sync_error = handle_error("getTransactionReceipt", [hash], receipt_error) unless receipt_error.nil?
-          return [tx_sync_error, receipt_sync_error]
-        end
+        return handle_error("getTransactionReceipt", [hash], receipt_error) unless receipt_error.nil?
 
-        return if tx_result.nil? && receipt_result.nil?
+        return if tx_data.nil? && receipt_result.nil?
 
-        block = nil
-        block = Block.find_by(block_number: HexUtils.to_decimal(tx_result["blockNumber"])) if save_blocks?
-
-        content = tx_result["content"]
         message = Message.new(content)
         transaction = Transaction.new(
-          cita_hash: tx_result["hash"],
+          cita_hash: hash,
           content: content,
-          block_number: tx_result["blockNumber"],
-          block_hash: tx_result["blockHash"],
-          index: tx_result["index"],
-          block: block,
+          block_number: block_number_hex_str,
+          block_hash: block_hash,
+          index: HexUtils.to_hex(index),
+          block_id: block_id,
           from: message.from,
           to: message.to,
           data: message.data,
@@ -103,7 +96,7 @@ module CitaSync
         ApplicationRecord.transaction do
           transaction.save!
           receipt_result["logs"]&.each do |log|
-            transaction.event_logs.build(log.transform_keys { |key| key.to_s.underscore }.merge(block: block))
+            transaction.event_logs.build(log.transform_keys { |key| key.to_s.underscore }.merge(block_id: block_id))
           end
           transaction.save!
         end
