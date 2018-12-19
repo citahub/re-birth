@@ -48,9 +48,8 @@ module CitaSync
         )
         block.save! if save_blocks?
 
-        transactions_data.each.with_index do |tx_data, index|
-          SaveTransactionWorker.perform_async(tx_data, index, block_number_hex_str, block_hash, block.id)
-        end
+        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number_hex_str, block_hash, block.id] }
+        SaveTransactionWorker.push_bulk(transaction_params) { |param| param }
 
         block
       end
@@ -101,9 +100,8 @@ module CitaSync
           transaction.save!
         end
 
-        transaction.event_logs.each do |el|
-          SaveErc20TransferWorker.perform_async(el.id)
-        end
+        event_log_ids = transaction.event_logs.map(&:id)
+        SaveErc20TransferWorker.push_bulk(event_log_ids)
 
         transaction
       end
