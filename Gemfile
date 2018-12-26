@@ -66,6 +66,9 @@ gem 'redis-objects', '~> 1.4', '>= 1.4.3'
 gem 'sidekiq', '~> 5.2', '>= 5.2.3'
 gem 'sidekiq-bulk', '~> 0.2.0'
 
+# union primary key
+gem 'composite_primary_keys', '~> 11.1'
+
 # Deployment
 gem 'mina', require: false
 gem 'mina-puma', require: false

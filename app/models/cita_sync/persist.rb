@@ -48,7 +48,7 @@ module CitaSync
         )
         block.save! if save_blocks?
 
-        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number_hex_str, block_hash, block.id] }
+        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number_hex_str, block_hash] }
         SaveTransactionWorker.push_bulk(transaction_params) { |param| param }
 
         block
@@ -60,7 +60,7 @@ module CitaSync
       # @param tx_data [Hash] hash and content of transaction
       # @param index [Integer] transaction index
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(tx_data, index, block_number_hex_str, block_hash, block_id)
+      def save_transaction(tx_data, index, block_number_hex_str, block_hash)
         hash = tx_data["hash"]
         content = tx_data["content"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
@@ -80,7 +80,6 @@ module CitaSync
           block_number: block_number_hex_str,
           block_hash: block_hash,
           index: HexUtils.to_hex(index),
-          block_id: block_id,
           from: message.from,
           to: message.to,
           data: message.data,
@@ -95,13 +94,20 @@ module CitaSync
         ApplicationRecord.transaction do
           transaction.save!
           receipt_result["logs"]&.each do |log|
-            transaction.event_logs.build(log.transform_keys { |key| key.to_s.underscore }.merge(block_id: block_id))
+            transaction.event_logs.build(
+              log.transform_keys { |key| key.to_s.underscore }
+                .merge(
+                  "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
+                  "log_index" => HexUtils.to_decimal(log["logIndex"]),
+                  "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
+                )
+            )
           end
           transaction.save!
         end
 
-        event_log_ids = transaction.event_logs.map(&:id)
-        SaveErc20TransferWorker.push_bulk(event_log_ids)
+        event_log_pkeys = transaction.event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
+        SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
 
         transaction
       end
@@ -114,16 +120,18 @@ module CitaSync
         return if logs.blank?
 
         attrs = logs.map do |log|
-          tx = Transaction.find_by(cita_hash: log["transactionHash"])
-          block = save_blocks? ? Block.find_by(cita_hash: log["blockHash"]) : nil
-          log.transform_keys { |key| key.to_s.underscore }.merge(tx: tx, block: block)
+          log.transform_keys { |key| key.to_s.underscore }
+            .merge(
+              "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
+              "log_index" => HexUtils.to_decimal(log["logIndex"]),
+              "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
+            )
         end
 
         event_logs = EventLog.create!(attrs)
         # if event log is a registered ERC20 contract address, process it
-        event_logs.each do |el|
-          SaveErc20TransferWorker.perform_async(el.id)
-        end
+        event_log_pkeys = event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
+        SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
       end
 
       # save balance, get balance and http response body
