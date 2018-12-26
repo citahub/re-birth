@@ -10,7 +10,7 @@ class Api::EventLogsController < ApplicationController
   # GET /api/event_logs/:address
   def show
     address = params[:address]
-    event_logs = EventLog.where("address ILIKE ?", address).order(id: :desc).page(params[:page]).per(params[:perPage])
+    event_logs = EventLog.where("address ILIKE ?", address).order(block_number: :desc, log_index: :desc).page(params[:page]).per(params[:perPage])
 
     render json: {
       result: {

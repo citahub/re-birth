@@ -2,7 +2,7 @@
 
 class Api::TransactionSerializer < ActiveModel::Serializer
   attributes :value, :to, :from, :content
-  attribute :cita_hash, key: :hash
+  attribute :tx_hash, key: :hash
   attribute :gas_used, key: :gasUsed
   attribute :quota_used, key: :quotaUsed
   attribute :block_number, key: :blockNumber
