@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :block do
-    cita_hash { "0x9b76631fa409a4c69f0726d16b9656d54fcef3aa0400d95b5f8e4413aacfe965" }
+    block_hash { "0x9b76631fa409a4c69f0726d16b9656d54fcef3aa0400d95b5f8e4413aacfe965" }
     version { 0 }
     block_number { 0 }
     transaction_count { 0 }
@@ -22,7 +22,7 @@ FactoryBot.define do
   end
 
   factory :block_zero, class: Block do
-    cita_hash { "0x542ff7aeccbd2b269c36e134e3c0a1be103b389dc9ed90a55c1d506e00b77b81" }
+    block_hash { "0x542ff7aeccbd2b269c36e134e3c0a1be103b389dc9ed90a55c1d506e00b77b81" }
     version { 0 }
     block_number { 0 }
     transaction_count { 0 }
@@ -43,7 +43,7 @@ FactoryBot.define do
   end
 
   factory :block_one, class: Block do
-    cita_hash { "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b" }
+    block_hash { "0xa18f9c384107d9a4fcd2fae656415928bd921047519fea5650cba394f6b6142b" }
     version { 0 }
     block_number { 1 }
     transaction_count { 1 }

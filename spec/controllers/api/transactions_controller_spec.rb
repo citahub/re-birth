@@ -17,11 +17,11 @@ RSpec.describe Api::TransactionsController, type: :controller do
 
     block_one = create :block_one
     13.times do
-      create :transaction, block: block_one, cita_hash: random(32)
+      create :transaction, block: block_one, tx_hash: random(32)
     end
 
-    create :transaction, block: block_one, cita_hash: random(32), from: from
-    create :transaction, block: block_one, cita_hash: random(32), to: to
+    create :transaction, block: block_one, tx_hash: random(32), from: from
+    create :transaction, block: block_one, tx_hash: random(32), to: to
   end
 
   context "index" do
@@ -121,7 +121,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
 
   context "show" do
     let(:transaction) { Transaction.first }
-    let(:tx_hash) { transaction.cita_hash }
+    let(:tx_hash) { transaction.tx_hash }
     let(:from) { transaction.from }
     let(:to) { transaction.to }
 

@@ -40,7 +40,7 @@ module CitaSync
         transactions_data = result.dig("body", "transactions")
         block = Block.new(
           version: result["version"],
-          cita_hash: block_hash,
+          block_hash: block_hash,
           header: result["header"],
           # body: result["body"],
           block_number: block_number,
@@ -75,7 +75,7 @@ module CitaSync
 
         message = Message.new(content)
         transaction = Transaction.new(
-          cita_hash: hash,
+          tx_hash: hash,
           content: content,
           block_number: block_number_hex_str,
           block_hash: block_hash,
@@ -94,7 +94,7 @@ module CitaSync
         ApplicationRecord.transaction do
           transaction.save!
           receipt_result["logs"]&.each do |log|
-            transaction.event_logs.build(
+            EventLog.create!(
               log.transform_keys { |key| key.to_s.underscore }
                 .merge(
                   "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
@@ -103,7 +103,6 @@ module CitaSync
                 )
             )
           end
-          transaction.save!
         end
 
         event_log_pkeys = transaction.event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
@@ -132,6 +131,7 @@ module CitaSync
         # if event log is a registered ERC20 contract address, process it
         event_log_pkeys = event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
         SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
+        event_logs
       end
 
       # save balance, get balance and http response body

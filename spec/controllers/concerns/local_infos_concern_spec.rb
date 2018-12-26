@@ -22,7 +22,7 @@ RSpec.describe LocalInfosConcern do
   end
 
   context "get_block_by_hash" do
-    let(:hash) { attributes_for(:block)[:cita_hash] }
+    let(:hash) { attributes_for(:block)[:block_hash] }
 
     it "return nil if block is nil" do
       block = local_infos.get_block_by_hash([hash, true])
@@ -37,7 +37,7 @@ RSpec.describe LocalInfosConcern do
   end
 
   context "get_transaction" do
-    let(:hash) { attributes_for(:transaction)[:cita_hash] }
+    let(:hash) { attributes_for(:transaction)[:tx_hash] }
 
     it "return nil if transaction is nil" do
       transaction = local_infos.get_transaction([hash])

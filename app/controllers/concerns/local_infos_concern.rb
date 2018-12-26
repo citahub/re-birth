@@ -24,7 +24,7 @@ module LocalInfosConcern
     # @return [ActiveModelSerializers::SerializableResource, nil] BlockSerializer, return nil if not found.
     def get_block_by_hash(params)
       hash, flag = params
-      block = Block.find_by(cita_hash: hash)
+      block = Block.find_by(block_hash: hash)
       return nil if block.nil?
 
       ActiveModelSerializers::SerializableResource.new(block, serializer: ::BlockSerializer, flag: flag)
@@ -36,7 +36,7 @@ module LocalInfosConcern
     # @return [ActiveModelSerializers::SerializableResource, nil] TransactionSerializer, return nil if not found.
     def get_transaction(params)
       hash, = params
-      transaction = Transaction.find_by(cita_hash: hash)
+      transaction = Transaction.find_by(tx_hash: hash)
       return nil if transaction.nil?
 
       # TransactionSerializer.new(transaction).as_json
