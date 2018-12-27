@@ -4,8 +4,8 @@ class Block < ApplicationRecord
   self.primary_key = :block_hash
 
   has_many :transactions, foreign_key: "block_hash", class_name: "Transaction", primary_key: "block_hash", inverse_of: "block"
-  has_many :event_logs, foreign_key: "block_hash", class_name: "EventLog", primary_key: [:transaction_hash, :log_index], inverse_of: "block"
-  has_many :erc20_transfers, foreign_key: "block_hash", class_name: "Erc20Transfer", primary_key: [:transaction_hash, :log_index], inverse_of: "block"
+  has_many :event_logs, foreign_key: "block_hash", class_name: "EventLog", primary_key: %i(transaction_hash log_index), inverse_of: "block"
+  has_many :erc20_transfers, foreign_key: "block_hash", class_name: "Erc20Transfer", primary_key: %i(transaction_hash log_index), inverse_of: "block"
 
   # store_accessor :header, :number
   # store_accessor :body, :transactions
@@ -15,7 +15,6 @@ class Block < ApplicationRecord
 
   store_accessor :header, :timestamp
 
-  # TODO: instead of counter_cache ?
   after_create :increase_validator_count
 
   # get current last block number in database

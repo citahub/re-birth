@@ -5,8 +5,8 @@ class Transaction < ApplicationRecord
 
   # belongs_to :block, optional: true
   belongs_to :block, optional: true, foreign_key: "block_hash", class_name: "Block", primary_key: "block_hash", inverse_of: :transactions
-  has_many :event_logs, foreign_key: "transaction_hash", class_name: "EventLog", primary_key: [:transaction_hash, :log_index], inverse_of: "tx"
-  has_many :erc20_transfers, foreign_key: "transaction_hash", class_name: "Erc20Transfer", primary_key: [:transaction_hash, :log_index], inverse_of: "tx"
+  has_many :event_logs, foreign_key: "transaction_hash", class_name: "EventLog", primary_key: %i(transaction_hash log_index), inverse_of: "tx"
+  has_many :erc20_transfers, foreign_key: "transaction_hash", class_name: "Erc20Transfer", primary_key: %i(transaction_hash log_index), inverse_of: "tx"
 
   delegate :timestamp, to: :block, allow_nil: true
 

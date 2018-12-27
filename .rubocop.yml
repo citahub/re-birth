@@ -12,6 +12,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'vendor/**/*'
     - 'lib/blockchain_pb.rb'
+    - 'tmp/**/*'
 
 Bundler/OrderedGems:
   Enabled: false

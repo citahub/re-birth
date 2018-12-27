@@ -7,8 +7,6 @@ class SaveErc20TransferWorker
     event_log = EventLog.find_by(transaction_hash: transaction_hash, transaction_log_index: transaction_log_index)
     return if event_log.nil?
 
-    if Erc20Transfer.exists?(address: event_log.address&.downcase) && Erc20Transfer.transfer?(event_log.topics)
-      Erc20Transfer.save_from_event_log(event_log)
-    end
+    Erc20Transfer.save_from_event_log(event_log) if Erc20Transfer.exists?(address: event_log.address&.downcase) && Erc20Transfer.transfer?(event_log.topics)
   end
 end

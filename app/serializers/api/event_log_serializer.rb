@@ -20,4 +20,8 @@ class Api::EventLogSerializer < ActiveModel::Serializer
   def transaction_log_index
     HexUtils.to_hex(object.transaction_log_index)
   end
+
+  def block_number
+    HexUtils.to_hex(object.block_number)
+  end
 end

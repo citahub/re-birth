@@ -23,4 +23,18 @@ class Api::Erc20TransferSerializer < ActiveModel::Serializer
 
     object&.address
   end
+
+  def block_number
+    return if object.block_number.nil?
+
+    HexUtils.to_hex(object.block_number)
+  end
+
+  def quota_used
+    return if object.quota_used.nil?
+
+    HexUtils.to_hex(object.quota_used)
+  end
+
+  alias gas_used quota_used
 end

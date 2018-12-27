@@ -17,7 +17,7 @@ class Api::TransactionSerializer < ActiveModel::Serializer
 
   def value
     decimal_value = @instance_options[:decimal_value]
-    return HexUtils.to_decimal(object.value) if decimal_value
+    return HexUtils.to_hex(object.value) unless decimal_value
 
     object.value
   end
@@ -25,4 +25,14 @@ class Api::TransactionSerializer < ActiveModel::Serializer
   def chain_name
     SyncInfo.chain_name
   end
+
+  def block_number
+    HexUtils.to_hex(object.block_number)
+  end
+
+  def quota_used
+    HexUtils.to_hex(object.quota_used)
+  end
+
+  alias gas_used quota_used
 end
