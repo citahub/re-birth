@@ -17,7 +17,7 @@ class Api::TransactionSerializer < ActiveModel::Serializer
 
   def value
     decimal_value = @instance_options[:decimal_value]
-    return HexUtils.to_hex(object.value) unless decimal_value
+    return "0x" + object.value.to_s(16).rjust(64, "0") unless decimal_value
 
     object.value
   end
