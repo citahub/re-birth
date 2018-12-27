@@ -97,8 +97,8 @@ RSpec.describe Api::TransactionsController, type: :controller do
     end
 
     context "with valueFormat" do
-      let(:value_hex) { attributes_for(:transaction)[:value] }
-      let(:value_decimal) { HexUtils.to_decimal(value_hex) }
+      let(:value_decimal) { attributes_for(:transaction)[:value] }
+      let(:value_hex) { "0x0000000000000000000000000000000000000000000000000000000000001000" }
       it "return decimal if valueFormat equals decimal" do
         get :index, params: { valueFormat: "decimal" }
 

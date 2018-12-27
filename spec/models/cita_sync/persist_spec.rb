@@ -139,7 +139,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
       expect(el.block).to eq bk
       expect(el.tx).to eq tx
-      nums = %w(log_index transaction_index transaction_log_index)
+      nums = %w(log_index transaction_index transaction_log_index block_number)
       event_log_attrs.transform_keys { |key| key.to_s.underscore }.each do |key, value|
         if nums.include?(key)
           expect(el.public_send key).to eq HexUtils.to_decimal(value)

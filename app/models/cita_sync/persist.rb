@@ -2,7 +2,6 @@
 
 module CitaSync
   class Persist
-
     class SystemTimeoutError < StandardError
     end
     class NotReadyError < StandardError
@@ -48,7 +47,7 @@ module CitaSync
         )
         block.save! if save_blocks?
 
-        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number_hex_str, block_hash] }
+        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number, block_hash] }
         SaveTransactionWorker.push_bulk(transaction_params) { |param| param }
 
         block
@@ -59,8 +58,10 @@ module CitaSync
       #
       # @param tx_data [Hash] hash and content of transaction
       # @param index [Integer] transaction index
+      # @param block_number [Integer]
+      # @param block_hash [String]
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(tx_data, index, block_number_hex_str, block_hash)
+      def save_transaction(tx_data, index, block_number, block_hash)
         hash = tx_data["hash"]
         content = tx_data["content"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
@@ -77,17 +78,17 @@ module CitaSync
         transaction = Transaction.new(
           tx_hash: hash,
           content: content,
-          block_number: block_number_hex_str,
+          block_number: block_number,
           block_hash: block_hash,
-          index: HexUtils.to_hex(index),
+          index: index,
           from: message.from,
           to: message.to,
           data: message.data,
-          value: message.value,
+          value: HexUtils.to_decimal(message.value),
           version: message.version,
           chain_id: message.chain_id,
           contract_address: receipt_result["contractAddress"],
-          quota_used: receipt_result["quotaUsed"] || receipt_result["gasUsed"],
+          quota_used: HexUtils.to_decimal(receipt_result["quotaUsed"] || receipt_result["gasUsed"]),
           error_message: receipt_result["errorMessage"]
         )
 
@@ -97,6 +98,7 @@ module CitaSync
             EventLog.create!(
               log.transform_keys { |key| key.to_s.underscore }
                 .merge(
+                  "block_number" => HexUtils.to_decimal(log["blockNumber"]),
                   "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
                   "log_index" => HexUtils.to_decimal(log["logIndex"]),
                   "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
@@ -120,11 +122,12 @@ module CitaSync
 
         attrs = logs.map do |log|
           log.transform_keys { |key| key.to_s.underscore }
-            .merge(
-              "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
-              "log_index" => HexUtils.to_decimal(log["logIndex"]),
-              "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
-            )
+             .merge(
+               "block_number" => HexUtils.to_decimal(log["blockNumber"]),
+               "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
+               "log_index" => HexUtils.to_decimal(log["logIndex"]),
+               "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
+             )
         end
 
         event_logs = EventLog.create!(attrs)
@@ -224,8 +227,8 @@ module CitaSync
         code = error["code"]
         message = error["message"]
 
-        raise SystemTimeoutError, message if code == -32099
-        raise NotReadyError, message if code == -32603
+        raise SystemTimeoutError, message if code == -32_099
+        raise NotReadyError, message if code == -32_603
 
         SyncError.create(
           method: method,

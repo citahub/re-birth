@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_20_094434) do
+ActiveRecord::Schema.define(version: 2018_12_26_103138) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,13 +52,13 @@ ActiveRecord::Schema.define(version: 2018_12_20_094434) do
     t.decimal "value", precision: 260
     t.string "transaction_hash", null: false
     t.bigint "timestamp"
-    t.string "block_number"
-    t.string "quota_used"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "block_hash"
     t.integer "log_index"
     t.integer "transaction_log_index", null: false
+    t.integer "block_number"
+    t.decimal "quota_used", precision: 100
     t.index ["address"], name: "index_erc20_transfers_on_address"
     t.index ["from"], name: "index_erc20_transfers_on_from"
     t.index ["to"], name: "index_erc20_transfers_on_to"
@@ -67,7 +67,6 @@ ActiveRecord::Schema.define(version: 2018_12_20_094434) do
   create_table "event_logs", primary_key: ["transaction_hash", "transaction_log_index"], force: :cascade do |t|
     t.string "address"
     t.string "block_hash"
-    t.string "block_number"
     t.text "data"
     t.string "topics", array: true
     t.string "transaction_hash", null: false
@@ -76,6 +75,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_094434) do
     t.integer "transaction_index"
     t.integer "log_index"
     t.integer "transaction_log_index", null: false
+    t.integer "block_number"
     t.index ["address"], name: "index_event_logs_on_address"
     t.index ["block_hash"], name: "index_event_logs_on_block_hash"
     t.index ["topics"], name: "index_event_logs_on_topics", using: :gin
@@ -102,20 +102,20 @@ ActiveRecord::Schema.define(version: 2018_12_20_094434) do
 
   create_table "transactions", primary_key: "tx_hash", id: :string, force: :cascade do |t|
     t.text "content"
-    t.string "block_number"
     t.string "block_hash"
-    t.string "index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "from"
     t.string "to"
     t.text "data"
-    t.string "value"
     t.string "contract_address"
-    t.string "quota_used"
     t.string "error_message"
     t.bigint "version", default: 0
     t.jsonb "chain_id"
+    t.integer "block_number"
+    t.integer "index"
+    t.decimal "value", precision: 100
+    t.decimal "quota_used", precision: 100
     t.index ["block_hash"], name: "index_transactions_on_block_hash"
     t.index ["from"], name: "index_transactions_on_from"
     t.index ["to"], name: "index_transactions_on_to"
