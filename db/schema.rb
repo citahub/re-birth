@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_01_095358) do
+ActiveRecord::Schema.define(version: 2018_12_20_094434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,61 +31,55 @@ ActiveRecord::Schema.define(version: 2018_11_01_095358) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "blocks", force: :cascade do |t|
+  create_table "blocks", primary_key: "block_hash", id: :string, force: :cascade do |t|
     t.integer "version"
-    t.string "cita_hash", null: false
     t.jsonb "header"
     t.jsonb "body"
     t.integer "block_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "transaction_count"
+    t.index ["block_hash"], name: "index_blocks_on_block_hash", unique: true
     t.index ["block_number"], name: "index_blocks_on_block_number", unique: true
     t.index ["body"], name: "index_blocks_on_body", using: :gin
-    t.index ["cita_hash"], name: "index_blocks_on_cita_hash", unique: true
     t.index ["header"], name: "index_blocks_on_header", using: :gin
   end
 
-  create_table "erc20_transfers", force: :cascade do |t|
+  create_table "erc20_transfers", primary_key: ["transaction_hash", "transaction_log_index"], force: :cascade do |t|
     t.string "address"
     t.string "from"
     t.string "to"
     t.decimal "value", precision: 260
-    t.string "transaction_hash"
+    t.string "transaction_hash", null: false
     t.bigint "timestamp"
     t.string "block_number"
     t.string "quota_used"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "event_log_id"
-    t.bigint "transaction_id"
-    t.bigint "block_id"
+    t.string "block_hash"
+    t.integer "log_index"
+    t.integer "transaction_log_index", null: false
     t.index ["address"], name: "index_erc20_transfers_on_address"
-    t.index ["block_id"], name: "index_erc20_transfers_on_block_id"
-    t.index ["event_log_id"], name: "index_erc20_transfers_on_event_log_id"
     t.index ["from"], name: "index_erc20_transfers_on_from"
     t.index ["to"], name: "index_erc20_transfers_on_to"
-    t.index ["transaction_id"], name: "index_erc20_transfers_on_transaction_id"
   end
 
-  create_table "event_logs", force: :cascade do |t|
+  create_table "event_logs", primary_key: ["transaction_hash", "transaction_log_index"], force: :cascade do |t|
     t.string "address"
     t.string "block_hash"
     t.string "block_number"
     t.text "data"
-    t.string "log_index"
     t.string "topics", array: true
-    t.string "transaction_hash"
-    t.string "transaction_index"
-    t.string "transaction_log_index"
+    t.string "transaction_hash", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "transaction_id"
-    t.bigint "block_id"
+    t.integer "transaction_index"
+    t.integer "log_index"
+    t.integer "transaction_log_index", null: false
     t.index ["address"], name: "index_event_logs_on_address"
-    t.index ["block_id"], name: "index_event_logs_on_block_id"
+    t.index ["block_hash"], name: "index_event_logs_on_block_hash"
     t.index ["topics"], name: "index_event_logs_on_topics", using: :gin
-    t.index ["transaction_id"], name: "index_event_logs_on_transaction_id"
+    t.index ["transaction_hash"], name: "index_event_logs_on_transaction_hash"
   end
 
   create_table "sync_errors", force: :cascade do |t|
@@ -106,15 +100,13 @@ ActiveRecord::Schema.define(version: 2018_11_01_095358) do
     t.index ["name"], name: "index_sync_infos_on_name"
   end
 
-  create_table "transactions", force: :cascade do |t|
-    t.string "cita_hash", null: false
+  create_table "transactions", primary_key: "tx_hash", id: :string, force: :cascade do |t|
     t.text "content"
     t.string "block_number"
     t.string "block_hash"
     t.string "index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "block_id"
     t.string "from"
     t.string "to"
     t.text "data"
@@ -124,8 +116,10 @@ ActiveRecord::Schema.define(version: 2018_11_01_095358) do
     t.string "error_message"
     t.bigint "version", default: 0
     t.jsonb "chain_id"
-    t.index ["block_id"], name: "index_transactions_on_block_id"
-    t.index ["cita_hash"], name: "index_transactions_on_cita_hash", unique: true
+    t.index ["block_hash"], name: "index_transactions_on_block_hash"
+    t.index ["from"], name: "index_transactions_on_from"
+    t.index ["to"], name: "index_transactions_on_to"
+    t.index ["tx_hash"], name: "index_transactions_on_tx_hash", unique: true
   end
 
   create_table "validator_caches", force: :cascade do |t|

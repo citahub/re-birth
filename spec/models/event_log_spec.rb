@@ -15,35 +15,28 @@ RSpec.describe EventLog, type: :model do
 
     context "transaction" do
       it "transaction hash must be present" do
-        event_log = build :event_log, transaction_hash: nil, tx: transaction
+        event_log = build :event_log, transaction_hash: nil, tx: nil
         expect(event_log).to be_invalid
       end
     end
 
     context "log_index" do
       it "log index must be present" do
-        event_log = build :event_log, log_index: nil, tx: transaction
+        event_log = build :event_log, log_index: nil, tx: nil, transaction_hash: transaction.tx_hash
         expect(event_log).to be_invalid
       end
     end
 
-    context "unique of transaction hash & log index" do
+    context "unique of transaction hash & transaction log index" do
       it "transaction hash not unique" do
-        create :event_log, transaction_hash: "aaa", log_index: "0x0", tx: transaction
-        event_log = build :event_log, transaction_hash: "aaa", log_index: "0x1", tx: transaction
-        expect(event_log).to be_valid
-      end
-
-      it "log_index not unique" do
-        create :event_log, transaction_hash: "aaa", tx: transaction
-        event_log = build :event_log, transaction_hash: "bbb", tx: transaction
-
+        create :event_log, tx: transaction, transaction_log_index: 0
+        event_log = build :event_log, tx: transaction, transaction_log_index: 1
         expect(event_log).to be_valid
       end
 
       it "txhash and log index should not be same" do
-        create :event_log, tx: transaction
-        event_log = build :event_log, tx: transaction
+        create :event_log, tx: transaction, transaction_log_index: 0
+        event_log = build :event_log, tx: transaction, transaction_log_index: 0
 
         expect(event_log).to be_invalid
       end

@@ -53,11 +53,10 @@ RSpec.describe Erc20Transfer, type: :model do
   context "save_from_event_log" do
     it "success" do
       transfer = Erc20Transfer.save_from_event_log event_log
-      erc20_transfer.update(timestamp: erc20_transfer.block.timestamp)
 
-      l = ->(k, _v) { %i(created_at updated_at id).include?(k.to_sym) }
-
-      expect(transfer.attributes.reject(&l)).to eq erc20_transfer.reload.attributes.reject(&l)
+      %i(address transaction_hash transaction_log_index log_index block_number block_hash).each do |attr|
+        expect(transfer.send(attr)).to eq event_log.send(attr)
+      end
     end
   end
 

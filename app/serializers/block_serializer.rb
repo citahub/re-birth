@@ -2,7 +2,7 @@
 
 class BlockSerializer < ActiveModel::Serializer
   attributes :version
-  attribute :cita_hash, key: :hash
+  attribute :block_hash, key: :hash
   attributes :header, :body
 
   # rpc getTransaction params: [hash, flag]
