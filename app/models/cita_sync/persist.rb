@@ -33,21 +33,26 @@ module CitaSync
         # error is nil now, if result is also nil, means result is nil (like after snapshot)
         return if result.nil?
 
-        block_number_hex_str = result.dig("header", "number")
+        block_header = result["header"]
+        block_number_hex_str = block_header["number"]
         block_number = HexUtils.to_decimal(block_number_hex_str)
         block_hash = result["hash"]
         transactions_data = result.dig("body", "transactions")
+        timestamp = block_header["timestamp"]
         block = Block.new(
           version: result["version"],
           block_hash: block_hash,
           header: result["header"],
           # body: result["body"],
           block_number: block_number,
-          transaction_count: transactions_data.count
+          transaction_count: transactions_data.count,
+          timestamp: timestamp,
+          proposer: block_header["proposer"],
+          quota_used: (block_header["quotaUsed"] || block_header["gasUsed"]).hex
         )
         block.save! if save_blocks?
 
-        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number, block_hash] }
+        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number, block_hash, timestamp] }
         SaveTransactionWorker.push_bulk(transaction_params) { |param| param }
 
         block
@@ -61,7 +66,7 @@ module CitaSync
       # @param block_number [Integer]
       # @param block_hash [String]
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(tx_data, index, block_number, block_hash)
+      def save_transaction(tx_data, index, block_number, block_hash, timestamp)
         hash = tx_data["hash"]
         content = tx_data["content"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
@@ -89,7 +94,8 @@ module CitaSync
           chain_id: message.chain_id,
           contract_address: receipt_result["contractAddress"],
           quota_used: HexUtils.to_decimal(receipt_result["quotaUsed"] || receipt_result["gasUsed"]),
-          error_message: receipt_result["errorMessage"]
+          error_message: receipt_result["errorMessage"],
+          timestamp: timestamp
         )
 
         ApplicationRecord.transaction do
