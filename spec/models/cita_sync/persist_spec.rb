@@ -62,7 +62,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "save transaction" do
       block = CitaSync::Persist.save_block("0x1")
-      transaction = CitaSync::Persist.save_transaction(tx_data, 0, HexUtils.to_hex(block.block_number), block.block_hash)
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, HexUtils.to_hex(block.block_number), block.block_hash, block.timestamp)
       expect(transaction.tx_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to eq block
@@ -70,7 +70,7 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "save transaction with SAVE_BLOCKS set false" do
       set_false
-      transaction = CitaSync::Persist.save_transaction(tx_data, 0, "0x0", "0x123")
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, "0x0", "0x123", nil)
       expect(transaction.tx_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to be nil
@@ -85,7 +85,7 @@ RSpec.describe CitaSync::Api, type: :model do
     # end
 
     it "save transaction without block will be success" do
-      transaction = CitaSync::Persist.save_transaction(tx_data, 0, nil, nil)
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, nil, nil, nil)
       expect(transaction.errors.full_messages).to be_empty
     end
 
@@ -96,6 +96,7 @@ RSpec.describe CitaSync::Api, type: :model do
           "content" => "0x123"
         },
         0,
+        nil,
         nil,
         nil
       ]

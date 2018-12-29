@@ -48,7 +48,7 @@ module CitaSync
           transaction_count: transactions_data.count,
           timestamp: timestamp,
           proposer: block_header["proposer"],
-          quota_used: block_header["quotaUsed"].hex
+          quota_used: (block_header["quotaUsed"] || block_header["gasUsed"]).hex
         )
         block.save! if save_blocks?
 
