@@ -25,7 +25,7 @@ class Api::TransactionsController < ApplicationController
     }
 
     # FIXME: should be order by block_number and index desc, change block_number to integer
-    transactions = Transaction.includes(:block).ransack(options).result.order(updated_at: :desc)
+    transactions = Transaction.ransack(options).result.order(updated_at: :desc)
 
     if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
       offset = params[:offset] || 0
