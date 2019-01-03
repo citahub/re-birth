@@ -143,56 +143,6 @@ module CitaSync
         event_logs
       end
 
-      # save balance, get balance and http response body
-      #
-      # @param addr [String] addr hex string
-      # @param block_number [String] hex string with "0x" prefix
-      # @return [[Balance, Hash], [SyncError, Hash]] return SyncError if rpc return an error
-      def save_balance(addr, block_number)
-        addr_downcase = addr.downcase
-        # height number in decimal system
-        data = CitaSync::Api.get_balance(addr_downcase, block_number)
-        error = data["error"]
-
-        # handle error
-        return [handle_error("getBalance", [addr_downcase, block_number], error), data] unless error.nil?
-
-        return [nil, data] unless block_number.start_with?("0x")
-
-        value = data["result"]
-        balance = Balance.create(
-          address: addr_downcase,
-          block_number: HexUtils.to_decimal(block_number),
-          value: value
-        )
-        [balance, data]
-      end
-
-      # save abi
-      #
-      # @param addr [String] addr hex string
-      # @param block_number [String] hex string with "0x" prefix
-      # @return [[Abi, Hash], [SyncError, Hash]] return SyncError if rpc return an error
-      def save_abi(addr, block_number)
-        addr_downcase = addr.downcase
-        # block_number in decimal system
-        data = CitaSync::Api.get_abi(addr_downcase, block_number)
-        error = data["error"]
-
-        # handle error
-        return [handle_error("getAbi", [addr_downcase, block_number], error), data] unless error.nil?
-
-        return [nil, data] unless block_number.start_with?("0x")
-
-        value = data["result"]
-        abi = Abi.create(
-          address: addr_downcase,
-          block_number: HexUtils.to_decimal(block_number),
-          value: value
-        )
-        [abi, data]
-      end
-
       # save blocks and there's transactions and meta data, from next db block to last block in chain
       #
       # @return [void]
