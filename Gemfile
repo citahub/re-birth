@@ -64,6 +64,7 @@ gem 'redis-objects', '~> 1.4', '>= 1.4.3'
 
 # Sidekiq
 gem 'sidekiq', '~> 5.2', '>= 5.2.3'
+gem 'sidekiq-bulk', '~> 0.2.0'
 
 # Deployment
 gem 'mina', require: false
