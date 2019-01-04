@@ -125,6 +125,23 @@ JSON-RPC interface, same format with [CITA JSON-RPC](https://docs.nervos.org/cit
 }
 ```
 
+### System infos
+
+> GET /api/infos/url
+
+Get the http and websocket url which ReBirth connected.
+
+#### response
+
+```ruby
+{
+  result: {
+    http_url: "http://localhost:1337",
+    ws_url: "http://localhost:4337"
+  }
+}
+```
+
 ### Blocks
 
 Get blocks info list and paginate it.
