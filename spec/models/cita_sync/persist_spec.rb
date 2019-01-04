@@ -163,40 +163,6 @@ RSpec.describe CitaSync::Api, type: :model do
 
   end
 
-  context "save balance" do
-    it "save success" do
-      balance, = CitaSync::Persist.save_balance(account_address, "0x0")
-      expect(balance.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["0x0", "0x0"]
-      sync_error, = CitaSync::Persist.save_balance(*params)
-      expect(sync_error.method).to eq "getBalance"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq balance_params_error_code
-      expect(sync_error.message).to eq balance_params_error_message
-      expect(sync_error.data).to be nil
-    end
-  end
-
-  context "save abi" do
-    it "save abi" do
-      abi, = CitaSync::Persist.save_abi(account_address, "0x0")
-      expect(abi.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["0x0", "0x0"]
-      sync_error, = CitaSync::Persist.save_abi(*params)
-      expect(sync_error.method).to eq "getAbi"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq abi_params_error_code
-      expect(sync_error.message).to eq abi_params_error_message
-      expect(sync_error.data).to be nil
-    end
-  end
-
   # context "save block with infos" do
   #   it "save success" do
   #     CitaSync::Persist.save_block_with_infos("0x1")
