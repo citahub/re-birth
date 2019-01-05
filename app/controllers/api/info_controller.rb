@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Api::InfosController < ApplicationController
-  # GET /api/infos/url
+class Api::InfoController < ApplicationController
+  # GET /api/info/url
   def url
     uri = URI.parse(ENV["CITA_URL"])
     ws_port = ENV["CITA_WS_PORT"]

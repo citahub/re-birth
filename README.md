@@ -127,7 +127,7 @@ JSON-RPC interface, same format with [CITA JSON-RPC](https://docs.nervos.org/cit
 
 ### System infos
 
-> GET /api/infos/url
+> GET /api/info/url
 
 Get the http and websocket url which ReBirth connected.
 

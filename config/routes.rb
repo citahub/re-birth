@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     get "erc20/transfers", to: "erc20_transfers#index"
     get "transactions/:hash", to: "transactions#show"
     get "event_logs/:address", to: "event_logs#show"
-    get "infos/url", to: "infos#url"
+    get "info/url", to: "info#url"
   end
 
   health_check_routes
