@@ -9,6 +9,15 @@ class Api::InfoController < ApplicationController
     ws_uri = uri.dup
     ws_uri.port = ws_port
 
+    cita_ws_protocol = ENV["CITA_WS_PROTOCOL"]
+    if %w(ws wss).include?(cita_ws_protocol)
+      ws_uri.scheme = cita_ws_protocol
+    elsif uri.scheme == "http"
+      ws_uri.scheme = "ws"
+    else
+      ws_uri.scheme = "wss"
+    end
+
     render json: {
       result: {
         http_url: uri.to_s,
