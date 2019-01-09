@@ -2,7 +2,6 @@
 
 module CitaSync
   class Persist
-
     class SystemTimeoutError < StandardError
     end
     class NotReadyError < StandardError
@@ -34,21 +33,26 @@ module CitaSync
         # error is nil now, if result is also nil, means result is nil (like after snapshot)
         return if result.nil?
 
-        block_number_hex_str = result.dig("header", "number")
+        block_header = result["header"]
+        block_number_hex_str = block_header["number"]
         block_number = HexUtils.to_decimal(block_number_hex_str)
         block_hash = result["hash"]
         transactions_data = result.dig("body", "transactions")
+        timestamp = block_header["timestamp"]
         block = Block.new(
           version: result["version"],
-          cita_hash: block_hash,
+          block_hash: block_hash,
           header: result["header"],
           # body: result["body"],
           block_number: block_number,
-          transaction_count: transactions_data.count
+          transaction_count: transactions_data.count,
+          timestamp: timestamp,
+          proposer: block_header["proposer"],
+          quota_used: (block_header["quotaUsed"] || block_header["gasUsed"]).hex
         )
         block.save! if save_blocks?
 
-        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number_hex_str, block_hash, block.id] }
+        transaction_params = transactions_data.map.with_index { |tx_data, index| [tx_data, index, block_number, block_hash, timestamp] }
         SaveTransactionWorker.push_bulk(transaction_params) { |param| param }
 
         block
@@ -59,8 +63,10 @@ module CitaSync
       #
       # @param tx_data [Hash] hash and content of transaction
       # @param index [Integer] transaction index
+      # @param block_number [Integer]
+      # @param block_hash [String]
       # @return [Transaction, SyncError] return SyncError if rpc return an error
-      def save_transaction(tx_data, index, block_number_hex_str, block_hash, block_id)
+      def save_transaction(tx_data, index, block_number, block_hash, timestamp)
         hash = tx_data["hash"]
         content = tx_data["content"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
@@ -75,33 +81,40 @@ module CitaSync
 
         message = Message.new(content)
         transaction = Transaction.new(
-          cita_hash: hash,
+          tx_hash: hash,
           content: content,
-          block_number: block_number_hex_str,
+          block_number: block_number,
           block_hash: block_hash,
-          index: HexUtils.to_hex(index),
-          block_id: block_id,
+          index: index,
           from: message.from,
           to: message.to,
           data: message.data,
-          value: message.value,
+          value: HexUtils.to_decimal(message.value),
           version: message.version,
           chain_id: message.chain_id,
           contract_address: receipt_result["contractAddress"],
-          quota_used: receipt_result["quotaUsed"] || receipt_result["gasUsed"],
-          error_message: receipt_result["errorMessage"]
+          quota_used: HexUtils.to_decimal(receipt_result["quotaUsed"] || receipt_result["gasUsed"]),
+          error_message: receipt_result["errorMessage"],
+          timestamp: timestamp
         )
 
         ApplicationRecord.transaction do
           transaction.save!
           receipt_result["logs"]&.each do |log|
-            transaction.event_logs.build(log.transform_keys { |key| key.to_s.underscore }.merge(block_id: block_id))
+            EventLog.create!(
+              log.transform_keys { |key| key.to_s.underscore }
+                .merge(
+                  "block_number" => HexUtils.to_decimal(log["blockNumber"]),
+                  "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
+                  "log_index" => HexUtils.to_decimal(log["logIndex"]),
+                  "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
+                )
+            )
           end
-          transaction.save!
         end
 
-        event_log_ids = transaction.event_logs.map(&:id)
-        SaveErc20TransferWorker.push_bulk(event_log_ids)
+        event_log_pkeys = transaction.event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
+        SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
 
         transaction
       end
@@ -114,66 +127,20 @@ module CitaSync
         return if logs.blank?
 
         attrs = logs.map do |log|
-          tx = Transaction.find_by(cita_hash: log["transactionHash"])
-          block = save_blocks? ? Block.find_by(cita_hash: log["blockHash"]) : nil
-          log.transform_keys { |key| key.to_s.underscore }.merge(tx: tx, block: block)
+          log.transform_keys { |key| key.to_s.underscore }
+             .merge(
+               "block_number" => HexUtils.to_decimal(log["blockNumber"]),
+               "transaction_index" => HexUtils.to_decimal(log["transactionIndex"]),
+               "log_index" => HexUtils.to_decimal(log["logIndex"]),
+               "transaction_log_index" => HexUtils.to_decimal(log["transactionLogIndex"])
+             )
         end
 
         event_logs = EventLog.create!(attrs)
         # if event log is a registered ERC20 contract address, process it
-        event_logs.each do |el|
-          SaveErc20TransferWorker.perform_async(el.id)
-        end
-      end
-
-      # save balance, get balance and http response body
-      #
-      # @param addr [String] addr hex string
-      # @param block_number [String] hex string with "0x" prefix
-      # @return [[Balance, Hash], [SyncError, Hash]] return SyncError if rpc return an error
-      def save_balance(addr, block_number)
-        addr_downcase = addr.downcase
-        # height number in decimal system
-        data = CitaSync::Api.get_balance(addr_downcase, block_number)
-        error = data["error"]
-
-        # handle error
-        return [handle_error("getBalance", [addr_downcase, block_number], error), data] unless error.nil?
-
-        return [nil, data] unless block_number.start_with?("0x")
-
-        value = data["result"]
-        balance = Balance.create(
-          address: addr_downcase,
-          block_number: HexUtils.to_decimal(block_number),
-          value: value
-        )
-        [balance, data]
-      end
-
-      # save abi
-      #
-      # @param addr [String] addr hex string
-      # @param block_number [String] hex string with "0x" prefix
-      # @return [[Abi, Hash], [SyncError, Hash]] return SyncError if rpc return an error
-      def save_abi(addr, block_number)
-        addr_downcase = addr.downcase
-        # block_number in decimal system
-        data = CitaSync::Api.get_abi(addr_downcase, block_number)
-        error = data["error"]
-
-        # handle error
-        return [handle_error("getAbi", [addr_downcase, block_number], error), data] unless error.nil?
-
-        return [nil, data] unless block_number.start_with?("0x")
-
-        value = data["result"]
-        abi = Abi.create(
-          address: addr_downcase,
-          block_number: HexUtils.to_decimal(block_number),
-          value: value
-        )
-        [abi, data]
+        event_log_pkeys = event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
+        SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
+        event_logs
       end
 
       # save blocks and there's transactions and meta data, from next db block to last block in chain
@@ -216,8 +183,8 @@ module CitaSync
         code = error["code"]
         message = error["message"]
 
-        raise SystemTimeoutError, message if code == -32099
-        raise NotReadyError, message if code == -32603
+        raise SystemTimeoutError, message if code == -32_099
+        raise NotReadyError, message if code == -32_603
 
         SyncError.create(
           method: method,

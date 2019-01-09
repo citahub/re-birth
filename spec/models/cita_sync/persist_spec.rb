@@ -62,8 +62,8 @@ RSpec.describe CitaSync::Api, type: :model do
 
     it "save transaction" do
       block = CitaSync::Persist.save_block("0x1")
-      transaction = CitaSync::Persist.save_transaction(tx_data, 0, HexUtils.to_hex(block.block_number), block.cita_hash, block.id)
-      expect(transaction.cita_hash).to eq transaction_hash
+      transaction = CitaSync::Persist.save_transaction(tx_data, 0, HexUtils.to_hex(block.block_number), block.block_hash, block.timestamp)
+      expect(transaction.tx_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to eq block
     end
@@ -71,7 +71,7 @@ RSpec.describe CitaSync::Api, type: :model do
     it "save transaction with SAVE_BLOCKS set false" do
       set_false
       transaction = CitaSync::Persist.save_transaction(tx_data, 0, "0x0", "0x123", nil)
-      expect(transaction.cita_hash).to eq transaction_hash
+      expect(transaction.tx_hash).to eq transaction_hash
       expect(transaction.errors.full_messages).to be_empty
       expect(transaction.block).to be nil
     end
@@ -79,7 +79,7 @@ RSpec.describe CitaSync::Api, type: :model do
     # it "save transaction with block param" do
     #   block = CitaSync::Persist.save_block("0x1")
     #   transaction = CitaSync::Persist.save_transaction(transaction_hash, block)
-    #   expect(transaction.cita_hash).to eq transaction_hash
+    #   expect(transaction.tx_hash).to eq transaction_hash
     #   expect(transaction.errors.full_messages).to be_empty
     #   expect(transaction.block).to eq block
     # end
@@ -128,8 +128,8 @@ RSpec.describe CitaSync::Api, type: :model do
         "transactionLogIndex": "0x0"
       }.with_indifferent_access
     end
-    let!(:tx) { create :transaction, cita_hash: event_log_attrs[:transactionHash] }
-    let(:bk) { create :block, cita_hash: event_log_attrs[:blockHash] }
+    let!(:tx) { create :transaction, tx_hash: event_log_attrs[:transactionHash] }
+    let(:bk) { create :block, block_hash: event_log_attrs[:blockHash] }
 
     it "save success" do
       bk
@@ -140,8 +140,13 @@ RSpec.describe CitaSync::Api, type: :model do
 
       expect(el.block).to eq bk
       expect(el.tx).to eq tx
+      nums = %w(log_index transaction_index transaction_log_index block_number)
       event_log_attrs.transform_keys { |key| key.to_s.underscore }.each do |key, value|
-        expect(el.public_send key).to eq value
+        if nums.include?(key)
+          expect(el.public_send key).to eq HexUtils.to_decimal(value)
+        else
+          expect(el.public_send key).to eq value
+        end
       end
     end
 
@@ -156,40 +161,6 @@ RSpec.describe CitaSync::Api, type: :model do
       expect(el.tx).to eq tx
     end
 
-  end
-
-  context "save balance" do
-    it "save success" do
-      balance, = CitaSync::Persist.save_balance(account_address, "0x0")
-      expect(balance.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["0x0", "0x0"]
-      sync_error, = CitaSync::Persist.save_balance(*params)
-      expect(sync_error.method).to eq "getBalance"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq balance_params_error_code
-      expect(sync_error.message).to eq balance_params_error_message
-      expect(sync_error.data).to be nil
-    end
-  end
-
-  context "save abi" do
-    it "save abi" do
-      abi, = CitaSync::Persist.save_abi(account_address, "0x0")
-      expect(abi.errors.full_messages).to be_empty
-    end
-
-    it "with error params" do
-      params = ["0x0", "0x0"]
-      sync_error, = CitaSync::Persist.save_abi(*params)
-      expect(sync_error.method).to eq "getAbi"
-      expect(sync_error.params).to eq params
-      expect(sync_error.code).to eq abi_params_error_code
-      expect(sync_error.message).to eq abi_params_error_message
-      expect(sync_error.data).to be nil
-    end
   end
 
   # context "save block with infos" do

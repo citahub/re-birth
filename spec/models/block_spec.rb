@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Block, type: :model do
   context "validates" do
     let(:block) { build :block }
-    let(:cita_hash) { "0x" + SecureRandom.hex(32) }
-    let(:new_cita_hash) { "0x" + SecureRandom.hex(32) }
+    let(:block_hash) { "0x" + SecureRandom.hex(32) }
+    let(:new_block_hash) { "0x" + SecureRandom.hex(32) }
     let(:block_number) { 0 }
     let(:new_block_number) { 1 }
 
@@ -12,17 +12,17 @@ RSpec.describe Block, type: :model do
       expect(block).to be_valid
     end
 
-    it "cita_hash must be present" do
-      block.cita_hash = nil
+    it "block_hash must be present" do
+      block.block_hash = nil
 
       expect(block).to be_invalid
     end
 
-    it "cita_hash must be unique" do
-      block = create :block, cita_hash: cita_hash, block_number: block_number
-      valid_block = build :block, cita_hash: new_cita_hash, block_number: new_block_number
+    it "block_hash must be unique" do
+      block = create :block, block_hash: block_hash, block_number: block_number
+      valid_block = build :block, block_hash: new_block_hash, block_number: new_block_number
       expect(valid_block).to be_valid
-      invalid_block = build :block, cita_hash: cita_hash, block_number: new_block_number
+      invalid_block = build :block, block_hash: block_hash, block_number: new_block_number
       expect(invalid_block).to be_invalid
     end
 
@@ -33,10 +33,10 @@ RSpec.describe Block, type: :model do
     end
 
     it "block_number must be unique" do
-      block = create :block, cita_hash: cita_hash, block_number: block_number
-      valid_block = build :block, cita_hash: new_cita_hash, block_number: new_block_number
+      block = create :block, block_hash: block_hash, block_number: block_number
+      valid_block = build :block, block_hash: new_block_hash, block_number: new_block_number
       expect(valid_block).to be_valid
-      invalid_block = build :block, cita_hash: new_cita_hash, block_number: block_number
+      invalid_block = build :block, block_hash: new_block_hash, block_number: block_number
       expect(invalid_block).to be_invalid
     end
   end

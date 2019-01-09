@@ -24,7 +24,8 @@ class Api::TransactionsController < ApplicationController
       to_matches: params[:to]
     }
 
-    transactions = Transaction.includes(:block).ransack(options).result.order(block_id: :desc)
+    # FIXME: should be order by block_number and index desc, change block_number to integer
+    transactions = Transaction.ransack(options).result.order(updated_at: :desc)
 
     if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
       offset = params[:offset] || 0
@@ -36,6 +37,7 @@ class Api::TransactionsController < ApplicationController
       total_count = transactions.total_count
     end
 
+    # TODO: provide V2 api to set default value decimal
     decimal_value = params[:valueFormat] == "decimal"
 
     render json: {
@@ -55,7 +57,7 @@ class Api::TransactionsController < ApplicationController
       to_matches: params[:to]
     }
 
-    transaction = Transaction.where(cita_hash: params[:hash]).ransack(options).result.first
+    transaction = Transaction.where(tx_hash: params[:hash]).ransack(options).result.first
 
     # return nil if transaction not found
     if transaction.nil?

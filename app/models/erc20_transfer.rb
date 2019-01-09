@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 class Erc20Transfer < ApplicationRecord
-  belongs_to :event_log
-  belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_id", inverse_of: :erc20_transfers
-  belongs_to :block, optional: true
+  self.primary_key = %i(transaction_hash transaction_log_index)
+
+  belongs_to :block, optional: true, foreign_key: "block_hash", class_name: "Block", primary_key: "block_hash", inverse_of: "erc20_transfers"
+  belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_hash", primary_key: "tx_hash", inverse_of: :erc20_transfers
+  belongs_to :event_log, class_name: "EventLog", foreign_key: %i(transaction_hash transaction_log_index), primary_key: %i(transaction_hash transaction_log_index), inverse_of: :erc20_transfer
 
   before_save :downcase_before_save
 
@@ -66,14 +68,14 @@ class Erc20Transfer < ApplicationRecord
       create!(
         address: event_log.address,
         transaction_hash: event_log.transaction_hash,
+        log_index: event_log.log_index,
+        transaction_log_index: event_log.transaction_log_index,
         block_number: event_log.block_number,
+        block_hash: event_log.block_hash,
         quota_used: event_log.tx.quota_used,
         from: info[:from],
         to: info[:to],
         value: info[:value],
-        event_log: event_log,
-        block: event_log.block,
-        tx: event_log.tx,
         timestamp: event_log.block&.timestamp
       )
     end
