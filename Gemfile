@@ -54,7 +54,7 @@ gem 'ethereum.rb', '~> 2.2'
 gem 'health_check', '~> 3.0'
 
 # appchain sdk
-gem "appchain.rb", github: "cryptape/appchain.rb"
+gem 'appchain.rb', '~> 0.2.0'
 
 # Redis
 gem 'hiredis', '~> 0.6.1'
