@@ -30,10 +30,8 @@ class Api::Erc20TransfersController < ApplicationController
       to_matches: params[:to]
     }
 
-    unless Erc20Transfer.exists?(address: address)
-      Erc20Transfer.init_address(address)
-    end
-    transfers = Erc20Transfer.includes(:tx).where(address: address).order(id: :desc).ransack(options).result
+    Erc20Transfer.init_address(address) unless Erc20Transfer.exists?(address: address)
+    transfers = Erc20Transfer.includes(:tx).where(address: address).order(created_at: :desc).ransack(options).result
 
     if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
       offset = params[:offset] || 0

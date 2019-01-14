@@ -3,5 +3,5 @@
 class Api::BlockSerializer < ActiveModel::Serializer
   attributes :version, :header
   attribute :transaction_count, key: :transactionsCount
-  attribute :cita_hash, key: :hash
+  attribute :block_hash, key: :hash
 end

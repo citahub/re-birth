@@ -8,4 +8,20 @@ class Api::EventLogSerializer < ActiveModel::Serializer
   attribute :transaction_hash, key: :transactionHash
   attribute :transaction_index, key: :transactionIndex
   attribute :transaction_log_index, key: :transactionLogIndex
+
+  def log_index
+    HexUtils.to_hex(object.log_index)
+  end
+
+  def transaction_index
+    HexUtils.to_hex(object.transaction_index)
+  end
+
+  def transaction_log_index
+    HexUtils.to_hex(object.transaction_log_index)
+  end
+
+  def block_number
+    HexUtils.to_hex(object.block_number)
+  end
 end

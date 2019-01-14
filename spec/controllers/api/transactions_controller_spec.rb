@@ -17,11 +17,11 @@ RSpec.describe Api::TransactionsController, type: :controller do
 
     block_one = create :block_one
     13.times do
-      create :transaction, block: block_one, cita_hash: random(32)
+      create :transaction, block: block_one, tx_hash: random(32)
     end
 
-    create :transaction, block: block_one, cita_hash: random(32), from: from
-    create :transaction, block: block_one, cita_hash: random(32), to: to
+    create :transaction, block: block_one, tx_hash: random(32), from: from
+    create :transaction, block: block_one, tx_hash: random(32), to: to
   end
 
   context "index" do
@@ -97,8 +97,8 @@ RSpec.describe Api::TransactionsController, type: :controller do
     end
 
     context "with valueFormat" do
-      let(:value_hex) { attributes_for(:transaction)[:value] }
-      let(:value_decimal) { HexUtils.to_decimal(value_hex) }
+      let(:value_decimal) { attributes_for(:transaction)[:value] }
+      let(:value_hex) { "0x0000000000000000000000000000000000000000000000000000000000001000" }
       it "return decimal if valueFormat equals decimal" do
         get :index, params: { valueFormat: "decimal" }
 
@@ -121,7 +121,7 @@ RSpec.describe Api::TransactionsController, type: :controller do
 
   context "show" do
     let(:transaction) { Transaction.first }
-    let(:tx_hash) { transaction.cita_hash }
+    let(:tx_hash) { transaction.tx_hash }
     let(:from) { transaction.from }
     let(:to) { transaction.to }
 

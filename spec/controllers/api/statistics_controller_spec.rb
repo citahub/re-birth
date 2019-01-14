@@ -17,10 +17,10 @@ RSpec.describe Api::StatisticsController, type: :controller do
   before do
     20.times.each do |i|
       # 1 second
-      create :block_zero, header: block_zero_header.merge(timestamp: block_zero_header[:timestamp] + i * 1000), cita_hash: "0x#{SecureRandom.hex(32)}", block_number: i
+      create :block_zero, header: block_zero_header.merge(timestamp: block_zero_header[:timestamp] + i * 1000), block_hash: "0x#{SecureRandom.hex(32)}", block_number: i
     end
     10.times.each do |i|
-      create :block_one, header: block_one_header.merge(timestamp: block_zero_header[:timestamp] + (20 + i) * 1000), cita_hash: "0x#{SecureRandom.hex(32)}", block_number: (20 + i)
+      create :block_one, header: block_one_header.merge(timestamp: block_zero_header[:timestamp] + (20 + i) * 1000), block_hash: "0x#{SecureRandom.hex(32)}", block_number: (20 + i)
     end
 
     # create :meta_data, validators: [block_zero_proposer, block_one_proposer], block: Block.last
