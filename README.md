@@ -415,12 +415,13 @@ Get sync errors list, which is the errors while sync from chain.
 
 Get erc20 contracts transfer event logs by address
 
-> GET /api/erc20/transfers?address=0x...
+> GET /api/erc20/transfers
 
 #### params
 
 ```ruby
 {
+    "address": "0x...", # contract address, required
     "account": "from or to", # hash
     "from": "from address", # hash
     "to": "to address", # hash
