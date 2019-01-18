@@ -173,6 +173,7 @@ module CitaSync
         loop do
           save_blocks_with_infos
         end
+        sleep(ENV["LOOP_INTERVAL"].to_f)
       end
 
       private
