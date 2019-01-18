@@ -149,6 +149,7 @@ module CitaSync
       def save_blocks_with_infos
         block_number_hex_str = CitaSync::Api.block_number["result"]
         block_number = HexUtils.to_decimal(block_number_hex_str)
+        Rails.logger.info("current chain block number: #{block_number}")
 
         return if block_number.nil?
 
@@ -172,8 +173,8 @@ module CitaSync
       def realtime_sync
         loop do
           save_blocks_with_infos
+          sleep(ENV["LOOP_INTERVAL"].to_f)
         end
-        sleep(ENV["LOOP_INTERVAL"].to_f)
       end
 
       private
