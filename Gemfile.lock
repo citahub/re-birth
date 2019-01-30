@@ -49,12 +49,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
-    appchain.rb (0.2.0)
-      activesupport (~> 5.2.1)
-      ciri-crypto (= 0.1.1)
-      faraday (~> 0.15.3)
-      google-protobuf (~> 3.6)
-      web3-eth (~> 0.2.16)
     arel (9.0.0)
     ast (2.4.0)
     awesome_print (1.8.0)
@@ -71,6 +65,12 @@ GEM
       ciri-utils (~> 0.2.0)
     ciri-utils (0.2.2)
       digest-sha3 (~> 1.1.0)
+    cita-sdk-ruby (0.20.0)
+      activesupport (~> 5.2.1)
+      ciri-crypto (= 0.1.1)
+      faraday (~> 0.15.3)
+      google-protobuf (~> 3.6)
+      web3-eth (~> 0.2.16)
     codecov (0.1.13)
       json
       simplecov
@@ -295,11 +295,11 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.7)
-  appchain.rb (~> 0.2.0)
   awesome_print
   bootsnap (>= 1.1.0)
   byebug
   ciri-crypto (= 0.1.1)
+  cita-sdk-ruby (~> 0.20.0)
   codecov
   composite_primary_keys (~> 11.1)
   daemons (~> 1.2, >= 1.2.6)
