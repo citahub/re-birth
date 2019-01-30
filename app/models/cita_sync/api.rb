@@ -4,7 +4,7 @@ module CitaSync
   class Api
     # New methods without prefix since CITA v0.16
     # now upgrade to CITA v0.20
-    METHOD_NAMES = AppChain::RPC::METHOD_NAMES
+    METHOD_NAMES = CITA::RPC::METHOD_NAMES
 
     class << self
       METHOD_NAMES.each do |name|
@@ -22,7 +22,7 @@ module CitaSync
       # @return [Hash, String, Array] json decode to hash
       def call_rpc(method, params: [], jsonrpc: "2.0", id: 83)
         cita_url = ENV["CITA_URL"]
-        client = AppChain::Client.new(cita_url)
+        client = CITA::Client.new(cita_url)
         client.rpc.call_rpc(method, jsonrpc: jsonrpc, params: params, id: id)
       end
     end

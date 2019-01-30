@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/cryptape/re-birth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/re-birth)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/re-birth/master)
 
-A blockchain explorer cache server for [Nervos AppChain](https://docs.nervos.org/nervos-appchain-docs/#/).
+A blockchain explorer cache server for [CITA](https://github.com/cryptape/cita).
 
 Now upgrade to work with CITA v0.20
 

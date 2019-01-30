@@ -8,7 +8,7 @@ class Message
   # @param content [String] hex number string of transaction content
   # @return [void]
   def initialize(content)
-    @data = AppChain::TransactionSigner.decode(content)
+    @data = CITA::TransactionSigner.decode(content)
     @unverified_transaction = @data[:unverified_transaction]
     @transaction = @unverified_transaction[:transaction]
     @from = @data.dig(:sender, :address)
