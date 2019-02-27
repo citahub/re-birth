@@ -53,8 +53,8 @@ gem 'ethereum.rb', '~> 2.2'
 
 gem 'health_check', '~> 3.0'
 
-# appchain sdk
-gem "appchain.rb", github: "cryptape/appchain.rb"
+# CITA sdk
+gem 'cita-sdk-ruby', '~> 0.20.0', require: 'cita'
 
 # Redis
 gem 'hiredis', '~> 0.6.1'

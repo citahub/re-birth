@@ -20,7 +20,7 @@ services:
       dockerfile: ./docker/app/Dockerfile
     volumes:
       - .:/app
-    command: bash -c "rails daemons:sync:start && tail -f /app/log/production_sync.log"
+    command: bash -c "rails daemons:sync:start && tail -f /app/log/production.log"
     depends_on:
       - db
 

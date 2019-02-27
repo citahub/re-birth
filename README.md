@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/cryptape/re-birth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/re-birth)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/re-birth/master)
 
-A blockchain explorer cache server for [Nervos AppChain](https://docs.nervos.org/nervos-appchain-docs/#/).
+A blockchain explorer cache server for [CITA](http://docs.citahub.com).
 
 Now upgrade to work with CITA v0.20
 
@@ -77,7 +77,7 @@ $ rails daemons:sync:start
 
 Create a yaml file with `.yml` suffix in `config/customs`, see `config/customs/event_log.yml.sample` for more detail. For example, your file name is `contracts.yml`, you can run `bundle exec rake event_log:create[contracts]` to create your table and now restart sync task `bundle exec rake daemons:sync:restart` to listen your contact 😝
 
-We'll both use `address` and `topics` to select the logs by jsonrpc interface [`getLogs`](https://docs.nervos.org/cita/#/rpc_guide/rpc?id=getlogs)
+We'll both use `address` and `topics` to select the logs by jsonrpc interface [`getLogs`](http://docs.citahub.com/en-US/cita/rpc-guide/rpc#getlogs)
 
 ## Deploy
 
@@ -100,7 +100,7 @@ $ bundle exec yard server
 
 ### JSON-RPC Interface
 
-JSON-RPC interface, same format with [CITA JSON-RPC](https://docs.nervos.org/cita/#/rpc_guide/rpc).
+JSON-RPC interface, same format with [CITA JSON-RPC](http://docs.citahub.com/en-US/cita/rpc-guide/rpc).
 
 > POST /
 
@@ -415,12 +415,13 @@ Get sync errors list, which is the errors while sync from chain.
 
 Get erc20 contracts transfer event logs by address
 
-> GET /api/erc20/transfers?address=0x...
+> GET /api/erc20/transfers
 
 #### params
 
 ```ruby
 {
+    "address": "0x...", # contract address, required
     "account": "from or to", # hash
     "from": "from address", # hash
     "to": "to address", # hash
