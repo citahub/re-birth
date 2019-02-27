@@ -4,6 +4,8 @@
 [![codecov](https://codecov.io/gh/cryptape/re-birth/branch/master/graph/badge.svg)](https://codecov.io/gh/cryptape/re-birth)
 [![Documentation](http://img.shields.io/badge/docs-rdoc.info-blue.svg)](https://www.rubydoc.info/github/cryptape/re-birth/master)
 
+English | [简体中文](./README-CN.md)
+
 A blockchain explorer cache server for [CITA](http://docs.citahub.com).
 
 Now upgrade to work with CITA v0.20
@@ -57,7 +59,7 @@ $ rails db:setup (or rails db:create db:migrate db:seed)
 ## Running Test
 
 ```shell
-$ touch .env.test.local (test env will not read `.env.local` file, overwrite in `.env.test.lcoal`)
+$ touch .env.test.local (test env will not read `.env.local` file, overwrite in `.env.test.local`)
 $ rails spec
 ```
 
