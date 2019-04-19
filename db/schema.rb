@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_03_060302) do
+ActiveRecord::Schema.define(version: 2019_04_19_032612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2019_01_03_060302) do
     t.string "proposer"
     t.decimal "quota_used", precision: 100
     t.index ["block_hash"], name: "index_blocks_on_block_hash", unique: true
+    t.index ["block_number", "transaction_count"], name: "index_blocks_on_block_number_and_transaction_count"
     t.index ["block_number"], name: "index_blocks_on_block_number", unique: true
     t.index ["body"], name: "index_blocks_on_body", using: :gin
     t.index ["header"], name: "index_blocks_on_header", using: :gin
