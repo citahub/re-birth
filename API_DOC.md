@@ -48,7 +48,7 @@ Get the http and websocket url which ReBirth connected.
 
 Get blocks info list and paginate it.
 
-> GET /api/blocks
+> GET /v2/api/blocks
 
 #### params
 
