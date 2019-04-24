@@ -10,6 +10,38 @@ RSpec.describe Api::V2::BlocksController, type: :controller do
   let(:result) { Oj.load(response.body).with_indifferent_access[:result] }
   let(:count) { result[:blocks].size }
 
+  context "params transform" do
+    let(:params) do
+      ActionController::Parameters.new({
+        numberFrom: 0,
+        numberTo: 10,
+        transactionFrom: 20,
+        transactionTo: 30,
+        page: 40,
+        perPage: 50,
+        offset: 60,
+        limit: 70
+      })
+    end
+
+    let(:transformed_params) do
+      ActionController::Parameters.new({
+        number_from: 0,
+        number_to: 10,
+        transaction_from: 20,
+        transaction_to: 30,
+        page: 40,
+        per_page: 50,
+        offset: 60,
+        limit: 70
+      })
+    end
+
+    it "transform underscore" do
+      expect(params.transform_keys!(&:underscore)).to eq transformed_params
+    end
+  end
+
   context "index" do
     it "no params" do
       post :index, params: {}

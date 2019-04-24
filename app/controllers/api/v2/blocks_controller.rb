@@ -19,11 +19,13 @@ class Api::V2::BlocksController < ApplicationController
   #
   # GET /v2/api/blocks
   def index
+    params.transform_keys!(&:underscore)
+
     options = {
-      block_number_gteq: parse_hex(params[:numberFrom]),
-      block_number_lteq: parse_hex(params[:numberTo]),
-      transaction_count_gteq: parse_hex(params[:transactionFrom]),
-      transaction_count_lteq: parse_hex(params[:transactionTo])
+      block_number_gteq: parse_hex(params[:number_from]),
+      block_number_lteq: parse_hex(params[:number_to]),
+      transaction_count_gteq: parse_hex(params[:transaction_from]),
+      transaction_count_lteq: parse_hex(params[:transaction_to])
     }
 
     blocks = Block.ransack(options).result.order(block_number: :desc)
@@ -35,7 +37,7 @@ class Api::V2::BlocksController < ApplicationController
       blocks = blocks.offset(offset).limit(limit)
     else
       # use page and perPage
-      blocks = blocks.page(params[:page]).per(params[:perPage])
+      blocks = blocks.page(params[:page]).per(params[:per_page])
     end
 
     render json: {
