@@ -48,21 +48,24 @@ Get the http and websocket url which ReBirth connected.
 
 Get blocks info list and paginate it.
 
-> GET /api/blocks
+> GET /v2/api/blocks
 
 #### params
 
+Also Support camelCase.
+
 ```ruby
 {
-  "numberFrom": "10" or "0xa", #  integer or string of hex number
-  "numberTo": "20" or "0xa", # integer or string of hex number
-  "transactionFrom": "min transaction count", # integer or string of hex number
-  "transactionTo": "max transaction count", # integer or string of hex number
-  "page": "1", # integer, default 1
-  "perPage": "10", # integer, default 10
+  "block_number_from": "10" or "0xa", #  number or integer
+  "block_number_to": "20", # number or integer
+  "min_transaction_count": "min transaction count", # integer
+  "max_transaction_count": "max transaction count", # integer
+  "page": "1", # default 1
+  "per_page": "10", # default 10
+
   # offset and limit has lower priority than page and perPage
-  "offset": "1", # integer, database offset for pagination
-  "limit": "10", # integer, database limit for pagination
+  "offset": "1", # database offset for pagination
+  "limit": "10", # database limit for pagination
 }
 ```
 
@@ -71,7 +74,6 @@ Get blocks info list and paginate it.
 ```ruby
 {
     "result": {
-        "count": 111200,
         "blocks": [
             {
                 "version": 0,
