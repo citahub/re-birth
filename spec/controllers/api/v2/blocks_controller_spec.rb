@@ -13,10 +13,10 @@ RSpec.describe Api::V2::BlocksController, type: :controller do
   context "params transform" do
     let(:params) do
       ActionController::Parameters.new({
-        numberFrom: 0,
-        numberTo: 10,
-        transactionFrom: 20,
-        transactionTo: 30,
+        blockNumberFrom: 0,
+        blockNumberTo: 10,
+        minTransactionCount: 20,
+        maxTransactionCount: 30,
         page: 40,
         perPage: 50,
         offset: 60,
@@ -26,10 +26,10 @@ RSpec.describe Api::V2::BlocksController, type: :controller do
 
     let(:transformed_params) do
       ActionController::Parameters.new({
-        number_from: 0,
-        number_to: 10,
-        transaction_from: 20,
-        transaction_to: 30,
+        block_number_from: 0,
+        block_number_to: 10,
+        min_transaction_count: 20,
+        max_transaction_count: 30,
         page: 40,
         per_page: 50,
         offset: 60,
@@ -58,33 +58,33 @@ RSpec.describe Api::V2::BlocksController, type: :controller do
       expect(count).to eq 1
     end
 
-    it "with numberFrom" do
-      post :index, params: { numberFrom: 1 }
+    it "with blockNumberFrom" do
+      post :index, params: { blockNumberFrom: 1 }
       expect(count).to eq 1
     end
 
-    it "with numberTo" do
-      post :index, params: { numberTo: 0 }
+    it "with blockNumberTo" do
+      post :index, params: { blockNumberTo: 0 }
       expect(count).to eq 1
     end
 
-    it "with numberFrom and NumberTo" do
-      post :index, params: { numberFrom: 2, numberTo: 1 }
+    it "with blockNumberFrom and blockNumberTo" do
+      post :index, params: { blockNumberFrom: 2, blockNumberTo: 1 }
       expect(count).to eq 0
     end
 
-    it "with transactionFrom" do
-      post :index, params: { transactionFrom: 1 }
+    it "with minTransactionCount" do
+      post :index, params: { minTransactionCount: 1 }
       expect(count).to eq 1
     end
 
-    it "with transactionTo" do
-      post :index, params: { transactionTo: 0 }
+    it "with maxTransactionCount" do
+      post :index, params: { maxTransactionCount: 0 }
       expect(count).to eq 1
     end
 
-    it "with transactionFrom and transactionTo" do
-      post :index, params: { transactionFrom: 1, transactionTo: 1 }
+    it "with minTransactionCount and maxTransactionCount" do
+      post :index, params: { minTransactionCount: 1, maxTransactionCount: 1 }
       expect(count).to eq 1
     end
 

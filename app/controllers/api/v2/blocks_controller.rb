@@ -5,16 +5,16 @@ class Api::V2::BlocksController < ApplicationController
   #
   # params
   # {
-  #   "numberFrom": "10" or "0xa", //  number or integer
-  #   "numberTo": "20", // number or integer
-  #   "transactionFrom": "min transaction count", // integer
-  #   "transactionTo": "max transaction count", // integer
+  #   "block_number_from": "10" or "0xa", //  number or integer
+  #   "block_number_to": "20", // number or integer
+  #   "min_transaction_count": "min transaction count", // integer
+  #   "max_transaction_count": "max transaction count", // integer
   #   "page": "1", // default 1
-  #   "perPage": "10", // default 10
+  #   "per_page": "10", // default 10
   #
   #   # offset and limit has lower priority than page and perPage
   #   "offset": "1", // database offset for pagination
-  #   "limit": "10", //database limit for pagination
+  #   "limit": "10", // database limit for pagination
   # }
   #
   # GET /v2/api/blocks
@@ -22,10 +22,10 @@ class Api::V2::BlocksController < ApplicationController
     params.transform_keys!(&:underscore)
 
     options = {
-      block_number_gteq: parse_hex(params[:number_from]),
-      block_number_lteq: parse_hex(params[:number_to]),
-      transaction_count_gteq: parse_hex(params[:transaction_from]),
-      transaction_count_lteq: parse_hex(params[:transaction_to])
+      block_number_gteq: parse_hex(params[:block_number_from]),
+      block_number_lteq: parse_hex(params[:block_number_to]),
+      transaction_count_gteq: parse_hex(params[:min_transaction_count]),
+      transaction_count_lteq: parse_hex(params[:max_transaction_count])
     }
 
     blocks = Block.ransack(options).result.order(block_number: :desc)
