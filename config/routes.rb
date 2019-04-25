@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     get "transactions/:hash", to: "transactions#show"
     get "event_logs/:address", to: "event_logs#show"
     get "info/url", to: "info#url"
+
+    namespace :v2 do
+      resources :blocks, only: [:index]
+    end
   end
 
   health_check_routes
