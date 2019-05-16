@@ -26,7 +26,7 @@ class Api::V2::TransactionsController < ApplicationController
       to_matches: params[:to]
     }
 
-    # FIXME: should be order by block_number and index desc, change block_number to integer
+    # FIXME: should order by block_number and index desc, change block_number to integer
     transactions = Transaction.ransack(options).result.order(updated_at: :desc)
 
     if params[:page].nil? && (!params[:offset].nil? || !params[:limit].nil?)
