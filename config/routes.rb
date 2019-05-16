@@ -21,6 +21,7 @@ Rails.application.routes.draw do
 
     namespace :v2 do
       resources :blocks, only: [:index]
+      resources :transactions, only: [:index]
     end
   end
 
