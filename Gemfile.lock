@@ -65,11 +65,11 @@ GEM
       ciri-utils (~> 0.2.0)
     ciri-utils (0.2.2)
       digest-sha3 (~> 1.1.0)
-    cita-sdk-ruby (0.20.0)
+    cita-sdk-ruby (0.23.0)
       activesupport (~> 5.2.1)
       ciri-crypto (= 0.1.1)
       faraday (~> 0.15.3)
-      google-protobuf (~> 3.6)
+      google-protobuf (~> 3.7)
       web3-eth (~> 0.2.16)
     codecov (0.1.13)
       json
@@ -106,7 +106,7 @@ GEM
     ffi (1.9.25)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    google-protobuf (3.6.1)
+    google-protobuf (3.7.1-universal-darwin)
     hashdiff (0.3.7)
     health_check (3.0.0)
       railties (>= 5.0)
@@ -299,7 +299,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   ciri-crypto (= 0.1.1)
-  cita-sdk-ruby (~> 0.20.0)
+  cita-sdk-ruby (~> 0.23.0)
   codecov
   composite_primary_keys (~> 11.1)
   daemons (~> 1.2, >= 1.2.6)
@@ -308,7 +308,7 @@ DEPENDENCIES
   ethereum.rb (~> 2.2)
   factory_bot_rails
   faraday (~> 0.15.2)
-  google-protobuf (~> 3.6)
+  google-protobuf (~> 3.7)
   health_check (~> 3.0)
   hiredis (~> 0.6.1)
   kaminari (~> 1.1, >= 1.1.1)
@@ -336,6 +336,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
+  web3-eth (= 0.2.18)
   webmock (~> 3.4, >= 3.4.2)
   yard (~> 0.9.14)
   yard-activesupport-concern

@@ -45,7 +45,7 @@ gem 'ransack', '~> 2.0', '>= 2.0.1'
 # paginate
 gem 'kaminari', '~> 1.1', '>= 1.1.1'
 
-gem 'google-protobuf', '~> 3.6'
+gem 'google-protobuf', '~> 3.7'
 
 gem 'ciri-crypto', '0.1.1'
 
@@ -54,7 +54,8 @@ gem 'ethereum.rb', '~> 2.2'
 gem 'health_check', '~> 3.0'
 
 # CITA sdk
-gem 'cita-sdk-ruby', '~> 0.20.0', require: 'cita'
+gem 'cita-sdk-ruby', '~> 0.23.0', require: 'cita'
+gem 'web3-eth', '0.2.18'
 
 # Redis
 gem 'hiredis', '~> 0.6.1'
