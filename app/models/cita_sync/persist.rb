@@ -69,6 +69,7 @@ module CitaSync
       def save_transaction(tx_data, index, block_number, block_hash, timestamp)
         hash = tx_data["hash"]
         content = tx_data["content"]
+        from = tx_data["from"]
         receipt_data = CitaSync::Api.get_transaction_receipt(hash)
 
         receipt_result = receipt_data["result"]
@@ -86,7 +87,7 @@ module CitaSync
           block_number: block_number,
           block_hash: block_hash,
           index: index,
-          from: message.from,
+          from: from,
           to: message.to,
           data: message.data,
           value: HexUtils.to_decimal(message.value),
