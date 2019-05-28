@@ -8,7 +8,7 @@
 
 [CITA](http://docs.citahub.com) 缓存服务器
 
-适配 CITA v0.20
+适配 CITA v0.22 及以上
 
 ⚠️ NOTE: 如果从 CITA 0.17 更新到 0.18，更新完成之后执行 `rake daemons:sync:stop`，再执行 `rake zero18:update` 来更新数据，然后执行 `rake daemons:sync:start`，完成后重启 server 即可 😄
 

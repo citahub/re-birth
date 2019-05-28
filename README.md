@@ -8,7 +8,7 @@ English | [简体中文](./README-CN.md)
 
 A blockchain explorer cache server for [CITA](http://docs.citahub.com).
 
-Now upgrade to work with CITA v0.20
+Now only support CITA v0.22 and above.
 
 ⚠️ NOTE: If you upgrade your chain to 0.18 from 0.17, after upgrade, you should stop sync task(`rake daemons:sync:stop`) and run `rake zero18:update` to update your old data, and start your sync task (`rake daemons:sync:start`), then restart your server 😄
 

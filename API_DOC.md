@@ -48,7 +48,7 @@ Get the http and websocket url which ReBirth connected.
 
 Get blocks info list and paginate it.
 
-> GET /v2/api/blocks
+> GET /api/v2/blocks
 
 #### params
 
@@ -111,18 +111,20 @@ Also Support camelCase.
 
 Get transactions list and paginate it.
 
-> GET /api/transactions
+> GET /api/v2/transactions
 
 #### params
+
+Also Support camelCase.
 
 ```ruby
 {
   "account":  "the addr transactions related to (from or to)", # hash string
   "from":  "the addr transactions from", # hash string
   "to":  "the addr transactions to", # hash string
-  "valueFormat": "decimal", # set value to decimal number, default hex number
+  "value_format": "decimal", # set value to decimal number, default hex number
   "page": "1", # integer, default 1
-  "perPage": "10", # integer, default 10
+  "per_page": "10", # integer, default 10
   # offset and limit has lower priority than page and perPage
   "offset":  "1", # integer, default to 0
   "limit":  "10", # integer, default to 10
