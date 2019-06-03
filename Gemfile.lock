@@ -65,12 +65,12 @@ GEM
       ciri-utils (~> 0.2.0)
     ciri-utils (0.2.2)
       digest-sha3 (~> 1.1.0)
-    cita-sdk-ruby (0.23.0)
+    cita-sdk-ruby (0.24.0)
       activesupport (~> 5.2.1)
       ciri-crypto (= 0.1.1)
       faraday (~> 0.15.3)
       google-protobuf (~> 3.7)
-      web3-eth (~> 0.2.16)
+      web3-eth (= 0.2.18)
     codecov (0.1.13)
       json
       simplecov
@@ -106,7 +106,7 @@ GEM
     ffi (1.9.25)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    google-protobuf (3.7.1-universal-darwin)
+    google-protobuf (3.7.1)
     hashdiff (0.3.7)
     health_check (3.0.0)
       railties (>= 5.0)
@@ -299,7 +299,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   byebug
   ciri-crypto (= 0.1.1)
-  cita-sdk-ruby (~> 0.23.0)
+  cita-sdk-ruby (~> 0.24.0)
   codecov
   composite_primary_keys (~> 11.1)
   daemons (~> 1.2, >= 1.2.6)
