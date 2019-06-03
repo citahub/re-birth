@@ -54,7 +54,7 @@ gem 'ethereum.rb', '~> 2.2'
 gem 'health_check', '~> 3.0'
 
 # CITA sdk
-gem 'cita-sdk-ruby', '~> 0.23.0', require: 'cita'
+gem 'cita-sdk-ruby', '~> 0.24.0', require: 'cita'
 gem 'web3-eth', '0.2.18'
 
 # Redis
