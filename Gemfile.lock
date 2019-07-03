@@ -286,7 +286,7 @@ GEM
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
-    yard (0.9.16)
+    yard (0.9.20)
     yard-activesupport-concern (0.0.1)
       yard (>= 0.8)
 
@@ -338,7 +338,7 @@ DEPENDENCIES
   tzinfo-data
   web3-eth (= 0.2.18)
   webmock (~> 3.4, >= 3.4.2)
-  yard (~> 0.9.14)
+  yard (>= 0.9.20)
   yard-activesupport-concern
 
 RUBY VERSION

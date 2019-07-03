@@ -84,7 +84,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'database_cleaner'
   gem 'simplecov', require: false
-  gem 'yard', '~> 0.9.14'
+  gem 'yard', '>= 0.9.20'
   gem 'yard-activesupport-concern'
 
   # Ruby static code analyzer and code formatter
