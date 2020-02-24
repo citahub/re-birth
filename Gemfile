@@ -5,10 +5,11 @@ ruby '2.5.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 5.2.2.1'
+gem 'nokogiri', '~> 1.10', '>= 1.10.7'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 3.12.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
@@ -84,7 +85,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'database_cleaner'
   gem 'simplecov', require: false
-  gem 'yard', '~> 0.9.14'
+  gem 'yard', '>= 0.9.20'
   gem 'yard-activesupport-concern'
 
   # Ruby static code analyzer and code formatter
