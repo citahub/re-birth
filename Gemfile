@@ -5,7 +5,7 @@ ruby '2.5.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 5.2.2.1'
-gem 'nokogiri', '~> 1.10', '>= 1.10.7'
+gem 'nokogiri', '~> 1.10'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
