@@ -100,3 +100,61 @@ $ bundle exec yard server
 
 ## API Doc
 See [API Doc](./API_DOC.md)
+
+
+## Contributing
+
+### Creating a Bug Report
+
+open a new issue: [https://github.com/citahub/re-birth/issues/new](https://github.com/citahub/re-birth/issues/new)
+
+with your version info
+
+### Tech Stack
+
+Read [docs/tech_stack.md](docs/tech_stack.md) to know the programming languages, frameworks, and tools that developers use to build this software.
+
+### Get source
+
+```
+git clone git@github.com:citahub/re-birth.git
+```
+
+### Coding style
+
+#### Coding style for Ruby
+
+* coding style guide: [https://rubystyle.guide](https://rubystyle.guide)
+* linter: [RuboCop](https://github.com/bbatsov/rubocop)
+* code formatter: $ rubocop -x
+
+
+#### Coding style for Docker
+
+* coding style guide: https://github.com/Haufe-Lexware/docker-style-guide
+* formatter: https://www.fromlatest.io/
+* best-practices: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
+
+#### Coding style for Makefile
+
+* coding style guide: https://style-guides.readthedocs.io/en/latest/makefile.html
+* tutorial: https://makefiletutorial.com/
+* conventions: https://www.gnu.org/prep/standards/html_node/Makefile-Conventions.html
+* best-practices: https://suva.sh/posts/well-documented-makefiles/
+
+
+### Running the tests
+
+```
+$ rails spec
+```
+
+### Commit your changes
+
+#### Workflow
+
+[GitHub Flow](https://help.github.com/en/articles/github-flow), [Understanding the GitHub flow](https://guides.github.com/introduction/flow/)
+
+#### git style guide
+
+use [git-style-guide](https://github.com/agis/git-style-guide) for Branches, Commits,Messages, Merging
