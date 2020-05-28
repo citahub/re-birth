@@ -44,7 +44,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'ransack', '~> 2.0', '>= 2.0.1'
 
 # paginate
-gem 'kaminari', '~> 1.1', '>= 1.1.1'
+gem 'kaminari', '~> 1.2'
 
 gem 'google-protobuf', '~> 3.7'
 
