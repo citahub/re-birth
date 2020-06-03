@@ -55,6 +55,10 @@ $ bundle
 $ touch .env.local (overwrite `.env` config if you need in `.env.local`, such as DB_USERNAME, DB_PASSWORD and CITA_URL...)
 $ rails db:setup (or rails db:create db:migrate db:seed)
 ```
+The default value of `CITA_URL` is: `localhost:1337`
+
+Please make sure that the cita blockchain is RUNNING
+
 
 ## Running Test
 
@@ -96,6 +100,15 @@ $ mina dev 'rake[daemons:sync:start]'
 ```shell
 $ bundle exec yard doc
 $ bundle exec yard server
+```
+
+##How to view log
+
+Under `log` folder you can the `production.log` and `sidekiq.log` file
+```
+log
+├── production.log
+└── sidekiq.log
 ```
 
 ## API Doc

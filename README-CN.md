@@ -63,6 +63,10 @@ $ touch .env.test.local (测试环境下不会读取 `.env.local` 中的信息, 
 $ rails spec
 ```
 
+`CITA_URL` 默认地址为：localhost:1337
+
+初次运行请确认 `CITA_URL` 参数下的链是否真在运行
+
 ## 执行程序
 
 ```shell
@@ -96,6 +100,14 @@ $ mina dev 'rake[daemons:sync:start]'
 ```shell
 $ bundle exec yard doc
 $ bundle exec yard server
+```
+## 如何查看日志
+
+在 `log` 目录下有 `production.log` 和 `sidekiq.log` 文件，可以查看运行日志
+```
+log
+├── production.log
+└── sidekiq.log
 ```
 
 ## API 文档
