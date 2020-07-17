@@ -159,7 +159,7 @@ Also Support camelCase.
 
 ### Transaction
 
-Get transactions list and paginate it.
+Get transactions info.
 
 > GET /api/transactions/:hash
 
