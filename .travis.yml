@@ -36,7 +36,7 @@ before_script:
   - cp .env.test.local.travis .env.test.local
   # run code quality audit
   - gem install code_quality
-  - code_quality security_audit
+  - code_quality security_audit bundler_audit_options="--ignore CVE-2020-8164 CVE-2020-8166 CVE-2020-15169 CVE-2020-5267 CVE-2020-8167 CVE-2020-8162 CVE-2020-8165 CVE-2020-26247"
   - code_quality quality_audit fail_fast=false generate_index=true skip_lowest_score=89 rubocop_max_offenses=400
 
 script:
