@@ -71,10 +71,9 @@ GEM
       faraday (~> 0.15.3)
       google-protobuf (~> 3.7)
       web3-eth (= 0.2.18)
-    codecov (0.1.13)
+    codecov (0.1.21)
       json
       simplecov
-      url
     coderay (1.1.2)
     composite_primary_keys (11.1.0)
       activerecord (~> 5.2.1)
@@ -276,7 +275,6 @@ GEM
     tzinfo (1.2.7)
       thread_safe (~> 0.1)
     unicode-display_width (1.4.0)
-    url (0.3.2)
     web3-eth (0.2.18)
       digest-sha3 (~> 1.1.0)
       rlp (~> 0.7.3)
@@ -301,7 +299,7 @@ DEPENDENCIES
   byebug
   ciri-crypto (= 0.1.1)
   cita-sdk-ruby (~> 0.24.0)
-  codecov
+  codecov (~> 0.1.21)
   composite_primary_keys (~> 11.1)
   daemons (~> 1.2, >= 1.2.6)
   database_cleaner
@@ -347,4 +345,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   1.17.1
+   1.17.3
