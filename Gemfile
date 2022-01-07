@@ -46,7 +46,7 @@ gem 'ransack', '~> 2.0', '>= 2.0.1'
 # paginate
 gem 'kaminari', '~> 1.2'
 
-gem 'google-protobuf', '~> 3.7'
+gem 'google-protobuf', '~> 3.19'
 
 gem 'ciri-crypto', '0.1.1'
 
