@@ -9,6 +9,7 @@ namespace = nil if namespace.blank?
 
 Sidekiq.configure_server do |config|
   config.redis = { url: sidekiq_url, driver: :hiredis, password: redis_password, namespace: namespace }
+  config.logger = Sidekiq::Logging.initialize_logger(STDOUT) if ENV["RAILS_LOG_TO_STDOUT"].present?
 end
 Sidekiq.configure_client do |config|
   config.redis = { url: sidekiq_url, driver: :hiredis, password: redis_password, namespace: namespace }

@@ -63,10 +63,6 @@ $ touch .env.test.local (测试环境下不会读取 `.env.local` 中的信息, 
 $ rails spec
 ```
 
-`CITA_URL` 默认地址为：localhost:1337
-
-初次运行请确认 `CITA_URL` 参数下的链是否真在运行
-
 ## 执行程序
 
 ```shell
@@ -101,71 +97,6 @@ $ mina dev 'rake[daemons:sync:start]'
 $ bundle exec yard doc
 $ bundle exec yard server
 ```
-## 如何查看日志
-
-在 `log` 目录下有 `production.log` 和 `sidekiq.log` 文件，可以查看运行日志
-```
-log
-├── production.log
-└── sidekiq.log
-```
 
 ## API 文档
 详见 [API Doc](./API_DOC.md)
-
-## 贡献
-
-### 创建 Bug 报告
-
-遇到 Bug 时开一个 issue: [https://github.com/citahub/re-birth/issues/new](https://github.com/citahub/re-birth/issues/new)
-
-并加上你使用的版本信息。
-
-### 技术栈
-
-通过阅读 [docs/tech_stack.md](docs/tech_stack.md) 了解此项目的编程语言、框架以及开发工具。
-
-### 获取源码
-
-```
-git clone git@github.com:citahub/re-birth.git
-```
-
-### 编程风格
-
-#### Coding style for Ruby
-
-* coding style guide: [https://rubystyle.guide](https://rubystyle.guide)
-* linter: [RuboCop](https://github.com/bbatsov/rubocop)
-* code formatter: $ rubocop -x
-
-
-#### Coding style for Docker
-
-* coding style guide: https://github.com/Haufe-Lexware/docker-style-guide
-* formatter: https://www.fromlatest.io/
-* best-practices: https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
-
-#### Coding style for Makefile
-
-* coding style guide: https://style-guides.readthedocs.io/en/latest/makefile.html
-* tutorial: https://makefiletutorial.com/
-* conventions: https://www.gnu.org/prep/standards/html_node/Makefile-Conventions.html
-* best-practices: https://suva.sh/posts/well-documented-makefiles/
-
-
-### 运行测试
-
-```
-$ rails spec
-```
-
-### 提交代码
-
-#### 代码提交流程
-
-[GitHub Flow](https://help.github.com/en/articles/github-flow), [Understanding the GitHub flow](https://guides.github.com/introduction/flow/)
-
-#### 代码提交规范
-
-use [git-style-guide](https://github.com/agis/git-style-guide) for Branches, Commits,Messages, Merging

@@ -1,0 +1,42 @@
+abi = %Q{
+    [
+      {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            },
+            {
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "name": "verify_range",
+        "outputs": [
+          {
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function",
+        "signature": "0x42a3fcb4"
+      }
+    ]
+  }
+  contract_address = "0xffffffffffffffffffffffffffffffffff033334"
+  call_method = "verify_range"
+#   '265313308032309883159924905499278373453290416203710344740823197104715819579',
+# '100111658524794711116798490954508298823974485986327700322514458641923099281820',
+# '100394660553486465761654945518820334975908210024298872839807653124236256944561',
+# '79336676953769073272325128975695881400383080581665267313823519074415719802862'
+  params = [
+    123,
+    "1234567890"
+]
+  cita = CITA::Client.new(ENV["CITA_URL"])
+  contract = cita.contract_at(abi, contract_address)
+
+  puts contract.call_func(method: call_method.to_sym, params: params)

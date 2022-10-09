@@ -1,7 +1,6 @@
 # run this command for first time
 setup:
-	docker-compose build
-	docker-compose run --rm app bundle exec rake db:setup
+	docker-compose run --rm app bundle exec rake db:setup DISABLE_DATABASE_ENVIRONMENT_CHECK=1
 
 # build images
 build:
@@ -23,7 +22,6 @@ down:
 
 # run after update repo
 update:
-	docker-compose build
 	docker-compose run --rm app bundle exec rake db:migrate
 
 # enter rails console

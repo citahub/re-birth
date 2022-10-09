@@ -3,5 +3,6 @@
 :pidfile: tmp/pids/sidekiq.pid
 :logfile: log/sidekiq.log
 :queues:
-  - [default, 2]
-  - [event_loop, 1]
+  - [default, 3]
+  - [event_loop, 2]
+  - [push_storage, 1]

@@ -29,9 +29,9 @@ module CitaSync
         return handle_error("getBlockByNumber", rpc_params, error) unless error.nil?
 
         # handle for result.nil
-        # raise "network error, retry later" if result.nil?
+        raise "network error, retry later" if result.nil?
         # error is nil now, if result is also nil, means result is nil (like after snapshot)
-        return if result.nil?
+        # return if result.nil?
 
         block_header = result["header"]
         block_number_hex_str = block_header["number"]
@@ -78,7 +78,7 @@ module CitaSync
         # handle error
         return handle_error("getTransactionReceipt", [hash], receipt_error) unless receipt_error.nil?
 
-        return if tx_data.nil? && receipt_result.nil?
+        # return if tx_data.nil? && receipt_result.nil? # tx_data.nil? 永远不可能为nil
 
         message = Message.new(content)
         transaction = Transaction.new(
@@ -114,8 +114,7 @@ module CitaSync
           end
         end
 
-        event_log_pkeys = transaction.event_logs.map { |el| [el.transaction_hash, el.transaction_log_index] }
-        SaveErc20TransferWorker.push_bulk(event_log_pkeys) { |pkey| pkey }
+        SaveDecodeTransactionWorker.perform_async(hash) if receipt_result["errorMessage"].blank?
 
         transaction
       end
@@ -158,13 +157,15 @@ module CitaSync
         default_queue = Sidekiq::Queue.new("default")
 
         # current biggest block number in database
-        last_block_number = SyncInfo.current_block_number || -1
-        ((last_block_number + 1)..block_number).each do |num|
-          break if !Rails.env.test? && (event_loop_queue.size >= 100 || default_queue.size >= 500)
+        ActiveRecord::Base.connection_pool.with_connection do
+          last_block_number = SyncInfo.current_block_number || -1
+          ((last_block_number + 1)..block_number).each do |num|
+            break if !Rails.env.test? && (event_loop_queue.size >= 100 || default_queue.size >= 500)
 
-          hex_str = HexUtils.to_hex(num)
-          SaveBlockWorker.perform_async(hex_str)
-          SyncInfo.current_block_number = num
+            hex_str = HexUtils.to_hex(num)
+            SaveBlockWorker.perform_async(hex_str)
+            SyncInfo.current_block_number = num
+          end
         end
       end
 

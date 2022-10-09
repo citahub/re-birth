@@ -9,9 +9,12 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*
-/tmp/*
 !/log/.keep
+/tmp/*
 !/tmp/.keep
+!/tmp/pids/
+/tmp/pids/*
+!/tmp/pids/.keep
 
 # Ignore uploaded files in development
 /storage/*
@@ -45,3 +48,5 @@ docker/redis
 config/customs/*.yml
 db/migrate/*_create_customs_*
 app/models/customs/*
+.DS_Store
+TAGS
