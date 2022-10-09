@@ -1,33 +1,39 @@
 version: '3'
 services:
-  db:
-    image: postgres:10.5
-    volumes:
-    - ./docker/data:/var/lib/postgresql/data
   app: &app_base
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    image: data_ouyeel_platform_app:latest
     volumes:
       - .:/app
     command: bundle exec puma -C config/puma.docker.rb
+    # environment:
+    #   - RAILS_LOG_TO_STDOUT=1 # 设置即可标准输出
+    #   - DB_HOST=192.168.1.77
+    #   - DB_USERNAME=postgres
+    #   - DB_PASSWORD=adminpassword
+    #   - DB_NAME_PRO=ouyeel_storage_production
+    #   - REDIS_URL=redis://192.168.1.70:6379/0
+    #   - CITA_URL=http://node1:1337/
+    #   - DB_POOL=25
     depends_on:
       - db
       - redis
+
   sync:
+    <<: *app_base
+    command: bundle exec rails daemons:sync:start
+
+  sidekiq:
+    <<: *app_base
+    command: bundle exec sidekiq -C config/sidekiq.yml
     build:
       context: .
       dockerfile: ./docker/app/Dockerfile
-    volumes:
-      - .:/app
-    command: bash -c "rails daemons:sync:start && tail -f /app/log/production.log"
-    depends_on:
-      - db
 
   web:
     build:
       context: .
       dockerfile: ./docker/web/Dockerfile
+    image: data_ouyeel_platform_web:latest
     depends_on:
       - app
     ports:
@@ -38,8 +44,7 @@ services:
     volumes:
       - ./docker/redis:/data
 
-
-  sidekiq:
-    <<: *app_base
-    ports: []
-    command: bundle exec sidekiq -C config/sidekiq.yml
+  db:
+    image: postgres:10.5
+    volumes:
+      - ./docker/data:/var/lib/postgresql/data

@@ -42,8 +42,8 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  # config.log_level = :debug
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL") { :info }.to_sym
+  config.log_level = :info
+  #它的默认值是'debug'，它将输出Rails生成的SQL。如果它被设置为“info”，则SQL将丢失。
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]

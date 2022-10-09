@@ -4,4 +4,9 @@
 
 require_relative "config/environment"
 
+# require 'prometheus/middleware/collector'
+
+# use Prometheus::Middleware::Collector
+use Prometheus::Middleware::CustomExporter
+
 run Rails.application

@@ -3,3 +3,7 @@
 tmp
 docker/data
 docker/redis
+/log/*
+!/log/.keep
+.DS_Store
+TAGS

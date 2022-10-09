@@ -13,6 +13,7 @@ WORKDIR $RAILS_ROOT
 # create log directory
 RUN mkdir log
 
+RUN rm -rf public
 # copy over static assets
 COPY public public/
 

@@ -13,6 +13,7 @@ class Erc20Transfer < ApplicationRecord
 
   # validates :event_log, uniqueness: true
 
+  # Web3::Eth::Abi::Utils.signature_hash
   # first of topics: event signature
   # web3.eth.abi.encodeEventSignature('Transfer(address,address,uint256)')
   EVENT_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
@@ -52,8 +53,11 @@ class Erc20Transfer < ApplicationRecord
     #
     # @param topics [[String]]
     # @return [true, false]
-    def transfer?(topics)
-      topics.include?(EVENT_TOPIC)
+    def transfer?(event_log)
+      return false unless event_log.topics.include?(EVENT_TOPIC)
+      contract_abi = ContractAbi.find_by(address: event_log.address)
+      return false if contract_abi.try(:contract_name).blank?
+      true
     end
 
     # create a erc20_transfer from an event log
@@ -61,9 +65,10 @@ class Erc20Transfer < ApplicationRecord
     # @param event_log [EventLog]
     # @return [Erc20Transfer]
     def save_from_event_log(event_log)
-      return unless transfer?(event_log.topics)
+      return unless transfer?(event_log)
 
       info = decode(event_log.data, event_log.topics)
+      return if info[:value].blank?
 
       create!(
         address: event_log.address,
@@ -76,7 +81,8 @@ class Erc20Transfer < ApplicationRecord
         from: info[:from],
         to: info[:to],
         value: info[:value],
-        timestamp: event_log.block&.timestamp
+        contract_name: ContractAbi.find(event_log.address).contract_name,
+        timestamp: event_log.tx&.timestamp
       )
     end
 

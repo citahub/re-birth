@@ -16,5 +16,5 @@ class EventLog < ApplicationRecord
 
   # same transaction_hash & log_index means same event log
   validates :transaction_hash, presence: true
-  validates :transaction_log_index, presence: true, uniqueness: { scope: :transaction_hash }
+  # validates :transaction_log_index, presence: true, uniqueness: { scope: :transaction_hash }
 end

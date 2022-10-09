@@ -1,0 +1,45 @@
+version: '3'
+services:
+  # db:
+  #   image: postgres:10.5
+  #   volumes:
+  #   - ./docker/data:/var/lib/postgresql/data
+  app: &app_base
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - .:/app
+    command: bundle exec puma -C config/puma.docker.rb
+    # depends_on:
+    #   - db
+    #   - redis
+  sync:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - .:/app
+    command: bash -c "rails daemons:sync:start && tail -f /app/log/production.log"
+    # depends_on:
+    #   - db
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/Dockerfile
+    depends_on:
+      - app
+    ports:
+      - 8888:80
+
+  # redis:
+  #   image: redis:5.0.1
+  #   volumes:
+  #     - ./docker/redis:/data
+
+
+  sidekiq:
+    <<: *app_base
+    ports: []
+    command: bundle exec sidekiq -C config/sidekiq.yml

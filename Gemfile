@@ -1,18 +1,18 @@
-source 'https://rubygems.org'
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+source 'http://mirrors.tuna.tsinghua.edu.cn/rubygems/'
+# git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '>= 5.2.2.1'
-gem 'nokogiri', '~> 1.11'
+gem 'rails', '>= 5.2.5'
+gem 'nokogiri', '~> 1.10', '>= 1.10.7'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'puma', '~> 3.12.6'
+gem 'puma', '~> 3.12.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-# gem 'jbuilder', '~> 2.5'
+gem 'jbuilder', '~> 2.5'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -44,7 +44,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'ransack', '~> 2.0', '>= 2.0.1'
 
 # paginate
-gem 'kaminari', '~> 1.2'
+gem 'kaminari', '~> 1.1', '>= 1.1.1'
 
 gem 'google-protobuf', '~> 3.7'
 
@@ -76,6 +76,7 @@ gem 'mina', require: false
 gem 'mina-puma', require: false
 gem 'mina-multistage', require: false
 gem 'mina-sidekiq', '~> 1.0', '>= 1.0.3', require: false
+gem "prometheus-client"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -102,8 +103,11 @@ end
 group :test do
   # mock http request
   gem 'webmock', '~> 3.4', '>= 3.4.2'
-  gem 'codecov', '~> 0.1.21', :require => false
+  gem 'codecov', :require => false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# gem "sm4", '0.2.4', git: "http://liyi:1111qqqq@192.168.1.210/heyue/sm4.git"
+gem "sm_crypto", git: "http://liyi:1111qqqq@192.168.1.210/heyue/sm_crypto.git"
